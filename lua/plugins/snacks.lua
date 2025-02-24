@@ -4,13 +4,15 @@ local extend = function(desc)
   vim.tbl_deep_extend("force", opts, { desc = desc })
 end
 
-_G.dd = function(...)
-  Snacks.debug.inspect(...)
+local areThereOpennedBuffers = function()
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    if bufname == "" then
+      return true -- There's no opened buffers
+    end
+  end
+  return false -- There's a buffer open
 end
-_G.bt = function()
-  Snacks.debug.backtrace()
-end
-vim.print = _G.dd
 
 return {
   "folke/snacks.nvim",
@@ -26,25 +28,10 @@ return {
       enabled = true,
       notify = true, -- show notification when big file detected
       size = 2.5 * 1024 * 1024, -- 2.5MB
-      line_length = 1000, -- average line length (useful for minified files)
-      -- Enable or disable features when big file detected
-      ---@param ctx {buf: number, ft:string}
-      setup = function(ctx)
-        if vim.fn.exists(":NoMatchParen") ~= 0 then
-          vim.cmd([[NoMatchParen]])
-        end
-        Snacks.util.wo(0, { foldmethod = "manual", statuscolumn = "", conceallevel = 0 })
-        vim.b.minianimate_disable = true
-        vim.schedule(function()
-          if vim.api.nvim_buf_is_valid(ctx.buf) then
-            vim.bo[ctx.buf].syntax = ctx.ft
-          end
-        end)
-      end,
     },
     bufdelete = { enabled = false },
     dashboard = { enabled = false },
-    debug = { enabled = true },
+    debug = { enabled = false },
     dim = { enabled = false },
     explorer = {
       enabled = true,
@@ -62,13 +49,9 @@ return {
       enabled = true,
       chunk = {
         enabled = true,
-        char = {
-          corner_top = "╭",
-          corner_bottom = "╰",
-        },
       },
     },
-    input = { enabled = true },
+    input = { enabled = false },
     layout = { enabled = false },
     lazygit = { enabled = true },
     notifier = { enabled = false }, -- Doesn't work well with pomodoro
@@ -84,14 +67,22 @@ return {
     profiler = { enabled = true },
     quickfile = { enabled = true },
     rename = { enabled = true },
-    scope = { enabled = true },
+    scope = { enabled = false },
     scratch = { enabled = true },
     scroll = { enabled = false },
-    statuscolumn = { enabled = false },
-    terminal = { enabled = true },
-    toggle = { enabled = true },
+    statuscolumn = {
+      enabled = true,
+      left = { "fold", "git" }, -- priority of signs on the left (high to low)
+      right = { "mark", "sign" }, -- priority of signs on the right (high to low)
+      folds = {
+        open = true, -- show open fold icons
+        git_hl = true, -- use Git Signs hl for fold icons
+      },
+    },
+    terminal = { enabled = false },
+    toggle = { enabled = false },
     util = { enabled = true },
-    win = { enabled = true },
+    win = { enabled = false },
     words = { enabled = true },
     zen = { enabled = false },
   },
@@ -145,5 +136,68 @@ return {
       end,
       extend("Select Scratch Buffer"),
     },
+    {
+      "<leader>pps",
+      function()
+        Snacks.profiler.scratch()
+      end,
+      extend("Profiler scratch buffer"),
+    },
+    {
+      "<leader>wj",
+      function()
+        Snacks.words.jump(1, true)
+      end,
+      extend("Jumps to next reference"),
+    },
+    {
+      "<leader>sp",
+      function()
+        Snacks.picker()
+      end,
+      extend("Show all pickers"),
+    },
   },
+  init = function()
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "VeryLazy",
+      callback = function()
+        -- Disable animations globally
+        vim.g.snacks_animate = false
+
+        -- -- Setup some globals for debugging (lazy-loaded)
+        -- _G.dd = function(...)
+        --   Snacks.debug.inspect(...)
+        -- end
+        -- _G.bt = function()
+        --   Snacks.debug.backtrace()
+        -- end
+        -- vim.print = _G.dd -- Override print to use snacks for `:=` command
+
+        -- Create some toggle mappings
+        local toggleConceal = { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }
+        local toggleBackground = { off = "light", on = "dark", name = "Dark Background" }
+
+        Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+        Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+        Snacks.toggle.diagnostics():map("<leader>ud")
+        Snacks.toggle.line_number():map("<leader>ul")
+        Snacks.toggle.option("conceallevel", toggleConceal):map("<leader>uc")
+        Snacks.toggle.treesitter():map("<leader>uT")
+        Snacks.toggle.option("background", toggleBackground):map("<leader>ub")
+        Snacks.toggle.inlay_hints():map("<leader>uh")
+        -- Snacks.toggle.indent():map("<leader>ug")
+        -- Snacks.toggle.dim():map("<leader>uD")
+
+        Snacks.toggle.profiler():map("<leader>ppp") -- Toggle the profiler
+        Snacks.toggle.profiler_highlights():map("<leader>pph") -- Toggle the profiler highlights
+
+        -- Will open explorer if there's no opened buffers
+        if areThereOpennedBuffers() then
+          Snacks.explorer.open()
+        end
+      end,
+    })
+  end,
 }

@@ -45,6 +45,7 @@ return {
     local lualine = require("lualine")
     local lazy_status = require("lazy.status") -- to configure lazy pending updates count
     local unrealCommands = require("unreal.commands")
+    local snacks = require("snacks")
 
     local GetFilePath = function()
       local winWidth = vim.api.nvim_win_get_width(0)
@@ -62,6 +63,10 @@ return {
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = { unrealCommands.GetStatusBar },
         lualine_x = {
+          {
+            snacks.profiler.status,
+            cond = snacks.profiler.running,
+          },
           {
             lazy_status.updates,
             cond = lazy_status.has_updates,
@@ -90,22 +95,22 @@ return {
         lualine_c = { "filename", "searchcount", "selectioncount", GetFilePath },
       },
       extensions = {},
-      -- ignore_focus = {
-      --   "dapui_watches",
-      --   "dapui_breakpoints",
-      --   "dapui_scopes",
-      --   "dapui_console",
-      --   "dapui_stacks",
-      --   "dap-repl",
-      -- },
-      -- disabled_filetypes = {
-      --   "dapui_watches",
-      --   "dapui_breakpoints",
-      --   "dapui_scopes",
-      --   "dapui_console",
-      --   "dapui_stacks",
-      --   "dap-repl",
-      -- },
+      ignore_focus = {
+        "dapui_watches",
+        "dapui_breakpoints",
+        "dapui_scopes",
+        "dapui_console",
+        "dapui_stacks",
+        "dap-repl",
+      },
+      disabled_filetypes = {
+        "dapui_watches",
+        "dapui_breakpoints",
+        "dapui_scopes",
+        "dapui_console",
+        "dapui_stacks",
+        "dap-repl",
+      },
     })
   end,
 }
