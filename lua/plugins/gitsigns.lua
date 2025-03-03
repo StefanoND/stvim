@@ -52,7 +52,7 @@ return {
         map("n", "<leader>gsb", function()
           gs.blame_line({ full = true })
         end)
-        map("n", "<leader>tb", gs.toggle_current_line_blame)
+        map("n", "<leader>tlb", gs.toggle_current_line_blame)
         map("n", "<leader>gsd", gs.diffthis)
         map("n", "<leader>gsD", function()
           gs.diffthis("~")
@@ -64,6 +64,6 @@ return {
       end,
     })
 
-    require("scrollbar.handlers.gitsigns").setup()
+    -- require("scrollbar.handlers.gitsigns").setup()
   end,
 }

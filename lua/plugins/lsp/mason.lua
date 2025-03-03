@@ -66,18 +66,18 @@ return {
       local mason_null_ls = require("mason-null-ls")
 
       mason_null_ls.setup({
-        ensure_installed = {
-          "shellharden", -- bash formatter and linter
-          "clang-format", -- C/C++ formatter
-          "cmakelang", -- CMAKE formatter and linter
-          "csharpier", -- C# formatter
-          "gdtoolkit", -- Godot formatter and linter
-          -- "biome", -- formatter and linter
-          "stylua", -- Lua formatter and linter
-          -- "sql-formatter", -- SQL formatter
-          -- "prettier", -- Prettier formatter
-        },
-        automatic_installation = true,
+        -- ensure_installed = {
+        --   "shellharden", -- bash formatter and linter
+        --   "clang-format", -- C/C++ formatter
+        --   "cmakelang", -- CMAKE formatter and linter
+        --   "csharpier", -- C# formatter
+        --   "gdtoolkit", -- Godot formatter and linter
+        --   -- "biome", -- formatter and linter
+        --   "stylua", -- Lua formatter and linter
+        --   -- "sql-formatter", -- SQL formatter
+        --   -- "prettier", -- Prettier formatter
+        -- },
+        -- automatic_installation = true,
         handlers = {},
       })
 
@@ -89,7 +89,8 @@ return {
           "shellharden", -- formatter and linter
           -- C/C++
           -- 'cpptools', -- DAP
-          "clangd", -- LSP
+          "clangd", -- LSP and linter
+          -- "ccls", -- Used for Codelens
           "codelldb", -- DAP
           "clang-format", -- formatter
           -- "cpplint", -- linter - DEPRECATED, use clangd
@@ -106,6 +107,10 @@ return {
           -- GODOT SCRIPT
           -- "gdscript", -- LSP
           "gdtoolkit", -- formatter and linter
+          -- JavaScript/TypeScript
+          "typescript-language-server", -- LSP
+          "tailwindcss-language-server", -- Autocomplete
+          "eslint-lsp", -- Linter
           -- -- JSON
           -- "biome", -- formatter and linter
           -- "jsonls", -- LSP
@@ -121,10 +126,11 @@ return {
           -- -- YAML
           -- "yaml-language-server", -- LSP
           -- "yamllint", -- linter
-          -- "prettier", -- formatter
           -- -- NWScript
           -- "nwscript-ee-language-server",
           -- "nwscript",
+          -- GLOBAL (Not really)
+          "prettierd", -- formatter
         },
         automatic_installation = true,
         auto_update = true,

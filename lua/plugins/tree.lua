@@ -9,7 +9,7 @@ return {}
 --     config = function()
 --       local opts = { noremap = true, silent = true }
 --
---       -- vim.keymap.set("n", "<leader>op", "<cmd>NvimTreeToggle<CR>", opts)
+--       vim.keymap.set("n", "<leader>op", "<cmd>NvimTreeToggle<CR>", opts)
 --       vim.keymap.set("n", "<leader>ef", "<cmd>NvimTreeFindFileToggle<CR>", opts)
 --       vim.keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<CR>", opts)
 --       vim.keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", opts)
@@ -21,10 +21,14 @@ return {}
 --
 --       -- configure nvim-tree
 --       require("nvim-tree").setup({
---         -- disable_netrw = true,
---         -- hijack_netrw = true,
---         -- hijack_cursor = true,
+--         disable_netrw = true,
+--         hijack_netrw = true,
+--         hijack_cursor = false,
 --         hijack_unnamed_buffer_when_opening = false,
+--         hijack_directories = {
+--           enable = true,
+--           auto_open = true,
+--         },
 --         respect_buf_cwd = true,
 --         -- sync_root_with_cwd = true, -- Previously update_cwd
 --         update_focused_file = {

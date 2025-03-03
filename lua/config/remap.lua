@@ -12,7 +12,7 @@ keymap({ "n", "v" }, "<leader>ven", ":set ve=none<CR>", opts)
 -- Rectangular selection
 keymap({ "n", "v" }, "<leader>vea", ":set ve=all<CR>", opts)
 keymap("n", "<leader>su", vim.cmd.UndotreeToggle, extend("Open undotree"))
-keymap("n", "<leader>nh", ":nohl<CR>", extend("Clear search highlights"))
+keymap("n", "<leader>nh", "<cmd>nohl<CR>", extend("[N]o [H]ighlights"))
 keymap("n", "D", "<cmd>bd<CR>", extend("Cloes current buffer/tab"))
 keymap("n", "<M-d>", "<cmd>delete<CR>", extend("Same as 'dd'"))
 
@@ -54,17 +54,17 @@ keymap("n", "j", "gj", extend("Move down wrapped line"))
 keymap("n", "k", "gk", extend("Move up wrapped line"))
 
 -- Window management
-keymap("n", "<leader>sv", "<C-w>v", extend("Split window vertically"))
+keymap("n", "<leader>sv", "<C-w>v<C-w>><C-w>><C-w>><C-w>>", extend("Split window vertically"))
 keymap("n", "<leader>sh", "<C-w>s", extend("Split window horizontally"))
 keymap("n", "<leader>se", "<C-w>=", extend("Make splits equal size"))
 keymap("n", "<leader>sx", "<cmd>close<CR>", extend("Close current split"))
 
--- Tab management
-keymap("n", "<leader>to", "<cmd>tabnew<CR>", extend("Open new tab"))
-keymap("n", "<leader>tf", "<cmd>tabnew %<CR>", extend("Open current buffer in new tab"))
-keymap("n", "<leader>tt", "<cmd>tabn<CR>", extend("Go to previous tab"))
-keymap("n", "<leader>tT", "<cmd>tabp<CR>", extend("Go to previous tab"))
-keymap("n", "<leader>tx", "<cmd>tabclose<CR>", extend("Close current tab"))
+-- -- Tab management
+-- keymap("n", "<leader>to", "<cmd>tabnew<CR>", extend("Open new tab"))
+-- keymap("n", "<leader>tf", "<cmd>tabnew %<CR>", extend("Open current buffer in new tab"))
+-- keymap("n", "<leader>tt", "<cmd>tabn<CR>", extend("Go to previous tab"))
+-- keymap("n", "<leader>tT", "<cmd>tabp<CR>", extend("Go to previous tab"))
+-- keymap("n", "<leader>tx", "<cmd>tabclose<CR>", extend("Close current tab"))
 
 -- vim's quickfix navigation
 keymap("n", "<C-k>", "<cmd>cnext<CR>zz", extend("Next Quickfix"))
@@ -78,6 +78,13 @@ keymap(
   "<leader>s",
   [[:%s/\<<C-r><C-w>\>//gI<Left><Left><Left>]],
   extend("Replace all instances of the word under the cursor")
+)
+
+keymap(
+  "v",
+  "<leader>s",
+  [[y:<C-u>%s/<C-r>0/<C-r>0/gI<Left><Left><Left>]],
+  extend("Replace all instances of the selection")
 )
 
 keymap("n", "<leader>x", "<cmd>!chmod +x %<CR>", extend("Same as 'chmod +x file'"))

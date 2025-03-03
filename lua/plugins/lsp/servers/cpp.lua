@@ -15,10 +15,10 @@ cmpcapabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
-lsp_defaults.capabilities = {
+local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
   cmpcapabilities,
-  offsetEncoding = { "utf-16" },
-}
+  offsetEncoding = { "utf-8", "utf-16", "utf-32" },
+})
 
 local handlers = {
   ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
@@ -53,18 +53,17 @@ clangd_ext_opts = {
   },
 }
 
-local cppfuncs = function(client, bufnr)
+local cppFuncs = function(client, bufnr)
   local opts = { buffer = bufnr, noremap = true, remap = false }
+  local keymap = vim.keymap.set
+  local extend = function(desc)
+    return vim.tbl_deep_extend("force", opts, { desc = desc })
+  end
 
-  vim.keymap.set(
-    "n",
-    "<leader>cR",
-    "<cmd>ClangdSwitchSourceHeader<cr>",
-    vim.tbl_deep_extend("force", opts, { desc = "Switch Source/Header (C/C++)" })
-  )
+  keymap("n", "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", extend("Switch Source/Header (C/C++)"))
 
   -- switch between header and source file
-  vim.keymap.set("n", "<M-o>", function()
+  keymap("n", "<M-o>", function()
     local filename = vim.fn.expand("%:p")
     local new_filename
 
@@ -77,15 +76,99 @@ local cppfuncs = function(client, bufnr)
     if new_filename then
       vim.cmd("e " .. new_filename)
     end
-  end, opts)
+  end, extend("Switch Source/Header (C/C++)"))
+end
 
-  -- Unreal.nvim mappings
-  vim.keymap.set("n", "<C-b>", "<cmd>UnrealBuild<CR>", opts)
-  vim.keymap.set("n", "<F5>", "<cmd>UnrealRun<CR>", opts)
+local unrealFuncs = function(client, bufnr)
+  local opts = { buffer = bufnr, noremap = true, remap = false }
+  local km = function(key, cmd, opt)
+    vim.keymap.set("n", key, cmd, opt)
+  end
+  local ext = function(desc)
+    return vim.tbl_deep_extend("force", opts, { desc = desc })
+  end
+  local t = ":terminal ue "
+
+  -- run [--debug] [EXTRA ARGS] - Run the editor for the Unreal project
+  km("<leader>uer", t .. "run<CR>", ext("Run the editor"))
+
+  -- gen [EXTRA ARGS] - Generate IDE project files for the Unreal project
+  km("<leader>ueg", t .. "gen<CR>", ext("Generate IDE project files"))
+
+  -- build [CONFIGURATION] [TARGET] - Build the Editor modules for the Unreal project or plugin
+  km("<leader>ueb", t .. "build<CR>", ext("Build the Editor modules for Project or Plugin"))
+
+  -- clean - Clean build artifacts for the Unreal project or plugin
+  km("<leader>uec", t .. "clean<CR>", ext("Clean build artifacts for project or plugin"))
+
+  -- test [--withrhi] [--list] [--all] [--filter FILTER] TEST1 TEST2 TESTN [-- EXTRA ARGS]
+  -- Run automation tests for the Unreal project
+  km("<leader>uet", t .. "test<CR>", ext("Run automation tests"))
+
+  -- package [PROJECT CONFIGURATION] [EXTRA UAT ARGS] - Package a build of the Unreal project or plugin
+  -- in the current directory, storing the result in a subdirectory named "dist".
+  -- Default configuration for projects is Shipping.
+  km("<leader>uep", t .. "package<CR>", ext("Package a build of the project or plugin"))
 end
 
 return {
+  -- lspconfig.ccls.setup({ cclsConf }),
+  require("ccls").setup({
+    lsp = {
+      -- server = {
+      lspconfig = {
+        filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+        disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
+        init_options = { cache = {
+          directory = vim.fs.normalize("~/.cache/ccls/"),
+        } },
+        name = "ccls",
+        cmd = { "ccls" },
+        offset_encoding = "utf-32",
+        root_dir = function(fname)
+          return require("lspconfig.util").root_pattern(
+            ".null-ls-root",
+            "Makefile",
+            "CMakefile",
+            ".git",
+            ".sln",
+            "package.json",
+            "project.godot",
+            "configure.ac",
+            "configure.in",
+            "config.h.in",
+            "meson.build",
+            "meson_options.txt",
+            "build.ninja",
+            "compile_commands.json",
+            "compile_flags.txt",
+            ".uproject"
+          )(fname) or require("lspconfig.util").find_git_ancestor(fname)
+        end,
+      },
+      filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+      disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
+      disable_capabilities = {
+        completionProvider = true,
+        documentFormattingProvider = true,
+        documentRangeFormattingProvider = true,
+        documentHighlightProvider = true,
+        documentSymbolProvider = true,
+        workspaceSymbolProvider = true,
+        renameProvider = true,
+        hoverProvider = true,
+        codeActionProvider = true,
+      },
+      disable_diagnostics = true,
+      disable_signature = true,
+      codelens = {
+        enable = true,
+        events = { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
+      },
+    },
+  }),
   lspconfig.clangd.setup({
+    capabilities = capabilities,
     -- require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, {
     opts = require("clangd_extensions").setup(clangd_ext_opts or {}),
     handlers = handlers,
@@ -102,16 +185,22 @@ return {
     default_config = {
       root_dir = function(fname)
         return require("lspconfig.util").root_pattern(
+          ".null-ls-root",
           "Makefile",
+          "CMakefile",
+          ".git",
+          ".sln",
+          "package.json",
+          "project.godot",
           "configure.ac",
           "configure.in",
           "config.h.in",
           "meson.build",
           "meson_options.txt",
-          "build.ninja"
-        )(fname) or require("lspconfig.util").root_pattern(
+          "build.ninja",
           "compile_commands.json",
-          "compile_flags.txt"
+          "compile_flags.txt",
+          ".uproject"
         )(fname) or require("lspconfig.util").find_git_ancestor(fname)
       end,
       init_options = {
@@ -121,7 +210,12 @@ return {
       },
     },
     on_attach = function(client, bufnr)
-      cppfuncs(client, bufnr)
+      cppFuncs(client, bufnr)
+
+      local path = vim.fn.getcwd()
+      if vim.fn.filereadable(path .. "/" .. vim.fn.fnamemodify(path, ":t") .. ".uproject") then
+        unrealFuncs(client, bufnr)
+      end
 
       client.server_capabilities.signatureHelpProvider = false
       vim.opt.tabstop = 4
@@ -130,6 +224,5 @@ return {
 
       print("Hello C/C++")
     end,
-    capabilities = lsp_defaults,
   }),
 }

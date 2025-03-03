@@ -1,28 +1,28 @@
 local opts = {
   -- Text editing
-  ai = { enabled = false },
-  align = { enabled = false },
+  ai = { enabled = true }, -- Extend and create a/i textobjects. "sa" and "si"
+  align = { enabled = true },
   comment = { enabled = false },
   completion = { enabled = false },
-  move = { enabled = false },
-  operators = { enabled = false },
-  pairs = { enabled = false },
+  move = { enabled = true },
+  operators = { enabled = true },
+  pairs = { enabled = true }, -- Auto-pairs
   snippets = { enabled = false },
-  splitjoin = { enabled = false },
-  surround = { enabled = false },
+  splitjoin = { enabled = true },
+  surround = { enabled = true },
 
   -- General workflow
-  basics = { enabled = false },
-  bracketed = { enabled = false },
+  basics = { enabled = true },
+  bracketed = { enabled = true },
   bufremove = { enabled = false },
-  clue = { enabled = false },
+  clue = { enabled = true },
   deps = { enabled = false },
-  diff = { enabled = false },
+  diff = { enabled = true },
   extra = { enabled = false },
   files = { enabled = false },
-  git = { enabled = false },
-  jump = { enabled = false },
-  jump2d = { enabled = false },
+  git = { enabled = true },
+  jump = { enabled = true },
+  jump2d = { enabled = true }, -- This will make me lazy
   misc = { enabled = false },
   pick = { enabled = false },
   sessions = { enabled = false },
@@ -33,22 +33,24 @@ local opts = {
   base16 = { enabled = false },
   colors = { enabled = false },
   cursorword = { enabled = false },
-  hipatterns = { enabled = false },
+  hipatterns = { enabled = true },
   hues = { enabled = false },
-  icons = { enabled = false },
+  icons = { enabled = true },
   indentscope = { enabled = false },
-  map = { enabled = false },
+  map = { enabled = true },
   notify = { enabled = false },
   starter = { enabled = false },
   statusline = { enabled = false },
   tabline = { enabled = false },
-  trailspace = { enabled = false },
+  trailspace = { enabled = true },
 
   -- Other
   doc = { enabled = false },
   fuzzy = { enabled = false },
   test = { enabled = false },
 }
+
+local kopts = { noremap = true, silent = true }
 
 return {
   "echasnovski/mini.nvim",
@@ -104,6 +106,8 @@ return {
     end
     if opts.diff.enabled then
       require("mini.diff").setup(require("plugins.mini.diff"))
+
+      vim.keymap.set({ "n", "v" }, "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
     end
     if opts.extra.enabled then
       require("mini.extra").setup(require("plugins.mini.extra"))
@@ -160,6 +164,8 @@ return {
     end
     if opts.map.enabled then
       require("mini.map").setup(require("plugins.mini.map"))
+      require("mini.map").toggle()
+      -- vim.keymap.set({ "n", "v" }, "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
     end
     if opts.notify.enabled then
       require("mini.notify").setup(require("plugins.mini.notify"))

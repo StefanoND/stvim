@@ -24,24 +24,20 @@ local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
   cmpcapabilities,
 })
 
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "sh",
---   callback = function()
---     vim.lsp.start({
---       name = "bash-language-server",
---       cmd = { "bash-language-server", "start" },
---       allowlist = { "sh", "bash" },
---       filetypes = { "sh", "bash" },
---     })
---   end,
--- })
+local servers = { "ts_ls", "tailwindcss", "eslint" }
+
+local function setupServers()
+  for _, llsp in ipairs(servers) do
+    lspconfig[llsp].setup({
+      capabilities = capabilities,
+      handlers = handlers,
+      on_attach = function(client, bufnr)
+        print("Hello Javascript/Typescript")
+      end,
+    })
+  end
+end
 
 return {
-  lspconfig.bashls.setup({
-    capabilities = capabilities,
-    handlers = handlers,
-    on_attach = function(client, bufnr)
-      print("Hello bash")
-    end,
-  }),
+  setupServers(),
 }

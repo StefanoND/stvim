@@ -9,25 +9,26 @@ return { -- colorscheme
       flavour = "mocha",
       integrations = {
         cmp = true,
-        fidget = true,
-        gitsigns = true,
-        harpoon = true,
-        mason = true,
         dap = true,
         dap_ui = true,
-        nvimtree = true,
+        fidget = true,
+        gitgutter = false,
+        gitsigns = true,
+        harpoon = true,
+        lsp_trouble = true,
+        mason = true,
+        notify = true,
+        nvimtree = false,
+        rainbow_delimiters = true,
+        telescope = true,
         treesitter = true,
         treesitter_context = true,
         ufo = true,
-        rainbow_delimiters = true,
-        telescope = true,
-        lsp_trouble = true,
-        gitgutter = false,
         which_key = true,
-        notify = true,
+
         mini = {
           enabled = true,
-          indentscope_color = "text",
+          indentscope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
         },
         native_lsp = {
           enabled = true,
@@ -46,6 +47,14 @@ return { -- colorscheme
           inlay_hints = {
             background = true,
           },
+        },
+        navic = {
+          enabled = true,
+          custom_bg = "#1e1e2e", -- "lualine" will set background to mantle (#181825)
+        },
+        snacks = {
+          enabled = true,
+          indent_scope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
         },
       },
     })

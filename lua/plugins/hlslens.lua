@@ -1,10 +1,10 @@
 return {
   "kevinhwang91/nvim-hlslens",
   config = function()
-    -- require('hlslens').setup() is not required
-    require("scrollbar.handlers.search").setup({
-      -- hlslens config overrides
-    })
+    require("hlslens").setup()
+    -- require("scrollbar.handlers.search").setup({
+    --   -- hlslens config overrides
+    -- })
 
     local opts = { noremap = true, silent = true }
 
@@ -24,7 +24,5 @@ return {
     vim.keymap.set("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], opts)
     vim.keymap.set("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
     vim.keymap.set("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
-
-    vim.keymap.set("n", "<Leader>l", "<Cmd>noh<CR>", opts)
   end,
 }

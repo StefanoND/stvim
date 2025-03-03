@@ -7,10 +7,7 @@ local lspconfig = require("lspconfig")
 
 local handlers = {
   ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(
-    vim.lsp.handlers.signature_help,
-    { border = "rounded" }
-  ),
+  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
 }
 
 local lsp_defaults = lspconfig.util.default_config
@@ -23,12 +20,14 @@ cmpcapabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
-lsp_defaults.capabilities = cmpcapabilities
+local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
+  cmpcapabilities,
+})
 
 return {
   lspconfig.gdscript.setup({
+    capabilities = capabilities,
     handlers = handlers,
-    capabilities = lsp_defaults,
     -- cmd = vim.lsp.rpc.connect("127.0.0.1", 6007),
     on_attach = function(client, bufnr)
       vim.opt.tabstop = 4

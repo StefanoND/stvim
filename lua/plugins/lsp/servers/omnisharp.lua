@@ -21,7 +21,9 @@ cmpcapabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
-lsp_defaults.capabilities = cmpcapabilities
+local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
+  cmpcapabilities,
+})
 
 -- on_attach {
 
@@ -56,6 +58,7 @@ lspconfig.omnisharp.enableImportCompletion = true
 
 return {
   lspconfig.omnisharp.setup({
+    capabilities = capabilities,
     use_mono = true,
     default_config = {
       filetypes = { "cs", "vb" },
@@ -117,18 +120,17 @@ return {
     flags = {
       debounce_text_changes = 150,
     },
-    capabilities = cmpcapabilities,
     cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) },
     -- cmd = vim.lsp.rpc.connect("127.0.0.1", 6007),
     -- cmd = { omnisharp_bin },
     on_attach = function(client, bufnr)
       local opts = { buffer = bufnr, noremap = true, remap = false }
-      vim.keymap.set(
-        "n",
-        "gd",
-        "<cmd>lua require('omnisharp_extended').telescope_lsp_definitions()<CR>",
-        opts
-      )
+      -- vim.keymap.set(
+      --   "n",
+      --   "gd",
+      --   "<cmd>lua require('omnisharp_extended').telescope_lsp_definitions()<CR>",
+      --   opts
+      -- )
 
       -- Only request omnisharp for formatting or other installed formatters
       -- that supports C# will also format it.

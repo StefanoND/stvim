@@ -18,8 +18,17 @@ return {
         },
       },
       "theHamsta/nvim-dap-virtual-text",
-      "nvim-telescope/telescope-dap.nvim",
-      "jbyuki/one-small-step-for-vimkind",
+      -- "nvim-telescope/telescope-dap.nvim",
+      {
+        "jbyuki/one-small-step-for-vimkind",
+        config = function()
+          local opts = { noremap = true, silent = true }
+
+          vim.keymap.set("n", "<leader>dl", function()
+            require("osv").launch({ port = 8086 })
+          end, opts)
+        end,
+      },
     },
     config = function()
       local dap = require("dap")
@@ -66,8 +75,8 @@ return {
       --   },
       -- }
 
-      dap.configurations.c = dap.configurations.cpp
-      dap.configurations.rust = dap.configurations.cpp
+      -- dap.configurations.c = dap.configurations.cpp
+      -- dap.configurations.rust = dap.configurations.cpp
 
       -- -- GODOT DEBUGGING
       -- -- Need "netcat" installed
@@ -245,10 +254,22 @@ return {
               -- { "<leader>dc", "<cmd>lua require('dap').continue()<cr>", extend("Continue") },
               -- { "<leader>dD", "<cmd>lua require('dap').disconnect()<cr>", extend("Disconnect") },
               -- { "<leader>dg", "<cmd>lua require('dap').session()<cr>", extend("Get Session") },
-              -- { "<leader>dh", "<cmd>lua require('dap.ui.widgets').hover()<cr>", extend("Hover Variables") },
+              {
+                "<leader>dw",
+                "<cmd>lua require('dap.ui.widgets').hover()<cr>",
+                extend("Hover Variables"),
+              },
+              {
+                "<leader>df",
+                function()
+                  local widgets = require("dap.ui.widgets")
+                  widgets.centered_loat(widgets.frames)
+                end,
+                extend("Hover Variables"),
+              },
               -- { "<leader>dS", "<cmd>lua require('dap.ui.widgets').scopes()<cr>", extend("Scopes") },
-              -- { "<leader>di", "<cmd>lua require('dap').step_into()<cr>", extend("Step Into") },
-              -- { "<leader>do", "<cmd>lua require('dap').step_over()<cr>", extend("Step Over") },
+              { "<leader>di", "<cmd>lua require('dap').step_into()<cr>", extend("Step Into") },
+              { "<leader>do", "<cmd>lua require('dap').step_over()<cr>", extend("Step Over") },
               -- { "<leader>dp", "<cmd>lua require('dap').pause.toggle()<cr>", extend("Pause") },
               -- { "<leader>dq", "<cmd>lua require('dap').close()<cr>", extend("Quit") },
               -- { "<leader>dr", "<cmd>lua require('dap').repl.toggle()<cr>", extend("Toggle Repl") },

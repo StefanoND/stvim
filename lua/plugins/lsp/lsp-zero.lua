@@ -13,11 +13,11 @@ return {
 
     -- When set to `0` then lsp-zero will not integrate with nvim-cmp
     -- automatically.
-    vim.g.lsp_zero_extend_cmp = 1
+    -- vim.g.lsp_zero_extend_cmp = 0
 
     -- When set to `0` then lsp-zero will not integrate with lspconfig
     -- automatically.
-    vim.g.lsp_zero_extend_lspconfig = 1
+    -- vim.g.lsp_zero_extend_lspconfig = 0
 
     -- When set to `0` then lsp-zero will only send Neovim's default capabilities
     -- settings to language servers. This means language servers that respect the

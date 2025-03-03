@@ -1,3 +1,11 @@
+local clfPath = function()
+  if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
+    return os.getenv("UserProfile") .. "/.clang-format" -- Must create this folder
+  else -- I don't own/use a Mac, will update when/if I do
+    return os.getenv("HOME") .. "/.clang-format" -- Must create this folder
+  end
+end
+
 return {
   {
     "nvimtools/none-ls.nvim",
@@ -6,6 +14,16 @@ return {
     },
     event = "VeryLazy",
     config = function()
+      local maxSize = 1.5 * 1024 * 1024 -- 1.5MB
+      local size = vim.fn.getfsize(vim.fn.expand("%"))
+      if size >= maxSize then
+        local clients = vim.lsp.get_clients()
+        for _, lclient in ipairs(clients) do
+          vim.lsp.stop_client(lclient)
+        end
+        return
+      end
+
       local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
       local null_ls = require("null-ls")
       local null_ls_utils = require("null-ls.utils")
@@ -37,18 +55,21 @@ return {
       -- local actions = null_ls.builtins.code_actions -- to setup linters
 
       local sources = {
-        -- formatting.biome,
         formatting.clang_format.with({
-          filetypes = { "nwscript", "nss" },
+          filetypes = { "nss", "nwscript" },
           disabled_filetypes = { "cs", "csharp" }, -- Don't want it messing with C#
+          extra_args = {
+            "-style=file:" .. vim.fn.expand(clfPath()),
+          },
         }),
 
-        formatting.biome,
+        -- formatting.biome,
         formatting.clang_format,
         formatting.cmake_format,
         formatting.csharpier,
         formatting.gdformat,
         -- formatting.prettier,
+        formatting.prettierd,
         -- formatting.rustfmt,
         formatting.shellharden,
         -- formatting.sqlfluff,
@@ -66,15 +87,35 @@ return {
         -- actions.refactoring,
       }
 
-      local rootdir = null_ls_utils.root_pattern(
-        ".null-ls-root",
-        "Makefile",
-        "CMakefile",
-        ".git",
-        ".sln",
-        "package.json",
-        "project.godot"
-      )
+      -- local rootdir = null_ls_utils.root_pattern(
+      --   ".null-ls-root",
+      --   "Makefile",
+      --   "CMakefile",
+      --   ".git",
+      --   ".sln",
+      --   "package.json",
+      --   "project.godot"
+      -- )
+
+      local rootdir = function(fname)
+        return null_ls_utils.root_pattern(
+          ".null-ls-root",
+          "Makefile",
+          "CMakefile",
+          ".git",
+          ".sln",
+          "package.json",
+          "project.godot",
+          "configure.ac",
+          "configure.in",
+          "config.h.in",
+          "meson.build",
+          "meson_options.txt",
+          "build.ninja"
+        )(fname) or null_ls_utils.root_pattern("compile_commands.json", "compile_flags.txt")(
+          fname
+        ) or require("lspconfig.util").find_git_ancestor(fname)
+      end
 
       null_ls.setup({
         sources = sources,

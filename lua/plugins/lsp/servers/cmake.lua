@@ -7,10 +7,7 @@ local lspconfig = require("lspconfig")
 
 local handlers = {
   ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(
-    vim.lsp.handlers.signature_help,
-    { border = "rounded" }
-  ),
+  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
 }
 
 local lsp_defaults = lspconfig.util.default_config
@@ -23,14 +20,16 @@ cmpcapabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
-lsp_defaults.capabilities = cmpcapabilities
+local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
+  cmpcapabilities,
+})
 
 return {
   lspconfig.cmake.setup({
+    capabilities = capabilities,
     handlers = handlers,
     on_attach = function(client, bufnr)
       print("Hello CMake")
     end,
-    capabilities = lsp_defaults,
   }),
 }

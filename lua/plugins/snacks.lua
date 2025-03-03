@@ -4,12 +4,10 @@ local extend = function(desc)
   vim.tbl_deep_extend("force", opts, { desc = desc })
 end
 
-local areThereOpennedBuffers = function()
-  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
-    if bufname == "" then
-      return true -- There's no opened buffers
-    end
+local shouldOpenExplorer = function()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname:match("^%a+://") or bufname == "" then
+    return true -- There's no opened buffers
   end
   return false -- There's a buffer open
 end
@@ -27,7 +25,7 @@ return {
     bigfile = {
       enabled = true,
       notify = true, -- show notification when big file detected
-      size = 2.5 * 1024 * 1024, -- 2.5MB
+      size = 1.5 * 1024 * 1024, -- 1.5MB
     },
     bufdelete = { enabled = false },
     dashboard = { enabled = false },
@@ -61,6 +59,24 @@ return {
       sources = {
         explorer = {
           auto_close = true,
+          hidden = true,
+          ignored = true,
+          follow = true,
+          show_empty = true,
+        },
+        files = {
+          cmd = "rg",
+          hidden = true,
+          ignored = true,
+          follow = true,
+          show_empty = true,
+          exclude = { "node_modules", ".git", "dist" },
+        },
+        grep = {
+          hidden = true,
+          ignored = true,
+          follow = true,
+          show_empty = true,
         },
       },
     },
@@ -80,13 +96,14 @@ return {
       },
     },
     terminal = { enabled = false },
-    toggle = { enabled = false },
+    toggle = { enabled = true },
     util = { enabled = true },
     win = { enabled = false },
     words = { enabled = true },
     zen = { enabled = false },
   },
   keys = {
+    -- Explorer
     {
       "<leader>op",
       function()
@@ -94,6 +111,81 @@ return {
       end,
       extend("Open File Explorer"),
     },
+
+    -- Find
+    {
+      "<leader>ff",
+      function()
+        Snacks.picker.files()
+      end,
+      desc = "Find Files",
+    },
+    {
+      "<leader>fs",
+      function()
+        Snacks.picker.grep()
+      end,
+      desc = "Grep",
+    },
+    {
+      "<leader>fd",
+      function()
+        Snacks.picker.diagnostics()
+      end,
+      desc = "Diagnostics",
+    },
+    {
+      "<leader>fD",
+      function()
+        Snacks.picker.diagnostics_buffer()
+      end,
+      desc = "Buffer Diagnostics",
+    },
+    {
+      "<leader>fb",
+      function()
+        Snacks.picker.buffers()
+      end,
+      desc = "Buffers",
+    },
+    {
+      "<leader>fh",
+      function()
+        Snacks.picker.help()
+      end,
+      desc = "Help Pages",
+    },
+    {
+      "<leader>fgf",
+      function()
+        Snacks.picker.git_files()
+      end,
+      desc = "Find Git Files",
+    },
+    {
+      "<leader>fm",
+      function()
+        Snacks.picker.marks()
+      end,
+      desc = "Marks",
+    },
+    {
+      "<leader>fps",
+      function()
+        Snacks.picker.lsp_symbols()
+      end,
+      desc = "LSP Symbols",
+    },
+    {
+      "<leader>fws",
+      function()
+        Snacks.picker.lsp_workspace_symbols()
+      end,
+      desc = "LSP Workspace Symbols",
+    },
+    { "<leader>fn", ":Nerdy<CR>", desc = "Open Nerdfonts Glyphs" },
+
+    -- Git
     {
       "<leader>gS",
       function()
@@ -122,6 +214,8 @@ return {
       end,
       extend("Opens lazygit with the log of the current file"),
     },
+
+    -- Scratch
     {
       "<leader>.",
       function()
@@ -136,6 +230,8 @@ return {
       end,
       extend("Select Scratch Buffer"),
     },
+
+    -- Profiler
     {
       "<leader>pps",
       function()
@@ -143,6 +239,8 @@ return {
       end,
       extend("Profiler scratch buffer"),
     },
+
+    -- Words
     {
       "<leader>wj",
       function()
@@ -150,6 +248,8 @@ return {
       end,
       extend("Jumps to next reference"),
     },
+
+    -- Picker
     {
       "<leader>sp",
       function()
@@ -179,14 +279,14 @@ return {
         local toggleBackground = { off = "light", on = "dark", name = "Dark Background" }
 
         Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
-        Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-        Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
-        Snacks.toggle.diagnostics():map("<leader>ud")
-        Snacks.toggle.line_number():map("<leader>ul")
+        -- Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+        -- Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+        -- Snacks.toggle.diagnostics():map("<leader>ud")
+        -- Snacks.toggle.line_number():map("<leader>ul")
         Snacks.toggle.option("conceallevel", toggleConceal):map("<leader>uc")
-        Snacks.toggle.treesitter():map("<leader>uT")
+        -- Snacks.toggle.treesitter():map("<leader>uT")
         Snacks.toggle.option("background", toggleBackground):map("<leader>ub")
-        Snacks.toggle.inlay_hints():map("<leader>uh")
+        Snacks.toggle.inlay_hints():map("<leader>th")
         -- Snacks.toggle.indent():map("<leader>ug")
         -- Snacks.toggle.dim():map("<leader>uD")
 
@@ -194,7 +294,7 @@ return {
         Snacks.toggle.profiler_highlights():map("<leader>pph") -- Toggle the profiler highlights
 
         -- Will open explorer if there's no opened buffers
-        if areThereOpennedBuffers() then
+        if shouldOpenExplorer() then
           Snacks.explorer.open()
         end
       end,
