@@ -20,8 +20,9 @@ return {
           vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>" -- backwards jumps
           vim.g.UltiSnipsListSnippets = "<c-l>" -- list available snippets for keyword
           -- set the path for your ultisnip snippets
-          local ultisnips_snippets = vim.fn.expand("$HOME/.vim/UltiSnips") -- location of your snippets
-          vim.g.UltiSnipsSnippetDirectories = { ultisnips_snippets, "UltiSnips" }
+          local ultisnipsSnippets = vim.fn.expand("$HOME/.vim/UltiSnips") -- location of your snippets
+          local nwSnippets = vim.fn.expand("$HOME/.local/share/nvim/lazy/vim-nwscript/UltiSnips")
+          vim.g.UltiSnipsSnippetDirectories = { ultisnipsSnippets, nwSnippets, "UltiSnips" }
         end,
       },
       { "quangnguyen30192/cmp-nvim-ultisnips" },

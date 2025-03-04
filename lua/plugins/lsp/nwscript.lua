@@ -41,7 +41,7 @@ return {
         " If you have your own custom options file for generating tags for NWScript files, set the path here
         " let g:nwscript#ctags#file = '/path/to/nwscript.ctags'
 
-        " Extra directoreis outside your project that will be tagged
+        " Extra directories outside your project that will be tagged
         " let g:nwscript#ctags#includes = ['~/.local/share/nwscript']
       ]])
     end,
