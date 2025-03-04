@@ -30,6 +30,18 @@ local nwIncludes = {
   -- tostring(vim.fn.getcwd()) .. "/src/nss",
 }
 
+-- "List of base include dirs for Neverwinter Nights Enhanced Edition."
+-- Must be array, too lazy to make it work with tables
+local nwneeBaseIncludes = {}
+
+-- "List of base include dirs for Neverwinter Nights Diamond."
+-- Must be array, too lazy to make it work with tables
+local nwnBaseIncludes = {}
+
+-- "List of base include dirs for Neverwinter Nights 2"
+-- Must be array, too lazy to make it work with tables
+local nwn2BaseIncludes = {}
+
 -- Ignore
 -- Must be array, too lazy to make it work with tables
 local nwIgnores = {
@@ -41,20 +53,33 @@ local nwIgnores = {
   -- "/path/to/ignore/dir1/ignore2.nss",
 }
 
--- Includes
--- "List of base include dirs for Neverwinter Nights Enhanced Edition."
--- Must be array, too lazy to make it work with tables
-local nwneeBaseIncludes = {}
+local nwscriptfuncs = function(client, bufnr)
+  local lopts = { buffer = bufnr, noremap = true, remap = false }
+  local kmn = function(key, func, opt)
+    vim.keymap.set("n", key, func, opt)
+  end
+  local ext = function(desc)
+    vim.tbl_deep_extend("force", lopts, { desc = desc })
+  end
+  local compile = ":terminal nasher compile "
+  local install = ":terminal nasher install "
+  local unpack = ":terminal nasher unpack "
 
--- Includes
--- "List of base include dirs for Neverwinter Nights Diamond."
--- Must be array, too lazy to make it work with tables
-local nwnBaseIncludes = {}
+  -- Will keep using nwnsc since nwn_script_comp doesn't compile includes
+  -- And doesn't support external pragma directives
+  kmn("<leader>nb", compile .. "-f '%:p'<CR>", ext("Compile current script"))
+  kmn("<leader>ncb", compile .. "--clean -f '%:p'<CR>", ext("Clear cache and compile current script"))
+  kmn("<leader>nB", "all<CR>", ext("Compile all scripts"))
+  kmn("<leader>ncB", compile .. "--clean all<CR>", ext("Clear cache and Compile all scripts"))
+  kmn("<leader>ni", install .. "-y main<CR>", ext("Pack project into module"))
+  kmn("<leader>nci", install .. "--clean -y main<CR>", ext("Clear cache and Pack project into module"))
+  kmn("<leader>nu", ":terminal nasher unpack -y main<CR>", ext("Unpack module to project folder"))
+  kmn("<leader>ncu", unpack .. "--clean -y main<CR>", ext("Unpack module to project folder"))
+  kmn("<leader>tg", ":NWScriptTagGen<CR>", ext("Generate ctags for current project"))
 
--- Includes
--- "List of base include dirs for Neverwinter Nights 2"
--- Must be array, too lazy to make it work with tables
-local nwn2BaseIncludes = {}
+  -- Check plugins/lsp/nwscript.lua for more information.
+  kmn("<leader>tG", ":NWScriptTagGenAll<CR>", ext("Generate ctags for project inc. external dirs."))
+end
 
 local lsp = require("lsp-zero")
 lsp.extend_lspconfig()
@@ -163,37 +188,6 @@ if not configs.nwscript_language_server then
   }
 end
 
-local nwscriptfuncs = function(client, bufnr)
-  local lopts = { buffer = bufnr, noremap = true, remap = false }
-  local kmn = function(key, func, opt)
-    vim.keymap.set("n", key, func, opt)
-  end
-  local ext = function(desc)
-    vim.tbl_deep_extend("force", lopts, { desc = desc })
-  end
-  -- Will keep using nwnsc since nwn_script_comp doesn't compile includes and doesn't support external pragma directives
-  kmn("<leader>nb", ":terminal nasher compile -f '%:p'<CR>", ext("Compile current script"))
-  kmn("<leader>ncb", ":terminal nasher compile --clean -f '%:p'<CR>", ext("Compile current script"))
-  kmn("<leader>nB", ":terminal nasher compile all<CR>", ext("Compile all scripts"))
-  kmn("<leader>ncB", ":terminal nasher compile --clean all<CR>", ext("Compile all scripts"))
-  kmn("<leader>ni", ":terminal nasher install -y main<CR>", ext("Pack project into module"))
-  kmn("<leader>nci", ":terminal nasher install --clean -y main<CR>", ext("Pack project into module"))
-  kmn("<leader>nu", ":terminal nasher unpack -y main<CR>", ext("Unpack module to project folder"))
-  kmn(
-    "<leader>ncu",
-    ":terminal nasher unpack --clean -y main<CR>",
-    ext("Unpack module to project folder")
-  )
-  kmn("<leader>tg", ":NWScriptTagGen<CR>", ext("Generate ctags for current project"))
-  kmn(
-    "<leader>tG",
-    ":NWScriptTagGenAll<CR>",
-    ext(
-      "Generate ctags for current project including external directories. Check plugins/lsp/init.lua for more information."
-    )
-  )
-end
-
 local augroup = vim.api.nvim_create_augroup("NWScript", {})
 local nwscriptrefresh = function(bufnr)
   vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -207,11 +201,11 @@ local nwscriptrefresh = function(bufnr)
 end
 
 local defaultCapabilities = util.default_config.capabilities
-local cmpcapabilities = require("cmp_nvim_lsp").default_capabilities()
+local cmpcapabilities = require("cmp_nvim_lsp").default_capabilities(protocol.make_client_capabilities())
 
 local capabilities = vim.tbl_deep_extend(
   "force",
-  protocol.make_client_capabilities(),
+  -- protocol.make_client_capabilities(),
   defaultCapabilities,
   cmpcapabilities,
   {
@@ -240,67 +234,7 @@ local capabilities = vim.tbl_deep_extend(
   }
 )
 
--- ccls
--- Used only for codelens support, disabling most things so it won't mess with our LSP
-local cclsOpts = {
-  lsp = {
-    -- server = {
-    lspconfig = {
-      filetypes = filetypes,
-      disabled_filetypes = { "c", "cpp", "objc", "objcpp", "opencl", "cs", "csharp" }, -- Don't want it messing with C# or C/C++
-      init_options = { cache = {
-        directory = vim.fs.normalize("~/.cache/ccls/"),
-      } },
-      name = "ccls",
-      cmd = { "ccls" },
-      offset_encoding = "utf-8",
-      root_dir = function(fname)
-        return util.root_pattern(
-          ".null-ls-root",
-          "Makefile",
-          "CMakefile",
-          ".git",
-          ".sln",
-          "package.json",
-          "project.godot",
-          "configure.ac",
-          "configure.in",
-          "config.h.in",
-          "meson.build",
-          "meson_options.txt",
-          "build.ninja",
-          "nasher.cfg",
-          "compile_commands.json",
-          "compile_flags.txt",
-          ".uproject"
-        )(fname) or util.find_git_ancestor(fname)
-      end,
-    },
-    filetypes = filetypes,
-    disabled_filetypes = { "c", "cpp", "objc", "objcpp", "opencl", "cs", "csharp" }, -- Don't want it messing with C# or C/C++
-    disable_capabilities = {
-      completionProvider = true,
-      documentFormattingProvider = true,
-      documentRangeFormattingProvider = true,
-      documentHighlightProvider = true,
-      documentSymbolProvider = true,
-      workspaceSymbolProvider = true,
-      renameProvider = true,
-      hoverProvider = true,
-      codeActionProvider = true,
-    },
-    disable_diagnostics = true,
-    disable_signature = true,
-    codelens = {
-      enable = true,
-      events = { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
-    },
-  },
-}
-
 return {
-  -- TODO Make ccls' codelens work
-  require("ccls").setup({ cclsOpts }), -- Used only for codelens support
   lspconfig.nwscript_language_server.setup({
     capabilities = capabilities,
     on_attach = function(client, bufnr)
