@@ -56,7 +56,6 @@ return {
 
       local sources = {
         formatting.clang_format.with({
-          filetypes = { "nss", "nwscript" },
           disabled_filetypes = { "cs", "csharp" }, -- Don't want it messing with C#
           extra_args = {
             "-style=file:" .. vim.fn.expand(clfPath()),

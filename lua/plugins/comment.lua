@@ -1,4 +1,4 @@
-return { -- Add comment keymaps support for nwscript
+return {
   "numToStr/Comment.nvim",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
@@ -9,9 +9,6 @@ return { -- Add comment keymaps support for nwscript
     local comment = require("Comment")
 
     local ts_context_commentstring = require("ts_context_commentstring.integrations.comment_nvim")
-
-    local ft = require("Comment.ft")
-    ft.set("nwscript", { "//%s", "/*%s*/" })
 
     -- enable comment
     comment.setup({

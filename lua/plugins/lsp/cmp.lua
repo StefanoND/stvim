@@ -9,27 +9,25 @@ return {
       { "onsails/lspkind.nvim" },
       { "L3MON4D3/LuaSnip" },
       { "saadparwaiz1/cmp_luasnip" },
-      {
-        "SirVer/ultisnips",
-        init = function()
-          -- require("core.utils").lazy_load("ultisnips")
-          -- require("core.utils").load_mappings "ultisnips"
-          vim.g.UltiSnipsEditSplit = "horizontal"
-          vim.g.UltiSnipsExpandTrigger = "<c-j>" -- expand snippets using this hotkey
-          vim.g.UltiSnipsJumpForwardTrigger = "<c-j>"
-          vim.g.UltiSnipsJumpBackwardTrigger = "<c-k>" -- backwards jumps
-          vim.g.UltiSnipsListSnippets = "<c-l>" -- list available snippets for keyword
-          -- set the path for your ultisnip snippets
-          local ultisnipsSnippets = vim.fn.expand("$HOME/.vim/UltiSnips") -- location of your snippets
-          local nwSnippets = vim.fn.expand("$HOME/.local/share/nvim/lazy/vim-nwscript/UltiSnips")
-          vim.g.UltiSnipsSnippetDirectories = { ultisnipsSnippets, nwSnippets, "UltiSnips" }
-        end,
-      },
-      { "quangnguyen30192/cmp-nvim-ultisnips" },
+      -- {
+      --   "SirVer/ultisnips",
+      --   init = function()
+      --     vim.g.UltiSnipsEditSplit = "horizontal"
+      --     vim.g.UltiSnipsExpandTrigger = "<C-j>" -- expand snippets using this hotkey
+      --     vim.g.UltiSnipsJumpForwardTrigger = "<C-f>" -- forward jumps
+      --     vim.g.UltiSnipsJumpBackwardTrigger = "<C-p>" -- backwards jumps
+      --
+      --     -- set the path for your ultisnip snippets
+      --     local ultisnipsSnippets = vim.fn.expand("$HOME/.vim/UltiSnips") -- location of your snippets
+      --     vim.g.UltiSnipsSnippetDirectories = { ultisnipsSnippets, "UltiSnips" }
+      --   end,
+      -- },
+      -- { "quangnguyen30192/cmp-nvim-ultisnips" },
       { "rafamadriz/friendly-snippets" },
       { "neovim/nvim-lspconfig" },
       { "hrsh7th/cmp-nvim-lua" },
-      { "petertriho/cmp-git", requires = "nvim-lua/plenary.nvim" },
+      { "petertriho/cmp-git", dependencies = "nvim-lua/plenary.nvim" },
+      { "hrsh7th/cmp-emoji" },
     },
     config = function()
       -- Here is where you configure the autocompletion settings.
@@ -43,7 +41,7 @@ return {
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
       local cmp_action = lsp.cmp_action()
-      local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+      -- local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
       local neogen = require("neogen")
 
       local t = function(str)
@@ -187,7 +185,7 @@ return {
           },
           format = lspkind.cmp_format({
             mode = "symbol_text",
-            maxwidth = 50,
+            maxwidth = 80,
             ellipsis_char = "...",
             symbol_map = {
               Codeium = " ",
@@ -222,10 +220,11 @@ return {
               codeium = "[cod]",
               buffer = "[buf]",
               nvim_lsp = "[LSP]",
+              lazydev = "[LazyDev]",
               nvim_lua = "[api]",
               path = "[path]",
-              luasnip = "[snip]",
-              ultisnips = "[usnips]",
+              luasnip = "[luasnip]",
+              -- ultisnips = "[ultisnips]",
               gh_issues = "[issues]",
               git = "[git]",
               cmp_git = "[cmp_git]",
@@ -269,9 +268,9 @@ return {
           -- REQUIRED - you must specify a snippet engine
           expand = function(args)
             -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-            -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
             -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-            vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+            -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
           end,
         },
 
@@ -290,8 +289,8 @@ return {
               neogen.jump_prev()
             elseif luasnip.locally_jumpable(-1) then
               luasnip.jump(-1)
-            else
-              cmp_ultisnips_mappings.expand_or_jump_backwards(fallback)
+              -- else
+              --   cmp_ultisnips_mappings.expand_or_jump_backwards(fallback)
             end
           end, {
             "i",
@@ -309,8 +308,8 @@ return {
               neogen.jump_next()
             elseif luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
-            else
-              cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+              -- else
+              --   cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
             end
           end, {
             "i",
@@ -347,10 +346,11 @@ return {
           { name = "git" }, -- snippets
           { name = "cmp_git" }, -- snippets
           { name = "luasnip" }, -- snippets
-          { name = "ultisnips" }, -- snippets
+          -- { name = "ultisnips" }, -- snippets
           { name = "nvim_lsp" },
           { name = "nvim_lua" },
           { name = "neorg" },
+          { name = "lazydev" },
           { name = "buffer", keyword_length = 2, max_item_count = 10 }, -- text within current buffer
           { name = "path" }, -- file system paths
         }),

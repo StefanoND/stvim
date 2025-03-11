@@ -208,7 +208,7 @@ return {
         dapui.close()
       end
 
-      local whichKey = require("which-key")
+      local wk = require("which-key")
 
       local opts = {
         buffer = nil,
@@ -221,7 +221,7 @@ return {
         vim.tbl_deep_extend("force", opts, { desc = desc })
       end
 
-      whichKey.add({
+      wk.add({
         {
           {
             mode = { "n" },

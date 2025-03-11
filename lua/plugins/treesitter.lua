@@ -46,18 +46,6 @@ return {
       -- local treesitter = require("nvim-treesitter.configs")
 
       local config = function(_)
-        -- Create NWScript grammar
-        local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-        parser_config.nwscript = {
-          install_info = {
-            url = "https://github.com/tinygiant98/tree-sitter-nwscript",
-            files = { "src/parser.c" },
-            generate_requires_npm = false,
-            requires_generate_from_grammar = false,
-          },
-          filestype = "nwscript",
-        }
-
         require("nvim-treesitter.configs").setup({
           -- A list of parser names, or "all" (the five listed parsers should always be installed)
           ensure_installed = {
@@ -86,7 +74,6 @@ return {
             "markdown",
             "markdown_inline",
             "norg",
-            "nwscript",
             "query",
             "regex",
             "rust",

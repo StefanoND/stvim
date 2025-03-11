@@ -2,6 +2,41 @@
 
 return {
   {
+    "StefanoND/nwscript-ee-lsp.nvim",
+    ft = "nwscript",
+    dependencies = {
+      "implicit-image/nwscript-ee-language-server", -- Required, LSP.
+      "L3MON4D3/LuaSnip", -- Optional, Snippet Engine for Neovim
+      -- "SirVer/ultisnips", -- Optional, Slution for snippets for Neovim
+      "danymat/neogen", -- Optional, Annotation generator
+      "folke/which-key.nvim", -- Optional, Displays keymap hints
+      "numToStr/Comment.nvim", -- Optional, comment plugin
+      "nvim-lua/plenary.nvim", -- Optional, Provides utility functions for plugins .nss extension
+      "nvim-tree/nvim-web-devicons", -- Optional, Adds icon for NWScript
+      "nvim-treesitter/nvim-treesitter", -- Optional, syntax highlighting
+      "nvimtools/none-ls.nvim", -- Optional, LSP diagnostic, code actions, etc. Injection
+      "ray-x/lsp_signature.nvim", -- Optional, needed for rounded borders
+      -- {
+      --   "squattingmonk/vim-nwscript", -- Optional, auto-indention/wrapping of comments, snippets and ctags generation
+      --   config = function()
+      --     -- Luascript doesn't work, let's use vim.cmd([[]]) to run Vimscript inside it
+      --     vim.cmd([[
+      --       let g:nwscript#modules#enabled = ['ctags', 'format']
+      --       let g:nwscript#modules#disabled = ['fold']
+      --       let g:nwscript#format#textwidth = 105
+      --       let g:nwscript#format#options = 'croqwa2lj'
+      --       let g:nwscript#format#whitespace = 1
+      --     ]])
+      --   end,
+      -- },
+    },
+    config = function()
+      require("nwscript").setup({
+        -- autoBuild = true,
+      })
+    end,
+  },
+  {
     "bfrg/vim-cpp-modern",
   },
   {
@@ -30,8 +65,10 @@ return {
   },
   {
     "OmniSharp/omnisharp-vim",
+    ft = { "cs", "csharp" },
     dependencies = {
-      "ctrlpvim/ctrlp.vim",
+      { "ctrlpvim/ctrlp.vim", ft = { "cs", "csharp" } },
+      { "Hoffs/omnisharp-extended-lsp.nvim", ft = { "cs", "csharp" } },
     },
   },
   {
@@ -41,11 +78,12 @@ return {
     dependencies = {
       {
         "rmagatti/goto-preview",
+        dependencies = { "rmagatti/logger.nvim" },
         event = "BufEnter",
         config = function()
           require("goto-preview").setup({
             width = 90, -- Width of the floating window
-            height = 15, -- Height of the floating window
+            height = 20, -- Height of the floating window
             border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
             default_mappings = true,
             debug = false, -- Print debug information
@@ -75,6 +113,7 @@ return {
           })
         end,
       },
+      { "Saghen/blink.cmp" },
       { "williamboman/mason-lspconfig.nvim" },
       { "antosha417/nvim-lsp-file-operations", config = true },
       {
@@ -89,8 +128,6 @@ return {
         },
       },
       { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
-      -- { "OmniSharp/omnisharp-vim" },
-      -- { "Hoffs/omnisharp-extended-lsp.nvim" },
       {
         "SmiteshP/nvim-navbuddy",
         dependencies = {
@@ -291,5 +328,4 @@ return {
       })
     end,
   },
-  -- { import = "plugins.lsp.servers" },
 }

@@ -20,9 +20,11 @@ cmpcapabilities.textDocument.foldingRange = {
   lineFoldingOnly = true,
 }
 
-local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
+local allCapabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
   cmpcapabilities,
 })
+
+local capabilities = require("blink.cmp").get_lsp_capabilities(allCapabilities)
 
 return {
   lspconfig.lua_ls.setup({

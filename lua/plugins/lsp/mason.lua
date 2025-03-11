@@ -126,9 +126,6 @@ return {
           -- -- YAML
           -- "yaml-language-server", -- LSP
           -- "yamllint", -- linter
-          -- -- NWScript
-          -- "nwscript-ee-language-server",
-          -- "nwscript",
           -- GLOBAL (Not really)
           "prettierd", -- formatter
         },

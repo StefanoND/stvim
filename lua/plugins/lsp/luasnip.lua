@@ -1,15 +1,30 @@
 return {
   "L3MON4D3/LuaSnip",
-  version = "2.*",
+  dependencies = {
+    {
+      "rafamadriz/friendly-snippets",
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load({
+          exclude = { "all" },
+        })
+      end,
+    },
+  },
+  keys = function()
+    return {}
+  end,
   build = function()
     if vim.fn.has("win64") ~= 1 and vim.fn.has("win32") ~= 1 and vim.fn.has("win16") ~= 1 then
       return "make install_jsregexp"
     end
   end,
-  config = function()
+  opts = {
+    enable_autosnippets = true,
+  },
+  config = function(_, opts)
     local luasnip = require("luasnip")
 
-    local opts = { noremap = true, silent = true }
+    -- local opts = { noremap = true, silent = true }
 
     local path = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets"
 
@@ -30,19 +45,20 @@ return {
     luasnip.filetype_extend("gdscript", { "gdscriptdoc" })
     -- luasnip.filetype_extend("unrealengine", { "unrealdoc" })
 
-    vim.keymap.set("i", "<C-s>e", function()
-      luasnip.expand()
-    end, opts)
-    vim.keymap.set({ "i", "s" }, "<C-s>,", function()
-      luasnip.jump(1)
-    end, opts)
-    vim.keymap.set({ "i", "s" }, "<C-s>.", function()
-      luasnip.jump(-1)
-    end, opts)
-    vim.keymap.set({ "i", "s" }, "<C-s>c", function()
-      if luasnip.choice_active() then
-        luasnip.change_choice(1)
-      end
-    end, opts)
+    -- vim.keymap.set("i", "<C-s>e", function()
+    --   luasnip.expand()
+    -- end, opts)
+    -- vim.keymap.set({ "i", "s" }, "<C-s>,", function()
+    --   luasnip.jump(1)
+    -- end, opts)
+    -- vim.keymap.set({ "i", "s" }, "<C-s>.", function()
+    --   luasnip.jump(-1)
+    -- end, opts)
+    -- vim.keymap.set({ "i", "s" }, "<C-s>c", function()
+    --   if luasnip.choice_active() then
+    --     luasnip.change_choice(1)
+    --   end
+    -- end, opts)
+    require("luasnip").setup(opts)
   end,
 }

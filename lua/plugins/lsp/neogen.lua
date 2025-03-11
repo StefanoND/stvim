@@ -8,9 +8,6 @@ return {
 
     neogen.setup({
       snippet_engine = "luasnip",
-      languages = {
-        nwscript = require("plugins.neogen.nwscript"),
-      },
     })
 
     vim.keymap.set("n", "<leader>ngf", function()
