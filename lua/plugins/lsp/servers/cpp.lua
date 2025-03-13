@@ -1,29 +1,5 @@
-local lsp = require("lsp-zero")
-lsp.extend_lspconfig()
-
-lsp.setup()
-
-local lspconfig = require("lspconfig")
-
-local lsp_defaults = lspconfig.util.default_config
-local cmpcapabilities =
-  require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-cmpcapabilities.textDocument.completion.completionItem.snippetSupport = true
-cmpcapabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true,
-}
-
-local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
-  cmpcapabilities,
-  offsetEncoding = { "utf-8", "utf-16", "utf-32" },
-})
-
-local handlers = {
-  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
-}
+local lspconfig = require("config.lsp.setup")
+local capabilities = require("config.lsp.capabilities").capabilities
 
 local clangd_ext_opts = require("clangd_extensions").opts
 
@@ -167,11 +143,10 @@ return {
       },
     },
   }),
-  lspconfig.clangd.setup({
+  lspconfig.setupServer("clangd", {
     capabilities = capabilities,
     -- require("clangd_extensions").setup(vim.tbl_deep_extend("force", clangd_ext_opts or {}, {
     opts = require("clangd_extensions").setup(clangd_ext_opts or {}),
-    handlers = handlers,
     cmd = {
       "clangd",
       -- "--offsetEncoding=utf-16",
@@ -210,6 +185,12 @@ return {
       },
     },
     on_attach = function(client, bufnr)
+      require("lsp_signature").on_attach({
+        bind = true,
+        handler_opts = {
+          border = "rounded",
+        },
+      }, bufnr)
       cppFuncs(client, bufnr)
 
       local path = vim.fn.getcwd()

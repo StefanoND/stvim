@@ -1,31 +1,7 @@
-local lsp = require("lsp-zero")
-lsp.extend_lspconfig()
-
-lsp.setup()
-
 local lspconfig = require("lspconfig")
+local lspSetup = require("config.lsp.setup")
+local capabilities = require("config.lsp.capabilities").capabilities
 local util = require("lspconfig.util")
-
-local handlers = {
-  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
-}
-
-local lsp_defaults = lspconfig.util.default_config
-local cmpcapabilities =
-  require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-cmpcapabilities.textDocument.completion.completionItem.snippetSupport = true
-cmpcapabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true,
-}
-
-local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
-  cmpcapabilities,
-})
-
--- on_attach {
 
 local pid = vim.fn.getpid()
 
@@ -35,7 +11,8 @@ local pid = vim.fn.getpid()
 local omnisharp_bin
 
 if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
-  lspconfig.powershell_es.setup({
+  -- lspconfig.powershell_es.setup({
+  lspSetup.setupServer("powershell_es", {
     bundle_path = "path/to/your/bundle_path",
     init_options = {
       enableProfileLoading = false,
@@ -57,7 +34,8 @@ vim.g.OmniSharp_server_stdio = 1
 lspconfig.omnisharp.enableImportCompletion = true
 
 return {
-  lspconfig.omnisharp.setup({
+  -- lspconfig.omnisharp.setup({
+  lspSetup.setupServer("omnisharp", {
     capabilities = capabilities,
     use_mono = true,
     default_config = {
@@ -111,12 +89,6 @@ return {
         IncludePrereleases = nil,
       },
     },
-    handlers = vim.tbl_deep_extend("force", handlers, {
-      ["textDocument/definition"] = vim.lsp.with(
-        require("omnisharp_extended").handler,
-        { border = "rounded" }
-      ),
-    }),
     flags = {
       debounce_text_changes = 150,
     },
@@ -124,6 +96,12 @@ return {
     -- cmd = vim.lsp.rpc.connect("127.0.0.1", 6007),
     -- cmd = { omnisharp_bin },
     on_attach = function(client, bufnr)
+      require("lsp_signature").on_attach({
+        bind = true,
+        handler_opts = {
+          border = "rounded",
+        },
+      }, bufnr)
       local opts = { buffer = bufnr, noremap = true, remap = false }
       -- vim.keymap.set(
       --   "n",

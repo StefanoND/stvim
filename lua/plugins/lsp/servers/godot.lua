@@ -1,35 +1,17 @@
-local lsp = require("lsp-zero")
-lsp.extend_lspconfig()
-
-lsp.setup()
-
-local lspconfig = require("lspconfig")
-
-local handlers = {
-  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-  ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
-}
-
-local lsp_defaults = lspconfig.util.default_config
-local cmpcapabilities =
-  require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-cmpcapabilities.textDocument.completion.completionItem.snippetSupport = true
-cmpcapabilities.textDocument.foldingRange = {
-  dynamicRegistration = false,
-  lineFoldingOnly = true,
-}
-
-local capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, {
-  cmpcapabilities,
-})
+local lspconfig = require("config.lsp.setup")
+local capabilities = require("config.lsp.capabilities").capabilities
 
 return {
-  lspconfig.gdscript.setup({
+  lspconfig.setupServer("gdscript", {
     capabilities = capabilities,
-    handlers = handlers,
     -- cmd = vim.lsp.rpc.connect("127.0.0.1", 6007),
     on_attach = function(client, bufnr)
+      require("lsp_signature").on_attach({
+        bind = true,
+        handler_opts = {
+          border = "rounded",
+        },
+      }, bufnr)
       vim.opt.tabstop = 4
       vim.opt.softtabstop = 4
       vim.opt.shiftwidth = 4

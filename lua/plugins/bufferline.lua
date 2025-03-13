@@ -85,6 +85,7 @@ return {
     vim.keymap.set("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<CR>", opts)
     vim.keymap.set("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", opts)
     vim.keymap.set("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", opts)
-    vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", opts)
+    vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", opts) -- Last Buffer
+    vim.keymap.set("n", "<leader>0", "<cmd>BufferLineGoToBuffer +1<CR>", opts) -- First Buffer
   end,
 }

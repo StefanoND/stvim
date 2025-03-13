@@ -10,25 +10,12 @@ return {
       -- "SirVer/ultisnips", -- Optional, Slution for snippets for Neovim
       "danymat/neogen", -- Optional, Annotation generator
       "folke/which-key.nvim", -- Optional, Displays keymap hints
+      "kevinhwang91/nvim-ufo", -- Optional, Fold support for NWScript
       "numToStr/Comment.nvim", -- Optional, comment plugin
       "nvim-lua/plenary.nvim", -- Optional, Provides utility functions for plugins .nss extension
       "nvim-tree/nvim-web-devicons", -- Optional, Adds icon for NWScript
       "nvim-treesitter/nvim-treesitter", -- Optional, syntax highlighting
       "nvimtools/none-ls.nvim", -- Optional, LSP diagnostic, code actions, etc. Injection
-      "ray-x/lsp_signature.nvim", -- Optional, needed for rounded borders
-      -- {
-      --   "squattingmonk/vim-nwscript", -- Optional, auto-indention/wrapping of comments, snippets and ctags generation
-      --   config = function()
-      --     -- Luascript doesn't work, let's use vim.cmd([[]]) to run Vimscript inside it
-      --     vim.cmd([[
-      --       let g:nwscript#modules#enabled = ['ctags', 'format']
-      --       let g:nwscript#modules#disabled = ['fold']
-      --       let g:nwscript#format#textwidth = 105
-      --       let g:nwscript#format#options = 'croqwa2lj'
-      --       let g:nwscript#format#whitespace = 1
-      --     ]])
-      --   end,
-      -- },
     },
     config = function()
       require("nwscript").setup({
@@ -56,7 +43,7 @@ return {
   },
   {
     "p00f/clangd_extensions.nvim",
-    dependencies = { "mortepau/codicons.nvim" },
+    -- dependencies = { "mortepau/codicons.nvim" },
     -- lazy = true,
     config = function() end, -- avoid duplicate setup call.
   },
@@ -103,30 +90,20 @@ return {
           })
         end,
       },
-      {
-        "hrsh7th/nvim-cmp",
-        opts = function(_, opts)
-          opts.sources = opts.sources or {}
-          table.insert(opts.sources, {
-            name = "lazydev",
-            group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-          })
-        end,
-      },
+      -- {
+      --   "hrsh7th/nvim-cmp",
+      --   opts = function(_, opts)
+      --     opts.sources = opts.sources or {}
+      --     table.insert(opts.sources, {
+      --       name = "lazydev",
+      --       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      --     })
+      --   end,
+      -- },
       { "Saghen/blink.cmp" },
       { "williamboman/mason-lspconfig.nvim" },
       { "antosha417/nvim-lsp-file-operations", config = true },
-      {
-        "folke/lazydev.nvim",
-        ft = "lua", -- only load on lua files
-        opts = {
-          library = {
-            -- See the configuration section for more details
-            -- Load luvit types when the `vim.uv` word is found
-            { path = "luvit-meta/library", words = { "vim%.uv" } },
-          },
-        },
-      },
+      { "folke/lazydev.nvim" },
       { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
       {
         "SmiteshP/nvim-navbuddy",
@@ -170,13 +147,6 @@ return {
         return
       end
 
-      -- Change the Diagnostic symbols in the sign column (gutter)
-      local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
-
       local lgroup = vim.api.nvim_create_augroup("UserLspConfig", {})
 
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -213,8 +183,6 @@ return {
           end
           kmn("<leader>bc", ":Navbuddy<CR>", ext("Open breadcrumbs"))
 
-          -- client.server_capabilities.documentSymbolProvider = true
-
           kmn("<leader>lsc", function()
             local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
             local clients = vim.lsp.get_clients()
@@ -223,7 +191,7 @@ return {
               local filetypes = lclient.config.filetypes
               if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and lclient.name ~= "null-ls" then
                 -- return client.name
-                if lclient and lclient.supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
+                if lclient and lclient:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
                   print("True")
                   return true
                 end
@@ -234,8 +202,8 @@ return {
           end, ext("Check if any attached LSP supports codelens"))
 
           -- Codelens
-          -- if client and client.supports_method(vim.lsp.protocol.Methods.codeLens) then
-          if client and client.supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
+          -- if client and client:supports_method(vim.lsp.protocol.Methods.codeLens) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
             local enableCodelens = function()
               vim.lsp.codelens.refresh()
               vim.api.nvim_create_autocmd("User", {
@@ -266,9 +234,9 @@ return {
 
           -- Toggle inlay hints in your code, if the language server you are using supports them
           -- This may be unwanted, since they displace some of your code
-          -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          -- if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
           -- main.on_supports_method("textDocument/inlayHint", function(client, buffer)
-          -- if client and client.supports_method(vim.lsp.protocol.Methods.inlayHint) then
+          -- if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
           --   if
           --     vim.api.nvim_buf_is_valid(bufnr)
           --     and vim.bo[bufnr].buftype == ""
@@ -286,14 +254,14 @@ return {
           kmn("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", lopts)
           kmn("gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", lopts)
           kmn("gw", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", lopts)
-          kmn("gw", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", lopts)
+          kmn("gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", lopts)
           kmn("<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", lopts)
           kmn("gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", lopts)
           kmn("gtd", "<cmd>lua vim.lsp.buf.type_definition()<CR>", lopts)
           kmn("gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", lopts)
           kmn("gP", "<cmd>lua require('goto-preview').close_all_win()<CR>", lopts)
-          kmn("K", "<cmd>lua vim.lsp.buf.hover()<CR>", lopts)
-          kmi("<C-s>h", "<cmd>lua vim.lsp.buf.signature_help()<CR>", lopts)
+          kmn("K", "<cmd>lua vim.lsp.buf.hover({ border = 'rounded' })<CR>", lopts)
+          kmi("<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", lopts)
           kmn("<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", lopts)
           kmn("<leader>cr", "<cmd>lua vim.lsp.buf.rename()<CR>", lopts)
 
@@ -313,18 +281,33 @@ return {
         end,
       })
 
+      -- border = "rounded",
       vim.diagnostic.config({
         update_in_insert = true,
         float = {
           focusable = false,
-          style = "minimal",
           border = "rounded",
-          -- source = "always",
+          style = "minimal",
           source = true,
           header = "",
           prefix = "",
         },
         virtual_text = true,
+        severity_sort = true,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "✘ ",
+            [vim.diagnostic.severity.WARN] = "▲ ",
+            [vim.diagnostic.severity.HINT] = "⚑ ",
+            [vim.diagnostic.severity.INFO] = "» ",
+          },
+          linehl = {
+            [vim.diagnostic.severity.ERROR] = "ErrorMsg",
+          },
+          numhl = {
+            [vim.diagnostic.severity.WARN] = "WarningMsg",
+          },
+        },
       })
     end,
   },

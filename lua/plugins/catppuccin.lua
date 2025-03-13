@@ -8,13 +8,14 @@ return { -- colorscheme
     catppuccin.setup({
       flavour = "mocha",
       integrations = {
+        blink_cmp = true,
         cmp = true,
         dap = true,
         dap_ui = true,
         fidget = true,
         gitgutter = false,
         gitsigns = true,
-        harpoon = true,
+        harpoon = false,
         lsp_trouble = true,
         mason = true,
         notify = true,
