@@ -9,9 +9,9 @@ return { -- colorscheme
       flavour = "mocha",
       integrations = {
         blink_cmp = true,
-        cmp = true,
-        dap = true,
-        dap_ui = true,
+        cmp = false,
+        dap = false,
+        dap_ui = false,
         fidget = true,
         gitgutter = false,
         gitsigns = true,
@@ -21,7 +21,8 @@ return { -- colorscheme
         notify = true,
         nvimtree = false,
         rainbow_delimiters = true,
-        telescope = true,
+        semantic_tokens = true,
+        telescope = false,
         treesitter = true,
         treesitter_context = true,
         ufo = true,
@@ -31,24 +32,6 @@ return { -- colorscheme
           enabled = true,
           indentscope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
         },
-        native_lsp = {
-          enabled = true,
-          virtual_text = {
-            errors = { "italic" },
-            hints = { "italic" },
-            warnings = { "italic" },
-            information = { "italic" },
-          },
-          underlines = {
-            errors = { "underline" },
-            hints = { "underline" },
-            warnings = { "underline" },
-            information = { "underline" },
-          },
-          inlay_hints = {
-            background = true,
-          },
-        },
         navic = {
           enabled = true,
           custom_bg = "#1e1e2e", -- "lualine" will set background to mantle (#181825)
@@ -56,6 +39,27 @@ return { -- colorscheme
         snacks = {
           enabled = true,
           indent_scope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
+        },
+
+        native_lsp = {
+          enabled = true,
+          virtual_text = {
+            errors = { "italic" },
+            hints = { "italic" },
+            warnings = { "italic" },
+            information = { "italic" },
+            ok = { "italic" },
+          },
+          underlines = {
+            errors = { "underline" },
+            hints = { "underline" },
+            warnings = { "underline" },
+            information = { "underline" },
+            ok = { "underline" },
+          },
+          inlay_hints = {
+            background = true,
+          },
         },
       },
     })

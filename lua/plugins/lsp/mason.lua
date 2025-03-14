@@ -65,33 +65,19 @@ return {
 
       local mason_null_ls = require("mason-null-ls")
 
-      mason_null_ls.setup({
-        -- ensure_installed = {
-        --   "shellharden", -- bash formatter and linter
-        --   "clang-format", -- C/C++ formatter
-        --   "cmakelang", -- CMAKE formatter and linter
-        --   "csharpier", -- C# formatter
-        --   "gdtoolkit", -- Godot formatter and linter
-        --   -- "biome", -- formatter and linter
-        --   "stylua", -- Lua formatter and linter
-        --   -- "sql-formatter", -- SQL formatter
-        --   -- "prettier", -- Prettier formatter
-        -- },
-        -- automatic_installation = true,
-        handlers = {},
-      })
+      mason_null_ls.setup()
 
       masontools.setup({
         ensure_installed = {
           -- BASH
           "bash-language-server", -- LSP
-          "bash-debug-adapter", -- DAP
+          -- "bash-debug-adapter", -- DAP
           "shellharden", -- formatter and linter
           -- C/C++
           -- 'cpptools', -- DAP
           "clangd", -- LSP and linter
           -- "ccls", -- Used for Codelens
-          "codelldb", -- DAP
+          -- "codelldb", -- DAP
           "clang-format", -- formatter
           -- "cpplint", -- linter - DEPRECATED, use clangd
           -- CSHARP
@@ -132,7 +118,7 @@ return {
         automatic_installation = true,
         auto_update = true,
         run_on_start = true,
-        start_delay = 2500, -- Millisseconds
+        start_delay = 1500, -- Millisseconds
       })
     end,
   },

@@ -2,6 +2,7 @@ local lspconfig = require("lspconfig")
 local lspSetup = require("config.lsp.setup")
 local capabilities = require("config.lsp.capabilities").capabilities
 local util = require("lspconfig.util")
+local vars = require("config.vars")
 
 local pid = vim.fn.getpid()
 
@@ -10,7 +11,7 @@ local pid = vim.fn.getpid()
 -- Will update when this gets fixed (and if I remember)
 local omnisharp_bin
 
-if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
+if vars.getOSLowerCase():match("windows") then
   -- lspconfig.powershell_es.setup({
   lspSetup.setupServer("powershell_es", {
     bundle_path = "path/to/your/bundle_path",

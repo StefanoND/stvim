@@ -1,5 +1,7 @@
+local vars = require("config.vars")
+
 local clfPath = function()
-  if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
+  if vars.getOSLowerCase():match("windows") then
     return os.getenv("UserProfile") .. "/.clang-format" -- Must create this folder
   else -- I don't own/use a Mac, will update when/if I do
     return os.getenv("HOME") .. "/.clang-format" -- Must create this folder
@@ -85,16 +87,6 @@ return {
         -- }),
         -- actions.refactoring,
       }
-
-      -- local rootdir = null_ls_utils.root_pattern(
-      --   ".null-ls-root",
-      --   "Makefile",
-      --   "CMakefile",
-      --   ".git",
-      --   ".sln",
-      --   "package.json",
-      --   "project.godot"
-      -- )
 
       local rootdir = function(fname)
         return null_ls_utils.root_pattern(

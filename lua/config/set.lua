@@ -1,3 +1,5 @@
+local vars = require("config.vars")
+
 -- Line numbers
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -36,7 +38,7 @@ vim.opt.linebreak = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 
-if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
+if vars.getOSLowerCase():match("windows") then
   vim.opt.undodir = os.getenv("UserProfile") .. "/.vim/undodir" -- Must create this folder
 else -- I don't own/use a Mac, will update when/if I do
   vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Must create this folder
@@ -55,10 +57,9 @@ vim.opt.cursorline = true -- Highlight current/cursor line
 -- Keep buffers in memory
 vim.opt.hidden = true
 
--- Use truecolor in the terminal, when it's supported
-if vim.fn.has("termguicolors") == 1 then
-  vim.opt.termguicolors = true
-end
+-- Use truecolor in the terminal
+vim.opt.termguicolors = true
+vim.cmd.colorscheme("catppuccin")
 
 vim.opt.background = "dark" -- Colorschemes that can be light or dark will be made dark
 vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift

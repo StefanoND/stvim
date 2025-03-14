@@ -1,3 +1,5 @@
+local vars = require("config.vars")
+
 return {
   "L3MON4D3/LuaSnip",
   dependencies = {
@@ -14,7 +16,7 @@ return {
     return {}
   end,
   build = function()
-    if vim.fn.has("win64") ~= 1 and vim.fn.has("win32") ~= 1 and vim.fn.has("win16") ~= 1 then
+    if vars.getOSLowerCase():match("windows") then
       return "make install_jsregexp"
     end
   end,

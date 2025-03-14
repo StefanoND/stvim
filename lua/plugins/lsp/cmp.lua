@@ -10,28 +10,53 @@ return {
       "mikavilpas/blink-ripgrep.nvim",
       {
         "saghen/blink.compat",
+        lazy = false,
         opts = { enable_events = true, impersonate_nvim_cmp = true },
+        config = function()
+          require("blink.compat").setup()
+        end,
       },
       {
         "Exafunction/codeium.nvim",
-        event = "BufEnter",
+        lazy = true,
         dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {
+          virtual_text = { enabled = true },
+          enable_chat = true,
+        },
         config = function()
-          require("codeium").setup({
-            virtual_text = { enabled = true },
-            enable_chat = true,
-          })
+          require("codeium").setup()
         end,
       },
     },
     version = "*",
     opts = {
       keymap = {
-        preset = "enter",
-        ["<C-j>"] = { "select_next", "fallback" },
-        ["<C-k>"] = { "select_prev", "fallback" },
+        preset = "none",
+        ["<Tab>"] = {
+          function(cmp)
+            if cmp.snippet_active() then
+              return cmp.accept()
+            else
+              return cmp.select_and_accept()
+            end
+          end,
+          "snippet_forward",
+          "fallback",
+        },
+        ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<C-e>"] = { "hide", "fallback" },
+
         ["<C-f>"] = { "snippet_forward", "fallback" },
         ["<C-p>"] = { "snippet_backward", "fallback" },
+
+        ["<Down>"] = { "select_next", "fallback" },
+        ["<Up>"] = { "select_prev", "fallback" },
+
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+
+        ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
       },
       appearance = {
         use_nvim_cmp_as_default = true,
@@ -87,7 +112,25 @@ return {
           },
           ghost_text = { enabled = true },
         },
-        keymap = { preset = "enter" },
+        keymap = {
+          preset = "none",
+          ["<Tab>"] = {
+            function(cmp)
+              if cmp.is_ghost_text_visible() and not cmp.is_menu_visible() then
+                return cmp.accept()
+              end
+            end,
+            "show_and_insert",
+            "select_next",
+          },
+          ["<S-Tab>"] = { "show_and_insert", "select_prev" },
+
+          ["<Down>"] = { "select_next" },
+          ["<Up>"] = { "select_prev" },
+
+          ["<C-y>"] = { "select_and_accept" },
+          ["<C-e>"] = { "cancel" },
+        },
       },
       -- Merge custom sources with the existing ones from LazyVim
       -- Requires the LazyVim blink.cmp extra
@@ -132,8 +175,8 @@ return {
         default = {
           "codeium",
           "snippets",
-          "lazydev",
           "lsp",
+          "lazydev",
           "buffer",
           "path",
           "omni",

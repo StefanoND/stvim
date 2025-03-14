@@ -12,6 +12,15 @@ local shouldOpenExplorer = function()
   return false -- There's a buffer open
 end
 
+local winNumbers = {
+  list = {
+    wo = {
+      number = true,
+      relativenumber = true,
+    },
+  },
+}
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -63,6 +72,8 @@ return {
           ignored = true,
           follow = true,
           show_empty = true,
+          -- exclude = { "node_modules", ".git", "dist" },
+          win = winNumbers,
         },
         files = {
           cmd = "rg",
@@ -70,13 +81,18 @@ return {
           ignored = true,
           follow = true,
           show_empty = true,
-          exclude = { "node_modules", ".git", "dist" },
+          -- exclude = { "node_modules", ".git", "dist" },
+          exclude = { "Utilities/omnisharp*", ".git", "dist", "lazy-lock.json" },
+          win = winNumbers,
         },
         grep = {
           hidden = true,
           ignored = true,
           follow = true,
           show_empty = true,
+          -- exclude = { "node_modules", ".git", "dist" },
+          exclude = { "Utilities/omnisharp*", ".git", "dist", "lazy-lock.json" },
+          win = winNumbers,
         },
       },
     },
@@ -111,7 +127,6 @@ return {
       end,
       extend("Open File Explorer"),
     },
-
     -- Find
     {
       "<leader>ff",
@@ -265,24 +280,15 @@ return {
         -- Disable animations globally
         vim.g.snacks_animate = false
 
-        -- -- Setup some globals for debugging (lazy-loaded)
-        -- _G.dd = function(...)
-        --   Snacks.debug.inspect(...)
-        -- end
-        -- _G.bt = function()
-        --   Snacks.debug.backtrace()
-        -- end
-        -- vim.print = _G.dd -- Override print to use snacks for `:=` command
-
         -- Create some toggle mappings
         local toggleConceal = { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }
         local toggleBackground = { off = "light", on = "dark", name = "Dark Background" }
 
+        Snacks.toggle.line_number():map("<leader>ul")
+
         Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
         -- Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
-        -- Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
         -- Snacks.toggle.diagnostics():map("<leader>ud")
-        -- Snacks.toggle.line_number():map("<leader>ul")
         Snacks.toggle.option("conceallevel", toggleConceal):map("<leader>uc")
         -- Snacks.toggle.treesitter():map("<leader>uT")
         Snacks.toggle.option("background", toggleBackground):map("<leader>ub")

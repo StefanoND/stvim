@@ -1,5 +1,6 @@
 local lspconfig = require("config.lsp.setup")
 local capabilities = require("config.lsp.capabilities").capabilities
+local vars = require("config.vars")
 
 return {
   lspconfig.setupServer("nwscript_ls", {
@@ -23,7 +24,7 @@ return {
         },
         compiler = {
           enabled = true,
-          os = vim.uv.os_uname().sysname,
+          os = vars.getOS(),
           verbose = true,
           reportWarnings = true,
           nwnHome = os.getenv("NWN_HOME"),
