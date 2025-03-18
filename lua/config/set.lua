@@ -1,3 +1,5 @@
+local vars = require("config.vars")
+
 -- Line numbers
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -5,19 +7,26 @@ vim.opt.relativenumber = true
 
 vim.opt.encoding = "utf-8"
 
+-- It's free real estate
+vim.opt.cmdheight = 0
+-- vim.cmd([[
+--   autocmd VimEnter * silent !tmux set status off
+--   autocmd VimLeave * silent !tmux set status on
+-- ]])
+vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
+
 vim.g.editorconfig = true
 
--- " Disable function highlighting (affects both C and C++ files)
+-- Enable function highlighting (affects both C and C++ files)
 vim.g.cpp_function_highlight = 1
 
--- " Enable highlighting of C++11 attributes
+-- Enable highlighting of C++11 attributes
 vim.g.cpp_attributes_highlight = 1
 
--- " Highlight struct/class member variables (affects both C and C++ files)
+-- Highlight struct/class member variables (affects both C and C++ files)
 vim.g.cpp_member_highlight = 1
 
--- " Put all standard C and C++ keywords under Vim's highlight group 'Statement'
--- " (affects both C and C++ files)
+-- Put all standard C and C++ keywords under Vim's highlight group 'Statement' (affects both C/C++ files)
 vim.g.cpp_simple_highlight = 1
 
 -- Tab and indentation
@@ -37,7 +46,7 @@ vim.opt.linebreak = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 
-if vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 or vim.fn.has("win16") == 1 then
+if vars.getOSLowerCase():match("windows") then
   vim.opt.undodir = os.getenv("UserProfile") .. "/.vim/undodir" -- Must create this folder
 else -- I don't own/use a Mac, will update when/if I do
   vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Must create this folder
@@ -53,14 +62,12 @@ vim.opt.smartcase = true -- If mixed case in search, assumes case-sensitive
 
 vim.opt.cursorline = true -- Highlight current/cursor line
 
--- Don't keep buffers in memory
--- Must be true if using "Bufferline" plugin
+-- Keep buffers in memory
 vim.opt.hidden = true
 
--- Use truecolor in the terminal, when it's supported
-if vim.fn.has("termguicolors") == 1 then
-  vim.opt.termguicolors = true
-end
+-- Use truecolor in the terminal
+vim.opt.termguicolors = true
+vim.cmd.colorscheme("catppuccin")
 
 vim.opt.background = "dark" -- Colorschemes that can be light or dark will be made dark
 vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
@@ -77,13 +84,13 @@ vim.opt.mousemoveevent = true
 vim.opt.scrolloff = 8
 vim.opt.isfname:append("@-@")
 
-vim.opt.updatetime = 50
+vim.opt.updatetime = 60
 
 -- Better completion experience
 vim.opt.completeopt = "menu,menuone,preview,noselect"
 
--- Show gutter after column 100
-vim.opt.textwidth = 100
+-- Show gutter after column 105
+vim.opt.textwidth = 105
 vim.opt.colorcolumn = "+1"
 
 -- Spelling
@@ -100,11 +107,19 @@ vim.opt.list = true
 vim.opt.listchars:append("lead:᛫")
 
 -- Folds
-vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 vim.o.foldcolumn = "1" -- '0' is not bad
 vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
+-- vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+vim.opt.fillchars = {
+  foldopen = "",
+  foldclose = "",
+  fold = " ",
+  foldsep = " ",
+  diff = "/",
+  eob = " ",
+}
 
 vim.cmd("let g:netrw_liststlye = 3")
 
@@ -112,3 +127,5 @@ local pipepath = vim.fn.stdpath("cache") .. "/server.pipe"
 if not vim.loop.fs_stat(pipepath) then
   vim.fn.serverstart(pipepath)
 end
+
+vim.g.python3_host_prog = "/usr/bin/python3"

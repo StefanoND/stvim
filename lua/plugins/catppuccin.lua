@@ -8,27 +8,39 @@ return { -- colorscheme
     catppuccin.setup({
       flavour = "mocha",
       integrations = {
-        cmp = true,
+        blink_cmp = true,
+        cmp = false,
+        dap = false,
+        dap_ui = false,
         fidget = true,
+        gitgutter = false,
         gitsigns = true,
-        harpoon = true,
+        harpoon = false,
+        lsp_trouble = true,
         mason = true,
-        dap = true,
-        dap_ui = true,
-        nvimtree = true,
+        notify = true,
+        nvimtree = false,
+        rainbow_delimiters = true,
+        semantic_tokens = true,
+        telescope = false,
         treesitter = true,
         treesitter_context = true,
         ufo = true,
-        rainbow_delimiters = true,
-        telescope = true,
-        lsp_trouble = true,
-        gitgutter = false,
         which_key = true,
-        notify = true,
+
         mini = {
           enabled = true,
-          indentscope_color = "text",
+          indentscope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
         },
+        navic = {
+          enabled = true,
+          custom_bg = "#1e1e2e", -- "lualine" will set background to mantle (#181825)
+        },
+        snacks = {
+          enabled = true,
+          indent_scope_color = "mauve", -- catppuccin color (eg. `lavender`) Default: text
+        },
+
         native_lsp = {
           enabled = true,
           virtual_text = {
@@ -36,12 +48,14 @@ return { -- colorscheme
             hints = { "italic" },
             warnings = { "italic" },
             information = { "italic" },
+            ok = { "italic" },
           },
           underlines = {
             errors = { "underline" },
             hints = { "underline" },
             warnings = { "underline" },
             information = { "underline" },
+            ok = { "underline" },
           },
           inlay_hints = {
             background = true,

@@ -2,8 +2,17 @@ return {
   {
     "williamboman/mason.nvim",
     dependencies = {
-      "williamboman/mason-lspconfig.nvim",
+      {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = {
+          "neovim/nvim-lspconfig",
+        },
+      },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
+      {
+        "jay-babu/mason-null-ls.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+      },
     },
     lazy = false,
     cmd = {
@@ -53,29 +62,47 @@ return {
 
       mason_lspconfig.setup()
 
+      local mason_null_ls = require("mason-null-ls")
+
+      mason_null_ls.setup()
+
       masontools.setup({
         ensure_installed = {
           -- BASH
           "bash-language-server", -- LSP
-          "bash-debug-adapter", -- DAP
+          -- "bash-debug-adapter", -- DAP
           "shellharden", -- formatter and linter
+          -- C/C++
+          -- 'cpptools', -- DAP
+          "clangd", -- LSP and linter
+          -- "ccls", -- Used for Codelens
+          -- "codelldb", -- DAP
+          "clang-format", -- formatter
+          -- "cpplint", -- linter - DEPRECATED, use clangd
+          -- CMAKE
+          "cmake-language-server", -- LSP
+          "cmakelang", -- formatter and linter
+          -- -- JSON
+          "biome", -- formatter and linter
+          "jsonls", -- LSP
           -- LUA
           "lua-language-server", -- LSP
           "stylua", -- formatter and linter
+          -- -- SQL
+          -- "sqlls", -- LSP
+          -- "sql-formatter", -- formatter
+          -- "sqlfluff", -- linter
+          -- -- YAML
+          -- "yaml-language-server", -- LSP
+          -- "yamllint", -- linter
+          -- GLOBAL (Not really)
+          "prettierd", -- formatter
         },
         automatic_installation = true,
         auto_update = true,
         run_on_start = true,
-        start_delay = 2500, -- Millisseconds
+        start_delay = 1500, -- Millisseconds
       })
     end,
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "Hoffs/omnisharp-extended-lsp.nvim",
-      "neovim/nvim-lspconfig",
-    },
   },
 }

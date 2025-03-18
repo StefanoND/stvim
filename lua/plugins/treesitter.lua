@@ -1,33 +1,32 @@
 return {
   {
-    "Badhi/nvim-treesitter-cpp-tools",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    opts = function()
-      local options = {
-        preview = {
-          quit = "q", -- optional keymapping for quit preview
-          accept = "<tab>", -- optional keymapping for accept preview
-        },
-        header_extension = "h", -- optional
-        source_extension = "cpp", -- optional
-        custom_define_class_function_commands = { -- optional
-          TSCppImplWrite = {
-            output_handle = require("nt-cpp-tools.output_handlers").get_add_to_cpp(),
-          },
-          --[[
-                <your impl function custom command name> = {
-                    output_handle = function (str, context)
-                        -- string contains the class implementation
-                        -- do whatever you want to do with it
-                    end
-                }
-                ]]
-        },
-      }
-      return options
+    "nvim-treesitter/nvim-treesitter-context",
+    config = function()
+      require("treesitter-context").setup({
+        enable = true,
+      })
     end,
-    -- End configuration
-    config = true,
+  },
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup({
+        opts = {
+          -- Defaults
+          enable_close = true, -- Auto close tags
+          enable_rename = true, -- Auto rename pairs of tags
+          enable_close_on_slash = true, -- Auto close on trailing </
+        },
+        -- Also override individual filetype configs, these take priority.
+        -- Empty by default, useful if one of the "opts" global settings
+        -- doesn't work well in a specific filetype
+        -- per_filetype = {
+        --   ["html"] = {
+        --     enable_close = false,
+        --   },
+        -- },
+      })
+    end,
   },
   { -- parser
     "nvim-treesitter/nvim-treesitter",
@@ -51,17 +50,24 @@ return {
           ensure_installed = {
             -- "maintained",
             "bash",
+            "cmake",
             "comment",
+            "css",
             "git_config",
             "git_rebase",
             "gitattributes",
             "gitcommit",
             "gitignore",
+            "html",
+            "json",
             "lua",
-            "norg",
-            "org",
+            "make",
+            "markdown",
+            "markdown_inline",
+            "regex",
             "vim",
             "vimdoc",
+            "yaml",
           },
 
           -- Install parsers synchronously (only applied to `ensure_installed`)
@@ -70,11 +76,6 @@ return {
           -- Automatically install missing parsers when entering buffer
           -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
           auto_install = true,
-
-          -- autotagging from nvim-ts-autotag plugin
-          -- autotag = {
-          --   enable = true,
-          -- },
 
           indent = {
             enable = true,
@@ -99,6 +100,11 @@ return {
               node_decremental = "<bs>",
             },
           },
+          textobjects = {
+            select = {
+              enable = false,
+            },
+          },
         })
       end
 
@@ -116,35 +122,6 @@ return {
         provider_selector = function(bufnr, filetype, buftype)
           return { "treesitter", "indent" }
         end,
-      })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    config = function()
-      require("treesitter-context").setup({
-        enable = true,
-      })
-    end,
-  },
-  {
-    "windwp/nvim-ts-autotag",
-    config = function()
-      require("nvim-ts-autotag").setup({
-        opts = {
-          -- Defaults
-          enable_close = true, -- Auto close tags
-          enable_rename = true, -- Auto rename pairs of tags
-          enable_close_on_slash = false, -- Auto close on trailing </
-        },
-        -- Also override individual filetype configs, these take priority.
-        -- Empty by default, useful if one of the "opts" global settings
-        -- doesn't work well in a specific filetype
-        per_filetype = {
-          ["html"] = {
-            enable_close = false,
-          },
-        },
       })
     end,
   },
