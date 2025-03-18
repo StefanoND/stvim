@@ -59,6 +59,7 @@ return {
             "gitcommit",
             "gitignore",
             "html",
+            "ini",
             "json",
             "lua",
             "make",
