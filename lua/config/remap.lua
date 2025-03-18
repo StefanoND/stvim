@@ -53,7 +53,15 @@ keymap("n", "<M-Right>", "<cmd>TmuxNavigateRight<CR>", extend("Move to right win
 keymap("n", "j", "gj", extend("Move down wrapped line"))
 keymap("n", "k", "gk", extend("Move up wrapped line"))
 
+keymap("n", "<leader>tts", function()
+  vim.cmd([[silent !tmux set status]])
+end, extend("Toggle tmux statusline on/off"))
+
 -- Window management
+keymap("n", "<C-M-i>", "<C-w>+", extend("Increase Split relative to the current active split"))
+keymap("n", "<C-M-d>", "<C-w>-", extend("Decrease Split relative to the current active split"))
+keymap("n", "<M-m>", "<C-w><", extend("Increase Split relative to the current active split"))
+keymap("n", "<M-p>", "<C-w>>", extend("Decrease Split relative to the current active split"))
 keymap("n", "<leader>sv", "<C-w>v<C-w>><C-w>><C-w>><C-w>>", extend("Split window vertically"))
 keymap("n", "<leader>sh", "<C-w>s", extend("Split window horizontally"))
 keymap("n", "<leader>se", "<C-w>=", extend("Make splits equal size"))

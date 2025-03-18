@@ -1,6 +1,7 @@
 return {
   {
     "cdelledonne/vim-cmake",
+    ft = { "c", "cpp", "cmake" },
     config = function()
       local opts = { noremap = true, silent = false }
 
@@ -14,14 +15,17 @@ return {
   },
   {
     "Civitasv/cmake-tools.nvim",
-    dependency = "nvim-lua/plenary.nvim",
-    ft = { "cpp", "cmake" },
+    dependency = {
+      { "nvim-lua/plenary.nvim", ft = { "c", "cpp", "cmake" } },
+    },
+    ft = { "c", "cpp", "cmake" },
     opts = {
       cmake_build_directory = "build",
     },
   },
   {
     "nvim-lualine/lualine.nvim",
+    ft = { "c", "cpp", "cmake" },
     event = "VeryLazy",
     opts = {
       sections = {

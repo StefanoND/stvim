@@ -35,13 +35,12 @@ return {
         preset = "none",
         ["<Tab>"] = {
           function(cmp)
-            if cmp.snippet_active() then
+            if cmp.is_ghost_text_visible() and not cmp.is_menu_visible() or cmp.snippet_active() then
               return cmp.accept()
             else
               return cmp.select_and_accept()
             end
           end,
-          "snippet_forward",
           "fallback",
         },
         ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -91,7 +90,7 @@ return {
           Folder = "󰉋 ",
           Event = "󱐋 ",
           Operator = "󰆕 ",
-          TypeParameter = "󰬛 ",
+          TypeParameter = " ",
 
           codeium = " ",
         },
@@ -125,8 +124,8 @@ return {
           },
           ["<S-Tab>"] = { "show_and_insert", "select_prev" },
 
-          ["<Down>"] = { "select_next" },
-          ["<Up>"] = { "select_prev" },
+          -- ["<Down>"] = { "select_next" },
+          -- ["<Up>"] = { "select_prev" },
 
           ["<C-y>"] = { "select_and_accept" },
           ["<C-e>"] = { "cancel" },

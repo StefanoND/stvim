@@ -1,15 +1,15 @@
-local function merge_colors(foreground, background)
-  local new_name = foreground .. background
-
-  local hl_fg = vim.api.nvim_get_hl(0, { name = foreground })
-  local hl_bg = vim.api.nvim_get_hl(0, { name = background })
-
-  local fg = string.format("#%06x", hl_fg.fg and hl_fg.fg or 0)
-  local bg = string.format("#%06x", hl_bg.bg and hl_bg.bg or 0)
-
-  vim.api.nvim_set_hl(0, new_name, { fg = fg, bg = bg })
-  return new_name
-end
+-- local function merge_colors(foreground, background)
+--   local new_name = foreground .. background
+--
+--   local hl_fg = vim.api.nvim_get_hl(0, { name = foreground })
+--   local hl_bg = vim.api.nvim_get_hl(0, { name = background })
+--
+--   local fg = string.format("#%06x", hl_fg.fg and hl_fg.fg or 0)
+--   local bg = string.format("#%06x", hl_bg.bg and hl_bg.bg or 0)
+--
+--   vim.api.nvim_set_hl(0, new_name, { fg = fg, bg = bg })
+--   return new_name
+-- end
 
 -- local function get_dap_repl_winbar(active)
 --   local get_mode = require("lualine.highlight").get_mode_suffix
@@ -85,7 +85,7 @@ local conditions = {
 
 return {
   "nvim-lualine/lualine.nvim",
-  -- enabled = false,
+  lazy = true,
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -217,8 +217,12 @@ return {
             "filetype",
           },
         },
-        lualine_y = { "progress" },
-        lualine_z = { "location" },
+        lualine_y = { "progress",
+          function()
+            return ""
+          end,
+          "location" },
+        lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
       },
       inactive_sections = {
         lualine_a = {
@@ -301,6 +305,7 @@ return {
             cond = conditions.checkLsp,
           },
         },
+        lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
       },
       tabline = {},
       extensions = {},
@@ -309,6 +314,7 @@ return {
           "navic",
         },
         -- lualine_b = { get_dap_repl_winbar(true) },
+        lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
         lualine_z = {
           function()
             return "   "
@@ -320,6 +326,7 @@ return {
           "navic",
         },
         -- lualine_b = { get_dap_repl_winbar(false) },
+        lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
         lualine_z = {
           function()
             return "   "

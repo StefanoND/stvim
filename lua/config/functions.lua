@@ -49,4 +49,17 @@ M.repeatable_keymap_set = function(mode, key, name, func, opts)
   vim.keymap.set(mode, key, M.make_repeatable_keymap(mode, "<Plug>(" .. name .. ")", func), opts)
 end
 
+M.format = function(bufnr, async, timeout)
+  timeout = timeout or nil
+  async = async or false
+  vim.lsp.buf.format({
+    async = async,
+    timeout_ms = timeout,
+    bufnr = bufnr,
+    filter = function(client)
+      return client.name == "null-ls"
+    end,
+  })
+end
+
 return M

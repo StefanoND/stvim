@@ -16,7 +16,21 @@ M.workspace = {
 }
 
 M.textDocument = {
-  completion = { completionItem = { snippetSupport = true } },
+  didChangeConfiguration = { dynamicRegistration = true },
+  completion = {
+    completionItem = {
+      snippetSupport = true,
+      preselectSupport = true,
+      insertReplaceSupport = true,
+      labelDetailsSupport = true,
+      deprecatedSupport = true,
+      commitCharactersSupport = true,
+      tagSupport = { valueSet = { 1 } },
+      resolveSupport = {
+        properties = { "documentation", "detail", "additionalTextEdits" },
+      },
+    },
+  },
   foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,

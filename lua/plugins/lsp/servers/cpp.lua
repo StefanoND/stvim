@@ -95,9 +95,15 @@ return {
       lspconfig = {
         filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
         disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
-        init_options = { cache = {
-          directory = vim.fs.normalize("~/.cache/ccls/"),
-        } },
+        flags = { allow_incremental_sync = true },
+        init_options = {
+          compilationDatabaseDirectory = "build",
+          cache = {
+            directory = vim.fs.normalize("~/.cache/ccls/"),
+          },
+          index = { threads = 2 },
+          clang = { excludeArgs = { "-frounding-math" } },
+        },
         name = "ccls",
         cmd = { "ccls" },
         offset_encoding = "utf-32",
@@ -123,7 +129,7 @@ return {
         end,
       },
       filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
-      disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
+      disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
       disable_capabilities = {
         completionProvider = true,
         documentFormattingProvider = true,
@@ -152,12 +158,17 @@ return {
       -- "--offsetEncoding=utf-16",
       "--background-index",
       "--clang-tidy",
+      "--suggest-missing-includes",
       "--header-insertion=iwyu",
       "--completion-style=detailed",
       "--function-arg-placeholders",
       "--fallback-style=microsoft",
     },
+    flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
     default_config = {
+      flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
+      filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+      disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
       root_dir = function(fname)
         return require("lspconfig.util").root_pattern(
           ".null-ls-root",
@@ -185,12 +196,6 @@ return {
       },
     },
     on_attach = function(client, bufnr)
-      require("lsp_signature").on_attach({
-        bind = true,
-        handler_opts = {
-          border = "rounded",
-        },
-      }, bufnr)
       cppFuncs(client, bufnr)
 
       local path = vim.fn.getcwd()
@@ -198,7 +203,8 @@ return {
         unrealFuncs(client, bufnr)
       end
 
-      client.server_capabilities.signatureHelpProvider = false
+      client.resolved_capabilities.document_formatting = true
+
       vim.opt.tabstop = 4
       vim.opt.softtabstop = 4
       vim.opt.shiftwidth = 4

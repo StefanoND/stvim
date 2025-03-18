@@ -1,4 +1,5 @@
 local vars = require("config.vars")
+local funcs = require("config.functions")
 
 local clfPath = function()
   if vars.getOSLowerCase():match("windows") then
@@ -30,15 +31,6 @@ return {
       local null_ls = require("null-ls")
       local null_ls_utils = require("null-ls.utils")
 
-      local format = function(bufnr)
-        vim.lsp.buf.format({
-          bufnr = bufnr,
-          filter = function(client)
-            return client.name == "null-ls"
-          end,
-        })
-      end
-
       local on_attach = function(client, bufnr)
         if client.supports_method("textDocument/formatting") then
           vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -46,7 +38,7 @@ return {
             group = augroup,
             buffer = bufnr,
             callback = function()
-              format(bufnr)
+              funcs.format(bufnr, false, 5000)
             end,
           })
         end

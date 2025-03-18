@@ -1,3 +1,6 @@
+vim.g.do_filetype_lua = 1 -- Enable
+-- vim.api.nvim_set_var("do_filetype_lua", 1)
+
 -- recommended settings from nvim-tree documetation
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -50,6 +53,18 @@ vim.g.netrw_winsize = 25
 
 require("config.set")
 require("config.remap")
+
+-- Set options for FireNvim
+vim.api.nvim_create_autocmd("UIEnter", {
+  command = [[
+    if exists('g:started_by_firenvim')
+      set guifont=JetBrainsMono\ Nerd\ Font\ Mono\ Medium:h11
+      set laststatus = 0
+      set wrap
+      set linebreak
+    endif
+  ]],
+})
 
 -- Load ftplugin files
 local ftmodule = "ftplugin.%s"

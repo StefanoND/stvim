@@ -7,9 +7,19 @@ end
 local shouldOpenExplorer = function()
   local bufname = vim.api.nvim_buf_get_name(0)
   if bufname:match("^%a+://") or bufname == "" then
-    return true -- There's no opened buffers
+    return true -- There's no opened buffers, open explorer
   end
-  return false -- There's a buffer open
+  return false -- There's a buffer open, don't open explorer
+end
+
+local openExplorer = function()
+  vim.cmd([[lua require("snacks").explorer.open()]])
+end
+
+local checkOpenExplorer = function()
+  if shouldOpenExplorer() then
+    openExplorer()
+  end
 end
 
 local winNumbers = {
@@ -45,10 +55,10 @@ return {
       replace_netrw = true, -- Replace netrw with the snacks explorer
     },
     git = {
-      enabled = true,
+      enabled = false,
     },
     gitbrowse = {
-      enabled = true,
+      enabled = false,
       notify = true,
     },
     image = { enabled = true },
@@ -82,7 +92,14 @@ return {
           follow = true,
           show_empty = true,
           -- exclude = { "node_modules", ".git", "dist" },
-          exclude = { "Utilities/omnisharp*", ".git", "dist", "lazy-lock.json" },
+          exclude = {
+            "Utilities/omnisharp*",
+            ".git",
+            "dist",
+            "lazy-lock.json",
+            ".nasher/",
+            "nwscript.nss",
+          },
           win = winNumbers,
         },
         grep = {
@@ -91,7 +108,14 @@ return {
           follow = true,
           show_empty = true,
           -- exclude = { "node_modules", ".git", "dist" },
-          exclude = { "Utilities/omnisharp*", ".git", "dist", "lazy-lock.json" },
+          exclude = {
+            "Utilities/omnisharp*",
+            ".git",
+            "dist",
+            "lazy-lock.json",
+            ".nasher/",
+            "nwscript.nss",
+          },
           win = winNumbers,
         },
       },
@@ -109,6 +133,9 @@ return {
       folds = {
         open = true, -- show open fold icons
         git_hl = true, -- use Git Signs hl for fold icons
+      },
+      git = {
+        patterns = { "GitSign", "GitSigns", "MiniDiffSign" },
       },
     },
     terminal = { enabled = false },
@@ -299,10 +326,8 @@ return {
         Snacks.toggle.profiler():map("<leader>ppp") -- Toggle the profiler
         Snacks.toggle.profiler_highlights():map("<leader>pph") -- Toggle the profiler highlights
 
-        -- Will open explorer if there's no opened buffers
-        if shouldOpenExplorer() then
-          Snacks.explorer.open()
-        end
+        vim.cmd([[silent !tmux set status off]])
+        checkOpenExplorer()
       end,
     })
   end,

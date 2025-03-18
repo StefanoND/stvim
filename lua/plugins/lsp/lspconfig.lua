@@ -1,35 +1,72 @@
 --@diagnostic disable: missing.fields
 
+local funcs = require("config.functions")
+local api = vim.api
+
 return {
-  {
+  { -- NWScript
     "StefanoND/nwscript-ee-lsp.nvim",
     ft = "nwscript",
     dependencies = {
-      "implicit-image/nwscript-ee-language-server", -- Required, LSP.
-      "L3MON4D3/LuaSnip", -- Optional, Snippet Engine for Neovim
-      -- "SirVer/ultisnips", -- Optional, Slution for snippets for Neovim
-      "danymat/neogen", -- Optional, Annotation generator
-      "folke/which-key.nvim", -- Optional, Displays keymap hints
-      "kevinhwang91/nvim-ufo", -- Optional, Fold support for NWScript
-      "numToStr/Comment.nvim", -- Optional, comment plugin
-      "nvim-lua/plenary.nvim", -- Optional, Provides utility functions for plugins .nss extension
-      "nvim-tree/nvim-web-devicons", -- Optional, Adds icon for NWScript
-      "nvim-treesitter/nvim-treesitter", -- Optional, syntax highlighting
-      "nvimtools/none-ls.nvim", -- Optional, LSP diagnostic, code actions, etc. Injection
+      { "implicit-image/nwscript-ee-language-server", ft = "nwscript" },
+      { "L3MON4D3/LuaSnip", ft = "nwscript" },
+      { "danymat/neogen", ft = "nwscript" },
+      { "folke/which-key.nvim", ft = "nwscript" },
+      { "kevinhwang91/nvim-ufo", ft = "nwscript" },
+      { "numToStr/Comment.nvim", ft = "nwscript" },
+      { "nvim-lua/plenary.nvim", ft = "nwscript" },
+      { "nvim-tree/nvim-web-devicons", ft = "nwscript" },
+      { "nvim-treesitter/nvim-treesitter", ft = "nwscript" },
+      { "nvimtools/none-ls.nvim", ft = "nwscript" },
+      {
+        "StefanoND/vim-nwscript",
+        ft = "nwscript",
+        config = function()
+          -- Luascript doesn't work, let's use vim.cmd([[]]) to run Vimscript inside it
+          vim.cmd([[
+            " Whitelist modules
+            let g:nwscript#modules#enabled = ['ctags', 'format']
+            " Blacklist modules
+            let g:nwscript#modules#disabled = ['fold']
+
+            " Auto-wrap (actually auto-newline) comments at column 105
+            " Pressing o/O in normal mode will continue a comment block.
+            let g:nwscript#format#textwidth = 105
+            let g:nwscript#format#options = 'croqwa2lj'
+
+            " Remove trailing whitespace when saving
+            let g:nwscript#format#whitespace = 1
+
+            " Must enable 'fold' above
+            " let g:nwscript#fold#method = 'syntax'
+            " let g:nwscript#fold#level = &foldlevel
+            " let g:nwscript#fold#column = 1
+
+            " If you have your own custom options file for generating tags for NWScript files, set the path here
+            " let g:nwscript#ctags#file = '/path/to/nwscript.ctags'
+
+            " Extra directories outside your project that will be tagged
+            " let g:nwscript#ctags#includes = ['~/.local/share/nwscript']
+          ]])
+        end,
+      },
     },
     config = function()
-      require("nwscript").setup({
-        -- autoBuild = true,
-      })
+      require("nwscript").setup()
     end,
   },
-  {
-    "bfrg/vim-cpp-modern",
+  { -- C++
+    { "bfrg/vim-cpp-modern", ft = { "c", "cpp", "objc", "objcpp", "opencl" } },
+    { "ranjithshegde/ccls.nvim", ft = { "c", "cpp", "objc", "objcpp", "opencl" } },
+    {
+      "p00f/clangd_extensions.nvim",
+      -- dependencies = { "mortepau/codicons.nvim" },
+      -- lazy = true,
+      ft = { "c", "cpp", "objc", "objcpp", "opencl" },
+      config = function() end, -- avoid duplicate setup call.
+    },
   },
-  {
-    "ranjithshegde/ccls.nvim",
-  },
-  {
+  { -- JS/TS
     "windwp/nvim-ts-autotag",
     ft = {
       "javascript",
@@ -41,16 +78,11 @@ return {
       require("nvim-ts-autotag").setup()
     end,
   },
-  {
-    "p00f/clangd_extensions.nvim",
-    -- dependencies = { "mortepau/codicons.nvim" },
-    -- lazy = true,
-    config = function() end, -- avoid duplicate setup call.
-  },
-  {
+  { -- Godot/GDScript
     "habamax/vim-godot",
+    ft = "gdscript",
   },
-  {
+  { -- C#
     "OmniSharp/omnisharp-vim",
     ft = { "cs", "csharp" },
     dependencies = {
@@ -147,18 +179,18 @@ return {
         return
       end
 
-      local lgroup = vim.api.nvim_create_augroup("UserLspConfig", {})
+      local lgroup = api.nvim_create_augroup("UserLspConfig", {})
 
-      vim.api.nvim_create_autocmd("LspAttach", {
+      api.nvim_create_autocmd("LspAttach", {
         group = lgroup,
         callback = function(event)
-          -- Enable completion triggered by <c-x><c-o>
-          -- vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
-          vim.api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
-
           local buffer = event.data.buffer
           local bufnr = event.buf
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          -- Enable completion triggered by <c-x><c-o>
+          -- vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+          api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
 
           -- vim.cmd("TwilightEnable")
           local lopts = { buffer = bufnr, noremap = true, remap = false }
@@ -184,7 +216,7 @@ return {
           kmn("<leader>bc", ":Navbuddy<CR>", ext("Open breadcrumbs"))
 
           kmn("<leader>lsc", function()
-            local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
+            local buf_ft = api.nvim_get_option_value("filetype", { buf = 0 })
             local clients = vim.lsp.get_clients()
             local lclient_names = {}
             for _, lclient in ipairs(clients) do
@@ -206,12 +238,12 @@ return {
           if client and client:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
             local enableCodelens = function()
               vim.lsp.codelens.refresh()
-              vim.api.nvim_create_autocmd("User", {
+              api.nvim_create_autocmd("User", {
                 pattern = "LspAttach",
                 once = true,
                 callback = vim.lsp.codelens.refresh,
               })
-              vim.api.nvim_create_autocmd(
+              api.nvim_create_autocmd(
                 { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
                 {
                   buffer = buffer,
@@ -238,7 +270,7 @@ return {
           -- main.on_supports_method("textDocument/inlayHint", function(client, buffer)
           -- if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
           --   if
-          --     vim.api.nvim_buf_is_valid(bufnr)
+          --     api.nvim_buf_is_valid(bufnr)
           --     and vim.bo[bufnr].buftype == ""
           --     and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[bufnr].filetype)
           --   then
@@ -248,29 +280,36 @@ return {
           --   end
           -- end
 
-          kmn("gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", lopts)
-          kmn("gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", lopts)
-          kmn("gpD", "<cmd>lua require('goto-preview').goto_preview_declaration()<CR>", lopts)
-          kmn("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", lopts)
-          kmn("gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", lopts)
+          kmn("gr", "<cmd>lua vim.lsp.buf.references()<CR>", lopts)
+          kmi("<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", lopts)
           kmn("gw", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", lopts)
           kmn("gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", lopts)
-          kmn("<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", lopts)
-          kmn("gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", lopts)
           kmn("gtd", "<cmd>lua vim.lsp.buf.type_definition()<CR>", lopts)
-          kmn("gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", lopts)
-          kmn("gP", "<cmd>lua require('goto-preview').close_all_win()<CR>", lopts)
-          kmn("K", "<cmd>lua vim.lsp.buf.hover({ border = 'rounded' })<CR>", lopts)
-          kmi("<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", lopts)
+          kmn("gD", "<cmd>lua vim.lsp.buf.declaration({ border = 'rounded' })<CR>", lopts)
+          kmn("gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", lopts)
+          kmn("K", "<cmd>lua vim.lsp.buf.hover({ popup_opts = { border = 'rounded' } })<CR>", lopts)
           kmn("<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", lopts)
+          kmn("<leader>cA", "<cmd>lua vim.lsp.buf.range_code_action()<CR>", lopts)
           kmn("<leader>cr", "<cmd>lua vim.lsp.buf.rename()<CR>", lopts)
 
-          kmn("<leader>vd", "<cmd>lua vim.diagnostic.open_float()<CR>", lopts)
-          kmnx(
-            "<leader>cf",
-            "<cmd>lua vim.lsp.buf.format({ async = true, timeout_ms = 10000 })<CR>",
-            lopts
-          )
+          kmn("<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", lopts)
+          kmn("<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", lopts)
+          kmn("<leader>wi", "<cmd>print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", lopts)
+
+          kmn("gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", lopts)
+          kmn("gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", lopts)
+          kmn("gpD", "<cmd>lua require('goto-preview').goto_preview_declaration()<CR>", lopts)
+          kmn("gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", lopts)
+          kmn("gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", lopts)
+          kmn("gP", "<cmd>lua require('goto-preview').close_all_win()<CR>", lopts)
+
+          kmn("gG", "<cmd>lua vim.diagnostic.open_float()<CR>", lopts)
+          kmn("gL", "<cmd>lua vim.diagnostic.show_line_diagnostic({ border = 'rounded' })<CR>", lopts)
+          kmn("]d", "<cmd>lua vim.diagnostic.goto_next({ border = 'rounded' })<CR>", lopts)
+          kmn("[d", "<cmd>lua vim.diagnostic.goto_prev({ border = 'rounded' })<CR>", lopts)
+          kmnx("<leader>cf", function()
+            funcs.format(bufnr, true)
+          end, lopts)
 
           kmn("<leader>sl", ":LspStop<CR>", lopts)
 

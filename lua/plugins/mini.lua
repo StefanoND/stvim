@@ -20,7 +20,7 @@ local opts = {
   diff = { enabled = true },
   extra = { enabled = false },
   files = { enabled = false },
-  git = { enabled = true },
+  git = { enabled = false },
   jump = { enabled = true },
   jump2d = { enabled = true }, -- This will make me lazy
   misc = { enabled = false },
@@ -106,8 +106,7 @@ return {
     end
     if opts.diff.enabled then
       require("mini.diff").setup(require("plugins.mini.diff"))
-
-      vim.keymap.set({ "n", "v" }, "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
+      -- vim.keymap.set("v", "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
     end
     if opts.extra.enabled then
       require("mini.extra").setup(require("plugins.mini.extra"))
@@ -165,7 +164,6 @@ return {
     if opts.map.enabled then
       require("mini.map").setup(require("plugins.mini.map"))
       require("mini.map").toggle()
-      -- vim.keymap.set({ "n", "v" }, "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
     end
     if opts.notify.enabled then
       require("mini.notify").setup(require("plugins.mini.notify"))

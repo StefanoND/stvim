@@ -15,10 +15,10 @@ local capabilities = require("config.lsp.capabilities").capabilities
 --   end
 -- end
 
-
 return {
   lspconfig.setupServer("lua_ls", {
     capabilities = capabilities,
+    flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
     on_attach = function(client, bufnr)
       -- setupDap()
 

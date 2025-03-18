@@ -7,6 +7,14 @@ vim.opt.relativenumber = true
 
 vim.opt.encoding = "utf-8"
 
+-- It's free real estate
+vim.opt.cmdheight = 0
+-- vim.cmd([[
+--   autocmd VimEnter * silent !tmux set status off
+--   autocmd VimLeave * silent !tmux set status on
+-- ]])
+vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
+
 vim.g.editorconfig = true
 
 -- Enable function highlighting (affects both C and C++ files)
@@ -18,7 +26,7 @@ vim.g.cpp_attributes_highlight = 1
 -- Highlight struct/class member variables (affects both C and C++ files)
 vim.g.cpp_member_highlight = 1
 
--- Put all standard C and C++ keywords under Vim's highlight group 'Statement' (affects both C and C++ files)
+-- Put all standard C and C++ keywords under Vim's highlight group 'Statement' (affects both C/C++ files)
 vim.g.cpp_simple_highlight = 1
 
 -- Tab and indentation

@@ -221,4 +221,26 @@ return {
       vim.keymap.set("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
     end,
   },
+  {
+    "tpope/vim-abolish",
+  },
+  {
+    "glacambre/firenvim",
+    build = ":call firenvim#install(0)",
+    -- lazy = not vim.g.started_by_firenvim,
+    -- build = function()
+    --   vim.fn["firenvim#install"](0)
+    -- end,
+    -- config = function()
+    --   vim.opt.guifont = "JetBrainsMono Nerd Font Mono"
+    --   vim.g.firenvim_config = {
+    --     localSettings = {
+    --       [".*"] = {
+    --         cmdline = "neovim",
+    --         takeover = "never",
+    --       },
+    --     },
+    --   }
+    -- end,
+  },
 }

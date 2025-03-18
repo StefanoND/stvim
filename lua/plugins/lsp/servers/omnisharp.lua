@@ -37,6 +37,7 @@ lspconfig.omnisharp.enableImportCompletion = true
 return {
   -- lspconfig.omnisharp.setup({
   lspSetup.setupServer("omnisharp", {
+    flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
     capabilities = capabilities,
     use_mono = true,
     default_config = {
@@ -68,7 +69,7 @@ return {
         -- for projects that are relevant to code that is being edited. With this
         -- setting enabled OmniSharp may load fewer projects and may thus display
         -- incomplete reference lists for symbols.
-        LoadProjectsOnDemand = nil,
+        --         LoadProjectsOnDemand = nil,
       },
       RoslynExtensionsOptions = {
         -- Enables support for roslyn analyzers, code fixes and rulesets.
@@ -82,12 +83,12 @@ return {
         EnableImportCompletion = true,
         -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
         -- true
-        AnalyzeOpenDocumentsOnly = nil,
+        --         AnalyzeOpenDocumentsOnly = nil,
       },
       Sdk = {
         -- Specifies whether to include preview versions of the .NET SDK when
         -- determining which version to use for project loading.
-        IncludePrereleases = nil,
+        --         IncludePrereleases = nil,
       },
     },
     flags = {
@@ -97,12 +98,6 @@ return {
     -- cmd = vim.lsp.rpc.connect("127.0.0.1", 6007),
     -- cmd = { omnisharp_bin },
     on_attach = function(client, bufnr)
-      require("lsp_signature").on_attach({
-        bind = true,
-        handler_opts = {
-          border = "rounded",
-        },
-      }, bufnr)
       local opts = { buffer = bufnr, noremap = true, remap = false }
       -- vim.keymap.set(
       --   "n",
@@ -200,7 +195,6 @@ return {
         },
         range = true,
       }
-
       print("Hello Omnisharp")
     end,
   }),

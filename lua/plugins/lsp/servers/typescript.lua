@@ -7,6 +7,7 @@ local function setupServers()
   for _, llsp in ipairs(servers) do
     -- lspconfig[llsp].setup({
     lspconfig.setupServer(tostring(llsp), {
+      flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
       capabilities = capabilities,
       on_attach = function(client, bufnr)
         print("Hello Javascript/Typescript")
