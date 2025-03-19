@@ -8,7 +8,8 @@ return {
     "stevearc/conform.nvim",
     opts = {},
     config = function()
-      require("conform").setup({
+      local conform = require("conform")
+      conform.setup({
         formatters_by_ft = {
           bash = { "shellharden" },
           cmake = { "cmake-format" },
@@ -19,6 +20,12 @@ return {
           lsp_format = "fallback",
         },
       })
+      -- vim.api.nvim_create_autocmd("BufWritePre", {
+      --   pattern = "*",
+      --   callback = function(args)
+      --     conform.format({ bufnr = args.buf })
+      --   end,
+      -- })
     end,
   },
   {
@@ -100,6 +107,8 @@ return {
         return
       end
 
+      local conform = require("conform")
+
       local lgroup = api.nvim_create_augroup("UserLspConfig", {})
 
       api.nvim_create_autocmd("LspAttach", {
@@ -142,7 +151,8 @@ return {
             local lclient_names = {}
             for _, lclient in ipairs(clients) do
               local filetypes = lclient.config.filetypes
-              if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and lclient.name ~= "null-ls" then
+              -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and lclient.name ~= "null-ls" then
+              if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
                 -- return client.name
                 if lclient and lclient:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
                   print("True")
@@ -230,7 +240,12 @@ return {
           kmn("]d", "<cmd>lua vim.diagnostic.goto_next({ border = 'rounded' })<CR>", lopts)
           kmn("[d", "<cmd>lua vim.diagnostic.goto_prev({ border = 'rounded' })<CR>", lopts)
           kmnx("<leader>cf", function()
-            funcs.format(bufnr, true)
+            conform.format({ bufnr = bufnr })
+            -- funcs.format(bufnr, true)
+            -- vim.lsp.buf.format({
+            --   async = true,
+            --   timeout_ms = 10000,
+            -- })
           end, lopts)
 
           kmn("<leader>sl", ":LspStop<CR>", lopts)
