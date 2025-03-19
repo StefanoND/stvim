@@ -4,6 +4,23 @@ local funcs = require("config.functions")
 local api = vim.api
 
 return {
+  { -- Formatter
+    "stevearc/conform.nvim",
+    opts = {},
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          bash = { "shellharden" },
+          cmake = { "cmake_format" },
+          lua = { "stylua" },
+        },
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        },
+      })
+    end,
+  },
   {
     "neovim/nvim-lspconfig",
     cmd = { "LspInfo", "LspInstall", "LspStart" },
