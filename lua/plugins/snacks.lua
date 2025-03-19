@@ -326,7 +326,7 @@ return {
         Snacks.toggle.profiler():map("<leader>ppp") -- Toggle the profiler
         Snacks.toggle.profiler_highlights():map("<leader>pph") -- Toggle the profiler highlights
 
-        vim.cmd([[silent !tmux set status off]])
+        -- vim.cmd([[silent !tmux set status off]])
         checkOpenExplorer()
       end,
     })

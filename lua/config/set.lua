@@ -8,12 +8,12 @@ vim.opt.relativenumber = true
 vim.opt.encoding = "utf-8"
 
 -- It's free real estate
-vim.opt.cmdheight = 0
+-- vim.opt.cmdheight = 0
 -- vim.cmd([[
 --   autocmd VimEnter * silent !tmux set status off
 --   autocmd VimLeave * silent !tmux set status on
 -- ]])
-vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
+-- vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
 
 vim.g.editorconfig = true
 
