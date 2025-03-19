@@ -11,7 +11,7 @@ return {
       require("conform").setup({
         formatters_by_ft = {
           bash = { "shellharden" },
-          cmake = { "cmake_format" },
+          cmake = { "cmake-format" },
           lua = { "stylua" },
         },
         format_on_save = {
