@@ -3,8 +3,6 @@
 local funcs = require("config.functions")
 local api = vim.api
 
--- Test
-
 return {
   { -- Formatter
     "stevearc/conform.nvim",
