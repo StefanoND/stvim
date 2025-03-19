@@ -103,12 +103,7 @@ vim.opt.updatetime = 60
 vim.opt.completeopt = "menu,menuone,preview,noselect"
 
 -- Show gutter after column 105
--- vim.opt.textwidth = 105
-vim.g.textwidth = 105
-vim.o.wrapmargin = 0
-vim.opt.wrap = true
-vim.opt.linebreak = true
-vim.o.display = "lastline,truncate"
+vim.opt.textwidth = 105
 vim.opt.colorcolumn = "+1"
 
 -- Spelling
