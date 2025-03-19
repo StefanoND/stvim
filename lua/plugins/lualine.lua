@@ -47,7 +47,7 @@ local conditions = {
 
 return {
   "nvim-lualine/lualine.nvim",
-  lazy = true,
+  lazy = false,
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
