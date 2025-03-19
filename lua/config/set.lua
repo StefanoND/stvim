@@ -104,6 +104,7 @@ vim.opt.completeopt = "menu,menuone,preview,noselect"
 
 -- Show gutter after column 105
 vim.opt.textwidth = 105
+vim.g.textwidth = 105
 vim.opt.colorcolumn = "+1"
 
 -- Spelling
