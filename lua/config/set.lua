@@ -74,6 +74,8 @@ vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
 
 vim.opt.backspace = "indent,eol,start" -- Allow backspace on indent, end of line or insert mode start position
 
+-- vim.opt.clipboard = "unnamedplus" -- Use system clipboard as default register
+-- vim.opt.clipboard:append("unnamedplus") -- Use system clipboard as default register
 -- OSC 52 (Operating System Command) support
 -- Control sequence that causes the terminal emulator to write to or read from the system clipboard.
 vim.g.clipboard = {
@@ -87,7 +89,6 @@ vim.g.clipboard = {
     ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
   },
 }
-vim.opt.clipboard:append("unnamedplus") -- Use system clipboard as default register
 
 -- Split
 vim.opt.splitright = true -- Split vertical window to the right
