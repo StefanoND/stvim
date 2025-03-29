@@ -8,7 +8,6 @@ return {
     "StefanoND/nwscript-ee-lsp.nvim",
     ft = "nwscript",
     dependencies = {
-      { "implicit-image/nwscript-ee-language-server", ft = "nwscript" },
       { "L3MON4D3/LuaSnip", ft = "nwscript" },
       { "danymat/neogen", ft = "nwscript" },
       { "folke/which-key.nvim", ft = "nwscript" },
@@ -17,7 +16,7 @@ return {
       { "nvim-lua/plenary.nvim", ft = "nwscript" },
       { "nvim-tree/nvim-web-devicons", ft = "nwscript" },
       { "nvim-treesitter/nvim-treesitter", ft = "nwscript" },
-      { "nvimtools/none-ls.nvim", ft = "nwscript" },
+      { "stevearc/conform.nvim", ft = "nwscript" },
       {
         "StefanoND/vim-nwscript",
         ft = "nwscript",
@@ -55,14 +54,46 @@ return {
       require("nwscript").setup()
     end,
   },
+  { -- Fish
+    "ndonfris/fish-lsp",
+    ft = "fish",
+  },
+  { -- Formatter
+    "stevearc/conform.nvim",
+    config = function()
+      require("conform").setup({
+        formatters_by_ft = {
+          bash = { "shellharden" },
+          c = { "clang-format" },
+          cc = { "clang-format" },
+          cmake = { "cmake-format" },
+          cpp = { "clang-format" },
+          cs = { "csharpier" },
+          csharp = { "csharpier" },
+          lua = { "stylua" },
+          nwscript = { "clang-format" },
+          objc = { "clang-format" },
+          objcpp = { "clang-format" },
+          opencl = { "clang-format" },
+          -- Stop searching after finding first formatter
+          javascript = { "prettierd", "prettier", stop_after_first = true },
+          typescript = { "prettierd", "prettier", stop_after_first = true },
+        },
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        },
+      })
+    end,
+  },
   { -- C++
-    { "bfrg/vim-cpp-modern", ft = { "c", "cpp", "objc", "objcpp", "opencl" } },
-    { "ranjithshegde/ccls.nvim", ft = { "c", "cpp", "objc", "objcpp", "opencl" } },
+    { "bfrg/vim-cpp-modern", ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" } },
+    { "ranjithshegde/ccls.nvim", ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" } },
     {
       "p00f/clangd_extensions.nvim",
       -- dependencies = { "mortepau/codicons.nvim" },
       -- lazy = true,
-      ft = { "c", "cpp", "objc", "objcpp", "opencl" },
+      ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
       config = function() end, -- avoid duplicate setup call.
     },
   },
@@ -89,6 +120,9 @@ return {
       { "ctrlpvim/ctrlp.vim", ft = { "cs", "csharp" } },
       { "Hoffs/omnisharp-extended-lsp.nvim", ft = { "cs", "csharp" } },
     },
+  },
+  { -- Linting
+    "mfussenegger/nvim-lint",
   },
   {
     "neovim/nvim-lspconfig",
@@ -122,16 +156,6 @@ return {
           })
         end,
       },
-      -- {
-      --   "hrsh7th/nvim-cmp",
-      --   opts = function(_, opts)
-      --     opts.sources = opts.sources or {}
-      --     table.insert(opts.sources, {
-      --       name = "lazydev",
-      --       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-      --     })
-      --   end,
-      -- },
       { "Saghen/blink.cmp" },
       { "williamboman/mason-lspconfig.nvim" },
       { "antosha417/nvim-lsp-file-operations", config = true },
@@ -169,7 +193,8 @@ return {
       return ret
     end,
     config = function(_, opts)
-      local maxSize = 1.5 * 1024 * 1024 -- 1.5MB
+      local vars = require("config.vars")
+      local maxSize = vars.maxFileSize
       local size = vim.fn.getfsize(vim.fn.expand("%"))
       if size >= maxSize then
         local clients = vim.lsp.get_clients()
@@ -178,6 +203,8 @@ return {
         end
         return
       end
+
+      local conform = require("conform")
 
       local lgroup = api.nvim_create_augroup("UserLspConfig", {})
 
@@ -221,7 +248,8 @@ return {
             local lclient_names = {}
             for _, lclient in ipairs(clients) do
               local filetypes = lclient.config.filetypes
-              if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and lclient.name ~= "null-ls" then
+              -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and lclient.name ~= "null-ls" then
+              if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
                 -- return client.name
                 if lclient and lclient:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
                   print("True")
@@ -308,7 +336,7 @@ return {
           kmn("]d", "<cmd>lua vim.diagnostic.goto_next({ border = 'rounded' })<CR>", lopts)
           kmn("[d", "<cmd>lua vim.diagnostic.goto_prev({ border = 'rounded' })<CR>", lopts)
           kmnx("<leader>cf", function()
-            funcs.format(bufnr, true)
+            conform.format({ bufnr = bufnr })
           end, lopts)
 
           kmn("<leader>sl", ":LspStop<CR>", lopts)

@@ -10,10 +10,10 @@ return {
         },
       },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
-      {
-        "jay-babu/mason-null-ls.nvim",
-        event = { "BufReadPre", "BufNewFile" },
-      },
+      -- {
+      --   "jay-babu/mason-null-ls.nvim",
+      --   event = { "BufReadPre", "BufNewFile" },
+      -- },
     },
     lazy = false,
     cmd = {
@@ -63,9 +63,9 @@ return {
 
       mason_lspconfig.setup()
 
-      local mason_null_ls = require("mason-null-ls")
-
-      mason_null_ls.setup()
+      -- local mason_null_ls = require("mason-null-ls")
+      --
+      -- mason_null_ls.setup()
 
       masontools.setup({
         ensure_installed = {
@@ -97,9 +97,9 @@ return {
           "typescript-language-server", -- LSP
           "tailwindcss-language-server", -- Autocomplete
           "eslint-lsp", -- Linter
-          -- -- JSON
-          -- "biome", -- formatter and linter
-          -- "jsonls", -- LSP
+          -- JSON
+          "biome", -- formatter and linter
+          "jsonls", -- LSP
           -- LUA
           "lua-language-server", -- LSP
           "stylua", -- formatter and linter

@@ -93,7 +93,7 @@ return {
     lsp = {
       -- server = {
       lspconfig = {
-        filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+        filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
         disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
         flags = { allow_incremental_sync = true },
         init_options = {
@@ -128,7 +128,7 @@ return {
           )(fname) or require("lspconfig.util").find_git_ancestor(fname)
         end,
       },
-      filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+      filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
       disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
       disable_capabilities = {
         completionProvider = true,
@@ -167,7 +167,7 @@ return {
     flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
     default_config = {
       flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-      filetypes = { "c", "cpp", "objc", "objcpp", "opencl" },
+      filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
       disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
       root_dir = function(fname)
         return require("lspconfig.util").root_pattern(

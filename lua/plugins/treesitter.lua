@@ -38,6 +38,17 @@ return {
       "windwp/nvim-ts-autotag",
     },
     config = function()
+      local vars = require("config.vars")
+      local maxSize = vars.maxFileSize
+      local size = vim.fn.getfsize(vim.fn.expand("%"))
+      if size >= maxSize then
+        local clients = vim.lsp.get_clients()
+        for _, lclient in ipairs(clients) do
+          vim.lsp.stop_client(lclient)
+        end
+        return
+      end
+
       -- Windows: https://code.visualstudio.com/docs/cpp/config-mingw
       -- Follow the steps 1-7 of "Installing the MingGW-w64 toolchain"
       -- Before running "pacman -S --needed ...." run "pacman -Syu" first
@@ -57,6 +68,7 @@ return {
             "comment",
             "cpp",
             "css",
+            "fish",
             "gdscript",
             "git_config",
             "git_rebase",
@@ -66,6 +78,7 @@ return {
             "go",
             "godot_resource",
             "html",
+            "ini",
             "javascript",
             "json",
             "llvm",

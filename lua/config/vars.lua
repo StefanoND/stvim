@@ -10,4 +10,6 @@ M.getOSLowerCase = function()
   return vim.uv.os_uname().sysname:lower()
 end
 
+M.maxFileSize = 2 * 1024 * 1024
+
 return M

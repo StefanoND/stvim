@@ -54,6 +54,8 @@ local kopts = { noremap = true, silent = true }
 
 return {
   "echasnovski/mini.nvim",
+  priority = 999,
+  lazy = false,
   version = false,
   config = function()
     -- Text editing

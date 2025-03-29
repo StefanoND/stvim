@@ -40,16 +40,16 @@ return {
     priority = 1000,
     config = true,
   },
-  {
-    "rcarriga/nvim-notify",
-    config = function()
-      require("notify").setup()
-      -- require("notify").setup({
-      --   background_colour = "#000000",
-      --   enabled = false,
-      -- })
-    end,
-  },
+  -- {
+  --   "rcarriga/nvim-notify",
+  --   config = function()
+  --     require("notify").setup()
+  --     -- require("notify").setup({
+  --     --   background_colour = "#000000",
+  --     --   enabled = false,
+  --     -- })
+  --   end,
+  -- },
   {
     "HiPhish/rainbow-delimiters.nvim",
     config = function()
@@ -121,7 +121,7 @@ return {
 
       vim.keymap.set("n", "<C-t>", "<cmd>lua require'toggleterm'.exec('yazi')<CR>", opts)
 
-      vim.keymap.set("n", "<leader>ht", "<cmd>ToggleTerm<CR>", opts)
+      vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", opts)
       vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
       vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]])
     end,
@@ -242,5 +242,8 @@ return {
     --     },
     --   }
     -- end,
+  },
+  {
+    "LunarVim/bigfile.nvim",
   },
 }

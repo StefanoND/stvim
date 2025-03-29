@@ -8,7 +8,7 @@ vim.opt.relativenumber = true
 vim.opt.encoding = "utf-8"
 
 -- It's free real estate
-vim.opt.cmdheight = 0
+-- vim.opt.cmdheight = 0
 -- vim.cmd([[
 --   autocmd VimEnter * silent !tmux set status off
 --   autocmd VimLeave * silent !tmux set status on
@@ -75,6 +75,19 @@ vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
 vim.opt.backspace = "indent,eol,start" -- Allow backspace on indent, end of line or insert mode start position
 
 vim.opt.clipboard:append("unnamedplus") -- Use system clipboard as default register
+-- OSC 52 (Operating System Command) support
+-- Control sequence that causes the terminal emulator to write to or read from the system clipboard.
+vim.g.clipboard = {
+  name = "OSC 52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
 
 -- Split
 vim.opt.splitright = true -- Split vertical window to the right

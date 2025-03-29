@@ -47,12 +47,26 @@ autocmd({ "BufWritePre" }, {
   command = [[%s/\s\+$//e]],
 })
 
+-- Reenable DoMatchParen if it was disabled by a BigFile
+autocmd("BufDelete", {
+  callback = function()
+    local vars = require("config.vars")
+    local maxSize = vars.maxFileSize
+    local size = vim.fn.getfsize(vim.fn.expand("%"))
+    if size >= maxSize then
+      -- vim.cmd([[autocmd BufDelete * silent :DoMatchParen]])
+      vim.cmd([[:DoMatchParen]])
+    end
+  end,
+})
+
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
 require("config.set")
 require("config.remap")
+require("config.macro")
 
 -- Set options for FireNvim
 vim.api.nvim_create_autocmd("UIEnter", {

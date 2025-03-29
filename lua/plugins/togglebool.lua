@@ -2,6 +2,7 @@ return {
   "gerazov/toggle-bool.nvim",
   config = function()
     require("toggle-bool").setup({
+      mapping = "<leader>tb",
       additional_toggles = {
         Foo = "Bar",
         foo = "bar",
@@ -106,9 +107,9 @@ return {
       },
     })
 
-    local opts = { noremap = true, silent = true }
-    vim.keymap.set({ "n", "v" }, "<leader>tb", function()
-      require("toggle-bool").toggle_bool()
-    end, opts)
+    -- local opts = { noremap = true, silent = true }
+    -- vim.keymap.set({ "n", "v" }, "<leader>tb", function()
+    --   require("toggle-bool").toggle_bool()
+    -- end, opts)
   end,
 }

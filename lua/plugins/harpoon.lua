@@ -2,7 +2,7 @@ return { -- fast file access
   "theprimeagen/harpoon",
   branch = "harpoon2",
   requires = {
-    { "nvim-lua/plenary" },
+    { "nvim-lua/plenary.nvim" },
   },
   config = function()
     local harpoon = require("harpoon")
@@ -13,8 +13,11 @@ return { -- fast file access
 
     local opts = { noremap = true, silent = true }
 
+    -- vim.keymap.set("n", "<leader>ha", function()
+    --   harpoon:list():append()
+    -- end, opts)
     vim.keymap.set("n", "<leader>ha", function()
-      harpoon:list():append()
+      harpoon:list():add()
     end, opts)
     vim.keymap.set("n", "<leader>ht", function()
       harpoon.ui:toggle_quick_menu(harpoon:list())
@@ -56,7 +59,7 @@ return { -- fast file access
       harpoon:list():next()
     end, opts)
 
-    vim.keymap.set("n", "<leader>m", ":lua require('harpoon.mark').add_file()<CR>", opts)
-    vim.keymap.set("n", "<leader>ht", ":lua require('harpoon.ui').toggle_quick_menu()<CR>", opts)
+    -- vim.keymap.set("n", "<leader>m", ":lua require('harpoon.mark').add_file()<CR>", opts)
+    -- vim.keymap.set("n", "<leader>ht", ":lua require('harpoon.ui').toggle_quick_menu()<CR>", opts)
   end,
 }

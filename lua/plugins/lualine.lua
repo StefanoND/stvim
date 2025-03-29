@@ -70,7 +70,8 @@ local conditions = {
     local client_names = {}
     for _, client in ipairs(clients) do
       local filetypes = client.config.filetypes
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
+      -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
+      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
         -- return client.name
         table.insert(client_names, client.name)
       end
@@ -85,7 +86,7 @@ local conditions = {
 
 return {
   "nvim-lualine/lualine.nvim",
-  lazy = true,
+  lazy = false,
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -147,10 +148,11 @@ return {
             "diagnostics",
             cond = conditions.check_git_workspace,
             sources = { "nvim_diagnostic" },
-            symbols = { error = " ", warn = " ", info = " " },
+            symbols = { error = "✘ ", warn = "▲ ", hint = "⚑ ", info = "» " },
             diagnostics_color = {
               error = { fg = colors.red },
               warn = { fg = colors.yellow },
+              hint = { fg = colors.blue },
               info = { fg = colors.cyan },
             },
           },
@@ -217,11 +219,13 @@ return {
             "filetype",
           },
         },
-        lualine_y = { "progress",
+        lualine_y = {
+          "progress",
           function()
             return ""
           end,
-          "location" },
+          "location",
+        },
         lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
       },
       inactive_sections = {
@@ -271,10 +275,11 @@ return {
             "diagnostics",
             cond = conditions.check_git_workspace,
             sources = { "nvim_diagnostic" },
-            symbols = { error = " ", warn = " ", info = " " },
+            symbols = { error = "✘ ", warn = "▲ ", hint = "⚑ ", info = "» " },
             diagnostics_color = {
               error = { fg = colors.red },
               warn = { fg = colors.yellow },
+              hint = { fg = colors.blue },
               info = { fg = colors.cyan },
             },
           },

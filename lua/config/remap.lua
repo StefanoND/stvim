@@ -53,7 +53,7 @@ keymap("n", "<M-Right>", "<cmd>TmuxNavigateRight<CR>", extend("Move to right win
 keymap("n", "j", "gj", extend("Move down wrapped line"))
 keymap("n", "k", "gk", extend("Move up wrapped line"))
 
-keymap("n", "<leader>tts", function()
+keymap("n", "<leader>tm", function()
   vim.cmd([[silent !tmux set status]])
 end, extend("Toggle tmux statusline on/off"))
 
