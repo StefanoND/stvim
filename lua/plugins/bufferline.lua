@@ -3,6 +3,8 @@ return {
   after = "catppuccin",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   version = "*",
+  -- lazy = false,
+  event = "VeryLazy",
   config = function()
     local bufferline = require("bufferline")
 
@@ -13,6 +15,11 @@ return {
         numbers = "ordinal", -- function({ ordinal, id, lower, raise }): string,
         tab_size = 15,
         color_icons = true,
+        get_element_icon = function(element)
+          local icon, hl =
+            require("nvim-web-devicons").get_icon_by_filetype(element.filetype, { default = false })
+          return icon, hl
+        end,
         show_buffer_close_icons = true,
         show_close_icon = true,
         offsets = {

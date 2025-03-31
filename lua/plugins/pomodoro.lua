@@ -1,16 +1,80 @@
-return {}
+local MIN_IN_MS = 60000
+
+return {
+  {
+    "quentingruber/pomodoro.nvim",
+    lazy = false, -- needed so the pomodoro can start at launch
+    config = function()
+      local pomodoro = require("pomodoro")
+
+      pomodoro.setup({
+        start_at_launch = false,
+        work_duration = 25,
+        break_duration = 5,
+        delay_duration = 1, -- The additionnal work time you get when you delay a break
+        long_break_duration = 15,
+        breaks_before_long = 4,
+      })
+
+      local opts = { silent = true, noremap = true }
+
+      -- Pomodoro Stop
+      vim.keymap.set("n", "<leader>pui", function()
+        pomodoro.displayPomodoroUI()
+      end, opts)
+      vim.keymap.set("n", "<leader>pS", function()
+        pomodoro.stop()
+      end, opts)
+
+      -- Pomodoro 25/5 minutes work/break
+      vim.keymap.set("n", "<leader>pow", function()
+        pomodoro.start(25)
+      end, opts)
+      vim.keymap.set("n", "<leader>pob", function()
+        pomodoro.startBreak(5)
+      end, opts)
+
+      -- DeskTime's 52/17 minutes work/break
+      vim.keymap.set("n", "<leader>pdw", function()
+        pomodoro.start(50)
+      end, opts)
+      vim.keymap.set("n", "<leader>pdb", function()
+        pomodoro.startBreak(10)
+      end, opts)
+
+      -- DeskTime's updated 112/26 minutes work/break
+      vim.keymap.set("n", "<leader>puw", function()
+        pomodoro.start(100)
+      end, opts)
+      vim.keymap.set("n", "<leader>pub", function()
+        pomodoro.startBreak(20)
+      end, opts)
+    end,
+  },
+  -- {
+  --   "nvim-lualine/lualine.nvim",
+  --   optional = true,
+  --   event = "VeryLazy",
+  --   opts = function(_, opts)
+  --     table.insert(opts.sections.lualine_x, 3, {
+  --       function()
+  --         return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+  --       end,
+  --     })
+  --   end,
+  -- },
+}
+
 -- return {
 --   "epwalsh/pomo.nvim",
 --   version = "*",
 --   lazy = false,
 --   cmd = { "TimerStart", "TimerRepeat" },
---   dependencies = {
---     "rcarriga/nvim-notify",
---   },
 --   config = function()
 --     local pomodoro = require("pomo")
 --
 --     local opts = { silent = true, noremap = true }
+--     local snacks = require("snacks")
 --
 --     -- Pomodoro Hide/Show/Stop
 --     vim.keymap.set("n", "<leader>ph", "<cmd>TimerHide<CR>", opts)

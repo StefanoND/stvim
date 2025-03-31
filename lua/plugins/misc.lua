@@ -40,27 +40,26 @@ return {
     priority = 1000,
     config = true,
   },
-  -- {
-  --   "rcarriga/nvim-notify",
-  --   config = function()
-  --     require("notify").setup()
-  --     -- require("notify").setup({
-  --     --   background_colour = "#000000",
-  --     --   enabled = false,
-  --     -- })
-  --   end,
-  -- },
   {
     "HiPhish/rainbow-delimiters.nvim",
+    lazy = false,
     config = function()
-      require("rainbow-delimiters.setup").setup({
+      local rainbow_delimiters = require("rainbow-delimiters")
+      -- rainbow_delimiters.setup({
+      vim.g.rainbow_delimiters = {
         strategy = {
-          [""] = require("rainbow-delimiters").strategy["global"],
+          [""] = "rainbow-delimiters.strategy.global",
+          vim = "rainbow-delimiters.strategy.local",
           -- commonlisp = require("rainbow-delimiters").strategy["local"],
         },
         query = {
           [""] = "rainbow-delimiters",
+          lua = "rainbow-blocks",
           latex = "rainbow-blocks",
+        },
+        priority = {
+          [""] = 110,
+          lua = 210,
         },
         highlight = {
           "RainbowDelimiterRed",
@@ -71,7 +70,8 @@ return {
           "RainbowDelimiterViolet",
           "RainbowDelimiterCyan",
         },
-      })
+      }
+      -- })
     end,
   },
   {
@@ -106,37 +106,6 @@ return {
     event = function()
       return { "BufReadPost", "BufNewFile" }
     end,
-  },
-  {
-    "akinsho/toggleterm.nvim",
-    version = "*",
-    config = function()
-      local terminal = require("toggleterm")
-
-      terminal.setup({
-        persist_size = true,
-      })
-
-      local opts = { noremap = true, silent = true }
-
-      vim.keymap.set("n", "<C-t>", "<cmd>lua require'toggleterm'.exec('yazi')<CR>", opts)
-
-      vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<CR>", opts)
-      vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
-      vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]])
-    end,
-  },
-  {
-    "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
-    opts = {
-      library = {
-        -- See the configuration section for more details
-        -- Load luvit types when the `vim.uv` word is found
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "luvit-meta/library", words = { "vim%.uv" } },
-      },
-    },
   },
   {
     "numToStr/Comment.nvim",

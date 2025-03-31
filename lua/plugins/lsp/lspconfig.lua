@@ -7,19 +7,21 @@ return {
   { -- NWScript
     "StefanoND/nwscript-ee-lsp.nvim",
     ft = "nwscript",
+    event = "VeryLazy",
     dependencies = {
-      { "L3MON4D3/LuaSnip", ft = "nwscript" },
-      { "danymat/neogen", ft = "nwscript" },
-      { "folke/which-key.nvim", ft = "nwscript" },
-      { "kevinhwang91/nvim-ufo", ft = "nwscript" },
-      { "numToStr/Comment.nvim", ft = "nwscript" },
-      { "nvim-lua/plenary.nvim", ft = "nwscript" },
-      { "nvim-tree/nvim-web-devicons", ft = "nwscript" },
-      { "nvim-treesitter/nvim-treesitter", ft = "nwscript" },
-      { "stevearc/conform.nvim", ft = "nwscript" },
+      "HiPhish/rainbow-delimiters.nvim",
+      "L3MON4D3/LuaSnip",
+      "akinsho/bufferline.nvim",
+      "danymat/neogen",
+      "folke/which-key.nvim",
+      "kevinhwang91/nvim-ufo",
+      "numToStr/Comment.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/conform.nvim",
       {
         "StefanoND/vim-nwscript",
-        ft = "nwscript",
         config = function()
           -- Luascript doesn't work, let's use vim.cmd([[]]) to run Vimscript inside it
           vim.cmd([[
@@ -53,6 +55,18 @@ return {
     config = function()
       require("nwscript").setup()
     end,
+  },
+  { -- LUA
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
+    },
   },
   { -- Fish
     "ndonfris/fish-lsp",

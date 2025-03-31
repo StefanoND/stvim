@@ -33,6 +33,16 @@ local winNumbers = {
 
 local vars = require("config.vars")
 
+local hls = {
+  "RainbowDelimiterRed",
+  "RainbowDelimiterYellow",
+  "RainbowDelimiterBlue",
+  "RainbowDelimiterOrange",
+  "RainbowDelimiterGreen",
+  "RainbowDelimiterViolet",
+  "RainbowDelimiterCyan",
+}
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -66,8 +76,17 @@ return {
     image = { enabled = true },
     indent = {
       enabled = true,
+      hl = hls,
+      scope = {
+        hl = hls,
+      },
       chunk = {
         enabled = true,
+        char = {
+          corner_top = "╭",
+          corner_bottom = "╰",
+        },
+        hl = hls,
       },
     },
     input = {
@@ -153,7 +172,7 @@ return {
     profiler = { enabled = true },
     quickfile = { enabled = true },
     rename = { enabled = true },
-    scope = { enabled = false },
+    scope = { enabled = true },
     scratch = { enabled = true },
     scroll = { enabled = false },
     statuscolumn = {
@@ -168,7 +187,7 @@ return {
         patterns = { "GitSign", "GitSigns", "MiniDiffSign" },
       },
     },
-    terminal = { enabled = false },
+    terminal = { enabled = true },
     toggle = { enabled = true },
     util = { enabled = true },
     win = { enabled = false },
@@ -183,6 +202,14 @@ return {
         Snacks.picker.registers()
       end,
       desc = "Registers",
+    },
+    -- Terminal
+    {
+      "<leader>tt",
+      function()
+        Snacks.terminal.toggle()
+      end,
+      desc = "Toggle terminal",
     },
     -- Explorer
     {

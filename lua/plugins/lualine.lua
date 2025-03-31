@@ -86,7 +86,8 @@ local conditions = {
 
 return {
   "nvim-lualine/lualine.nvim",
-  lazy = false,
+  -- lazy = false,
+  event = "VeryLazy",
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -184,6 +185,11 @@ return {
           },
         },
         lualine_x = {
+          {
+            function()
+              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+            end,
+          },
           {
             function()
               return ""
@@ -310,6 +316,13 @@ return {
             cond = conditions.checkLsp,
           },
         },
+        lualine_x = {
+          {
+            function()
+              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+            end,
+          },
+        },
         lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
       },
       tabline = {},
@@ -319,6 +332,13 @@ return {
           "navic",
         },
         -- lualine_b = { get_dap_repl_winbar(true) },
+        lualine_x = {
+          {
+            function()
+              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+            end,
+          },
+        },
         lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
         lualine_z = {
           function()
@@ -331,6 +351,13 @@ return {
           "navic",
         },
         -- lualine_b = { get_dap_repl_winbar(false) },
+        lualine_x = {
+          {
+            function()
+              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+            end,
+          },
+        },
         lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
         lualine_z = {
           function()
