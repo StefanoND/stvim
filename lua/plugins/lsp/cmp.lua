@@ -182,7 +182,15 @@ return {
           "emoji",
           "ripgrep",
         },
+        -- per_filetype = {
+        --   org = { "orgmode" },
+        -- },
         providers = {
+          -- orgmode = {
+          --   name = "Orgmode",
+          --   module = "orgmode.org.autocompletion.blink",
+          --   fallbacks = { "bugger" },
+          -- },
           codeium = {
             name = "codeium",
             module = "blink.compat.source",

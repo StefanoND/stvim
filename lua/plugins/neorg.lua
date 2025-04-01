@@ -1,74 +1,148 @@
-return {}
--- return {
---   "nvim-neorg/neorg",
---   version = "*",
---   event = "VeryLazy",
---   ft = { "norg", "neorg" },
---   dependencies = {
---     "nvim-lua/plenary.nvim",
---     "benlubas/neorg-interim-ls",
---   },
---   ["external.interim-ls"] = {
---     config = {
---       -- default config shown
---       completion_provider = {
---         -- Enable or disable the completion provider
---         enable = true,
---
---         -- Show file contents as documentation when you complete a file name
---         documentation = true,
---
---         -- Try to complete categories provided by Neorg Query. Requires `benlubas/neorg-query`
---         categories = false,
---
---         -- suggest heading completions from the given file for `{@x|}` where `|` is your cursor
---         -- and `x` is an alphanumeric character. `{@name}` expands to `[name]{:$/people:# name}`
---         people = {
---           enable = false,
---
---           -- path to the file you're like to use with the `{@x` syntax, relative to the
---           -- workspace root, without the `.norg` at the end.
---           -- ie. `folder/people` results in searching `$/folder/people.norg` for headings.
---           -- Note that this will change with your workspace, so it fails silently if the file
---           -- doesn't exist
---           path = "people",
---         },
---       },
---     },
---   },
---   config = function()
---     local neorg = require("neorg")
---
---     neorg.setup({
---       load = {
---         ["core.defaults"] = {}, -- Loads default behaviour
---         ["core.concealer"] = {}, -- Adds pretty icons to your documents
---         ["core.summary"] = {},
---         ["core.export.markdown"] = {
---           config = {
---             extension = "md",
---           },
---         },
---         ["core.completion"] = {
---           config = {
---             engine = {
---               module_name = "external.lsp-completion",
---             },
---           },
---         },
---         ["core.dirman"] = { -- Manages Neorg workspaces
---           config = {
---             workspaces = {
---               main = "~/norg",
---               learn = "~/norg/learn",
---               nwn = "~/nwstorage/norg",
---             },
---             default_workspace = "main",
---           },
---         },
---         ["core.export"] = {},
---       },
---     })
---   end,
---   build = ":Neorg sync-parsers",
--- }
+-- return {}
+return {
+  "nvim-neorg/neorg",
+  version = "*",
+  -- event = "VeryLazy",
+  lazy = false,
+  ft = { "norg", "neorg" },
+  build = ":Neorg sync-parsers",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "benlubas/neorg-interim-ls",
+    -- "benlubas/neorg-query",
+    "pocco81/true-zen.nvim",
+  },
+  config = function()
+    local neorg = require("neorg")
+
+    neorg.setup({
+      load = {
+        -- ["external.query"] = {
+        --   -- Populate the database. Indexing happens on a separate thread, so doesn't block
+        --   -- neovim. Funny enough, this is the only user facing way to trigger a full index of your
+        --   -- workspace at the moment
+        --   index_on_launch = true,
+        --
+        --   -- Update the db entry when a file is written
+        --   update_on_change = true,
+        -- },
+        ["external.interim-ls"] = { -- Required for external completion engine
+          -- ["external.lsp-completion"] = { -- Required for external completion engine
+          config = {
+            -- default config shown
+            completion_provider = {
+              -- Enable or disable the completion provider
+              enable = true,
+
+              -- Show file contents as documentation when you complete a file name
+              documentation = true,
+
+              -- Try to complete categories provided by Neorg Query. Requires `benlubas/neorg-query`
+              categories = false,
+
+              -- suggest heading completions from the given file for `{@x|}` where `|` is your cursor
+              -- and `x` is an alphanumeric character. `{@name}` expands to `[name]{:$/people:# name}`
+              people = {
+                enable = true,
+
+                -- path to the file you're like to use with the `{@x` syntax, relative to the
+                -- workspace root, without the `.norg` at the end.
+                -- ie. `folder/people` results in searching `$/folder/people.norg` for headings.
+                -- Note that this will change with your workspace, so it fails silently if the file
+                -- doesn't exist
+                path = "~/norg/people",
+              },
+            },
+          },
+        },
+
+        -- Default Modules (https://github.com/nvim-neorg/neorg/wiki#default-modules)
+        ["core.defaults"] = {}, -- Loads default behaviour
+
+        ["core.keybinds"] = {
+          config = {
+            default_keybind = true,
+            preset = "neorg",
+          },
+        },
+
+        -- REQUIREMENTS
+        -- TREESITTER INTEGRATION
+        ["core.highlights"] = {},
+
+        -- CONCEALER
+        ["core.autocommands"] = {},
+        ["core.integrations.treesitter"] = {
+          config = {
+            configure_parsers = true,
+            install_parsers = true,
+          },
+        },
+
+        -- EXPORT
+        ["core.export.markdown"] = {
+          config = {
+            extension = "md",
+          },
+        },
+
+        -- PRESENTER
+        ["core.queries.native"] = {},
+        ["core.ui"] = {},
+
+        -- DIRMAN
+        ["core.dirman.utils"] = {},
+        ["core.storage"] = {
+          config = {
+            path = "~/norg/neorg.mpack",
+          },
+        },
+
+        -- MODULES
+        ["core.completion"] = {
+          config = {
+            engine = {
+              module_name = "external.lsp-completion", -- Requires "benlubas/neorg-interim-ls"
+              name = "[Neorg]",
+            },
+          },
+        },
+        ["core.concealer"] = {
+          config = {
+            folds = true,
+            icon_preset = "varied",
+            init_open_folds = "always",
+          },
+        }, -- Adds pretty icons to your documents
+        ["core.dirman"] = { -- Manages Neorg workspaces
+          config = {
+            workspaces = {
+              main = "~/norg",
+              learn = "~/norg/learn",
+              nwn = os.getenv("NWN_STORAGE") .. "/norg",
+            },
+            default_workspace = "main",
+          },
+        },
+        ["core.export"] = {},
+        ["core.fs"] = {},
+        ["core.presenter"] = {
+          config = {
+            zen_mode = "truezen",
+            -- zen_mode = "zen-mode",
+          },
+        },
+        ["core.scanner"] = {},
+        ["core.summary"] = {},
+        ["core.syntax"] = {},
+        ["core.tempus"] = {},
+        ["core.text-objects"] = {},
+      },
+    })
+
+    vim.keymap.set("n", "<up>", "<Plug>(neorg.text-objects.item-up)", {})
+    vim.keymap.set("n", "<down>", "<Plug>(neorg.text-objects.item-down)", {})
+    vim.keymap.set({ "o", "x" }, "iH", "<Plug>(neorg.text-objects.textobject.heading.inner)", {})
+    vim.keymap.set({ "o", "x" }, "aH", "<Plug>(neorg.text-objects.textobject.heading.outer)", {})
+  end,
+}
