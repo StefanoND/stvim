@@ -1,0 +1,46 @@
+return {}
+
+-- local vars = require("config.vars")
+--
+-- return {
+--   "L3MON4D3/LuaSnip",
+--   build = vars.getOSLowerCase():match("windows") ~= 0 and "make install_jsregexp" or nil,
+--   dependencies = {
+--     "rafamadriz/friendly-snippets",
+--   },
+--   keys = function()
+--     return {}
+--   end,
+--   opts = {
+--     enable_autosnippets = true,
+--   },
+--   config = function(_, opts)
+--     local luasnip = require("luasnip")
+--     if opts then
+--       luasnip.setup(opts)
+--     end
+--
+--     local path = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets"
+--
+--     require("luasnip.loaders.from_lua").lazy_load({ paths = path })
+--     require("luasnip.loaders.from_snipmate").lazy_load()
+--     require("luasnip.loaders.from_vscode").lazy_load()
+--
+--     luasnip.filetype_extend("c", { "cdoc" })
+--     luasnip.filetype_extend("cpp", { "cppdoc" })
+--     luasnip.filetype_extend("cs", { "csharpdoc" })
+--     luasnip.filetype_extend("gdscript", { "gdscriptdoc" })
+--     luasnip.filetype_extend("javascript", { "jsdoc" })
+--     luasnip.filetype_extend("lua", { "luadoc" })
+--     luasnip.filetype_extend("markdown", { "mddoc" })
+--     luasnip.filetype_extend("sh", { "shelldoc" })
+--     luasnip.filetype_extend("typescript", { "tsdoc" })
+--     luasnip.filetype_extend("unrealengine", { "unrealdoc" })
+--
+--     luasnip.filetype_extend("cpp", { "c" })
+--     luasnip.filetype_extend("unrealengine", { "c", "cpp" })
+--     luasnip.filetype_extend("typescript", { "javascript" })
+--
+--     -- require("config.keymaps.snippets")
+--   end,
+-- }

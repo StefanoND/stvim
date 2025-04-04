@@ -1,35 +1,29 @@
--- return {}
 return {
   "nvim-neorg/neorg",
   version = "*",
-  -- event = "VeryLazy",
   lazy = false,
-  ft = { "norg", "neorg" },
-  build = ":Neorg sync-parsers",
+  -- ft = { "norg", "neorg" },
+  -- build = ":Neorg sync-parsers",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "benlubas/neorg-interim-ls",
-    -- "benlubas/neorg-query",
-    "pocco81/true-zen.nvim",
+    "benlubas/neorg-query",
+    "mrcapivaro/true-zen.nvim"
   },
   config = function()
-    local neorg = require("neorg")
-
-    neorg.setup({
+    require("neorg").setup({
       load = {
-        -- ["external.query"] = {
-        --   -- Populate the database. Indexing happens on a separate thread, so doesn't block
-        --   -- neovim. Funny enough, this is the only user facing way to trigger a full index of your
-        --   -- workspace at the moment
-        --   index_on_launch = true,
-        --
-        --   -- Update the db entry when a file is written
-        --   update_on_change = true,
-        -- },
+        ["external.query"] = {
+          -- Populate the database. Indexing happens on a separate thread, so doesn't block
+          -- neovim. Funny enough, this is the only user facing way to trigger a full index of your
+          -- workspace at the moment
+          index_on_launch = true,
+
+          -- Update the db entry when a file is written
+          update_on_change = true,
+        },
         ["external.interim-ls"] = { -- Required for external completion engine
-          -- ["external.lsp-completion"] = { -- Required for external completion engine
           config = {
-            -- default config shown
             completion_provider = {
               -- Enable or disable the completion provider
               enable = true,
@@ -38,7 +32,7 @@ return {
               documentation = true,
 
               -- Try to complete categories provided by Neorg Query. Requires `benlubas/neorg-query`
-              categories = false,
+              categories = true,
 
               -- suggest heading completions from the given file for `{@x|}` where `|` is your cursor
               -- and `x` is an alphanumeric character. `{@name}` expands to `[name]{:$/people:# name}`
@@ -56,13 +50,20 @@ return {
           },
         },
 
-        -- Default Modules (https://github.com/nvim-neorg/neorg/wiki#default-modules)
+        -- DEFAULT MODULES (https://github.com/nvim-neorg/neorg/wiki#default-modules)
         ["core.defaults"] = {}, -- Loads default behaviour
+        ["core.esupports.metagen"] = {
+          config = {
+            timezone = "local",
+            type = "auto",
+          },
+        },
 
         ["core.keybinds"] = {
           config = {
             default_keybind = true,
             preset = "neorg",
+            neorg_leader = ",",
           },
         },
 
@@ -109,7 +110,7 @@ return {
         },
         ["core.concealer"] = {
           config = {
-            folds = true,
+            folds = false,
             icon_preset = "varied",
             init_open_folds = "always",
           },
@@ -119,13 +120,16 @@ return {
             workspaces = {
               main = "~/norg",
               learn = "~/norg/learn",
-              nwn = os.getenv("NWN_STORAGE") .. "/norg",
+              nwn = os.getenv("NWN_DEV") .. "/norg",
+              -- nwn = os.getenv("NWN_STORAGE") .. "/norg",
             },
             default_workspace = "main",
           },
         },
         ["core.export"] = {},
         ["core.fs"] = {},
+        ["core.neorgcmd"] = {},
+        ["core.neorgcmd.commands.return"] = {},
         ["core.presenter"] = {
           config = {
             zen_mode = "truezen",
@@ -135,14 +139,16 @@ return {
         ["core.scanner"] = {},
         ["core.summary"] = {},
         ["core.syntax"] = {},
+        ["core.tangle"] = {
+          config = {
+            tangle_on_write = true,
+          },
+        },
         ["core.tempus"] = {},
         ["core.text-objects"] = {},
       },
     })
 
-    vim.keymap.set("n", "<up>", "<Plug>(neorg.text-objects.item-up)", {})
-    vim.keymap.set("n", "<down>", "<Plug>(neorg.text-objects.item-down)", {})
-    vim.keymap.set({ "o", "x" }, "iH", "<Plug>(neorg.text-objects.textobject.heading.inner)", {})
-    vim.keymap.set({ "o", "x" }, "aH", "<Plug>(neorg.text-objects.textobject.heading.outer)", {})
-  end,
+    require("config.keymaps.neorg")
+  end
 }

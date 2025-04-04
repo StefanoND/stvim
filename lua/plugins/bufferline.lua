@@ -75,24 +75,6 @@ return {
       },
       highlights = require("catppuccin.groups.integrations.bufferline").get(),
     })
-
-    local opts = { noremap = true, silent = true }
-
-    vim.keymap.set("n", "gt", "<cmd>BufferLineCycleNext<CR>", opts)
-    vim.keymap.set("n", "gT", "<cmd>BufferLineCyclePrev<CR>", opts)
-    vim.keymap.set("n", "<C-M-k>", "<cmd>BufferLineMoveNext<CR>", opts)
-    vim.keymap.set("n", "<C-M-j>", "<cmd>BufferLineMovePrev<CR>", opts)
-    vim.keymap.set("n", "<C-M-p>", "<cmd>BufferLineTogglePin<CR>", opts)
-    vim.keymap.set("n", "<leader>1", "<cmd>BufferLineGoToBuffer 1<CR>", opts)
-    vim.keymap.set("n", "<leader>2", "<cmd>BufferLineGoToBuffer 2<CR>", opts)
-    vim.keymap.set("n", "<leader>3", "<cmd>BufferLineGoToBuffer 3<CR>", opts)
-    vim.keymap.set("n", "<leader>4", "<cmd>BufferLineGoToBuffer 4<CR>", opts)
-    vim.keymap.set("n", "<leader>5", "<cmd>BufferLineGoToBuffer 5<CR>", opts)
-    vim.keymap.set("n", "<leader>6", "<cmd>BufferLineGoToBuffer 6<CR>", opts)
-    vim.keymap.set("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<CR>", opts)
-    vim.keymap.set("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", opts)
-    vim.keymap.set("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", opts)
-    vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", opts) -- Last Buffer
-    vim.keymap.set("n", "<leader>0", "<cmd>BufferLineGoToBuffer +1<CR>", opts) -- First Buffer
+    require("config.keymaps.bufferline")
   end,
 }

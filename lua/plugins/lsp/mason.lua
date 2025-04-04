@@ -5,15 +5,10 @@ return {
       {
         "williamboman/mason-lspconfig.nvim",
         dependencies = {
-          "Hoffs/omnisharp-extended-lsp.nvim",
           "neovim/nvim-lspconfig",
         },
       },
       "WhoIsSethDaniel/mason-tool-installer.nvim",
-      -- {
-      --   "jay-babu/mason-null-ls.nvim",
-      --   event = { "BufReadPre", "BufNewFile" },
-      -- },
     },
     lazy = false,
     cmd = {
@@ -49,9 +44,6 @@ return {
       })
 
       mason.setup({
-        -- auto-install configured servers (with lspconfig)
-        -- automatic_installation = true, -- not the same as ensure_installed
-
         ui = {
           icons = {
             package_installed = "✓",
@@ -62,10 +54,6 @@ return {
       })
 
       mason_lspconfig.setup()
-
-      -- local mason_null_ls = require("mason-null-ls")
-      --
-      -- mason_null_ls.setup()
 
       masontools.setup({
         ensure_installed = {
@@ -105,10 +93,10 @@ return {
           "stylua", -- formatter and linter
           -- -- RUST cpptools and ast-grep
           -- "rust_analyzer", -- LSP
-          -- -- SQL
-          -- "sqlls", -- LSP
-          -- "sql-formatter", -- formatter
-          -- "sqlfluff", -- linter
+          -- SQL
+          "sqlls", -- LSP
+          "sql-formatter", -- formatter
+          "sqlfluff", -- linter
           -- -- YAML
           -- "yaml-language-server", -- LSP
           -- "yamllint", -- linter

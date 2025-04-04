@@ -2,7 +2,7 @@ local opts = {
   -- Text editing
   ai = { enabled = true }, -- Extend and create a/i textobjects. "sa" and "si"
   align = { enabled = true },
-  comment = { enabled = false },
+  comment = { enabled = true },
   completion = { enabled = false },
   move = { enabled = true },
   operators = { enabled = true },
@@ -50,148 +50,147 @@ local opts = {
   test = { enabled = false },
 }
 
-local kopts = { noremap = true, silent = true }
-
 return {
   "echasnovski/mini.nvim",
-  priority = 999,
-  lazy = false,
   version = false,
   config = function()
     -- Text editing
     if opts.ai.enabled then
-      require("mini.ai").setup(require("plugins.mini.ai"))
+      require("mini.ai").setup(require("plugins.mini.text.ai"))
     end
     if opts.align.enabled then
-      require("mini.align").setup(require("plugins.mini.align"))
+      require("mini.align").setup(require("plugins.mini.text.align"))
     end
     if opts.comment.enabled then
-      require("mini.comment").setup(require("plugins.mini.comment"))
+      require("mini.comment").setup(require("plugins.mini.text.comment"))
     end
     if opts.completion.enabled then
-      require("mini.completion").setup(require("plugins.mini.completion"))
+      require("mini.completion").setup(require("plugins.mini.text.completion"))
     end
     if opts.move.enabled then
-      require("mini.move").setup(require("plugins.mini.move"))
+      require("mini.move").setup(require("plugins.mini.text.move"))
     end
     if opts.operators.enabled then
-      require("mini.operators").setup(require("plugins.mini.operators"))
+      require("mini.operators").setup(require("plugins.mini.text.operators"))
     end
     if opts.pairs.enabled then
-      require("mini.pairs").setup(require("plugins.mini.pairs"))
+      require("mini.pairs").setup(require("plugins.mini.text.pairs"))
     end
     if opts.snippets.enabled then
-      require("mini.snippets").setup(require("plugins.mini.snippets"))
+      require("mini.snippets").setup(require("plugins.mini.text.snippets"))
     end
     if opts.splitjoin.enabled then
-      require("mini.splitjoin").setup(require("plugins.mini.splitjoin"))
+      require("mini.splitjoin").setup(require("plugins.mini.text.splitjoin"))
     end
     if opts.surround.enabled then
-      require("mini.surround").setup(require("plugins.mini.surround"))
+      require("mini.surround").setup(require("plugins.mini.text.surround"))
     end
 
     -- General workflow
     if opts.basics.enabled then
-      require("mini.basics").setup(require("plugins.mini.basics"))
+      require("mini.basics").setup(require("plugins.mini.general.basics"))
     end
     if opts.bracketed.enabled then
-      require("mini.bracketed").setup(require("plugins.mini.bracketed"))
+      require("mini.bracketed").setup(require("plugins.mini.general.bracketed"))
     end
     if opts.bufremove.enabled then
-      require("mini.bufremove").setup(require("plugins.mini.bufremove"))
+      require("mini.bufremove").setup(require("plugins.mini.general.bufremove"))
     end
     if opts.clue.enabled then
-      require("mini.clue").setup(require("plugins.mini.clue"))
+      require("mini.clue").setup(require("plugins.mini.general.clue"))
     end
     if opts.deps.enabled then
-      require("mini.deps").setup(require("plugins.mini.deps"))
+      require("mini.deps").setup(require("plugins.mini.general.deps"))
     end
     if opts.diff.enabled then
-      require("mini.diff").setup(require("plugins.mini.diff"))
+      require("mini.diff").setup(require("plugins.mini.general.diff"))
       -- vim.keymap.set("v", "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
     end
     if opts.extra.enabled then
-      require("mini.extra").setup(require("plugins.mini.extra"))
+      require("mini.extra").setup(require("plugins.mini.general.extra"))
     end
     if opts.files.enabled then
-      require("mini.files").setup(require("plugins.mini.files"))
+      require("mini.files").setup(require("plugins.mini.general.files"))
     end
     if opts.git.enabled then
-      require("mini.git").setup(require("plugins.mini.git"))
+      require("mini.git").setup(require("plugins.mini.general.git"))
     end
     if opts.jump.enabled then
-      require("mini.jump").setup(require("plugins.mini.jump"))
+      require("mini.jump").setup(require("plugins.mini.general.jump"))
     end
     if opts.jump2d.enabled then
-      require("mini.jump2d").setup(require("plugins.mini.jump2d"))
+      require("mini.jump2d").setup(require("plugins.mini.general.jump2d"))
     end
     if opts.misc.enabled then
-      require("mini.misc").setup(require("plugins.mini.misc"))
+      require("mini.misc").setup(require("plugins.mini.general.misc"))
     end
     if opts.pick.enabled then
-      require("mini.pick").setup(require("plugins.mini.pick"))
+      require("mini.pick").setup(require("plugins.mini.general.pick"))
     end
     if opts.sessions.enabled then
-      require("mini.sessions").setup(require("plugins.mini.sessions"))
+      require("mini.sessions").setup(require("plugins.mini.general.sessions"))
     end
     if opts.visits.enabled then
-      require("mini.visits").setup(require("plugins.mini.visits"))
+      require("mini.visits").setup(require("plugins.mini.general.visits"))
     end
 
     -- Appearance
     if opts.animate.enabled then
-      require("mini.animate").setup(require("plugins.mini.animate"))
+      require("mini.animate").setup(require("plugins.mini.appearance.animate"))
     end
     if opts.base16.enabled then
-      require("mini.base16").setup(require("plugins.mini.base16"))
+      require("mini.base16").setup(require("plugins.mini.appearance.base16"))
     end
     if opts.colors.enabled then
-      require("mini.colors").setup(require("plugins.mini.colors"))
+      require("mini.colors").setup(require("plugins.mini.appearance.colors"))
     end
     if opts.cursorword.enabled then
-      require("mini.cursorword").setup(require("plugins.mini.cursorword"))
+      require("mini.cursorword").setup(require("plugins.mini.appearance.cursorword"))
     end
     if opts.hipatterns.enabled then
-      require("mini.hipatterns").setup(require("plugins.mini.hipatterns"))
+      require("mini.hipatterns").setup(require("plugins.mini.appearance.hipatterns"))
     end
     if opts.hues.enabled then
-      require("mini.hues").setup(require("plugins.mini.hues"))
+      require("mini.hues").setup(require("plugins.mini.appearance.hues"))
     end
     if opts.icons.enabled then
-      require("mini.icons").setup(require("plugins.mini.icons"))
+      require("mini.icons").setup(require("plugins.mini.appearance.icons"))
     end
     if opts.indentscope.enabled then
-      require("mini.indentscope").setup(require("plugins.mini.indentscope"))
+      require("mini.indentscope").setup(require("plugins.mini.appearance.indentscope"))
     end
     if opts.map.enabled then
-      require("mini.map").setup(require("plugins.mini.map"))
+      require("mini.map").setup(require("plugins.mini.appearance.map"))
       require("mini.map").toggle()
     end
     if opts.notify.enabled then
-      require("mini.notify").setup(require("plugins.mini.notify"))
+      require("mini.notify").setup(require("plugins.mini.appearance.notify"))
     end
     if opts.starter.enabled then
-      require("mini.starter").setup(require("plugins.mini.starter"))
+      require("mini.starter").setup(require("plugins.mini.appearance.starter"))
     end
     if opts.statusline.enabled then
-      require("mini.statusline").setup(require("plugins.mini.statusline"))
+      require("mini.statusline").setup(require("plugins.mini.appearance.statusline"))
     end
     if opts.tabline.enabled then
-      require("mini.tabline").setup(require("plugins.mini.tabline"))
+      require("mini.tabline").setup(require("plugins.mini.appearance.tabline"))
     end
     if opts.trailspace.enabled then
-      require("mini.trailspace").setup(require("plugins.mini.trailspace"))
+      require("mini.trailspace").setup(require("plugins.mini.appearance.trailspace"))
     end
 
     -- Other
     if opts.doc.enabled then
-      require("mini.doc").setup(require("plugins.mini.doc"))
+      require("mini.doc").setup(require("plugins.mini.other.doc"))
     end
     if opts.fuzzy.enabled then
-      require("mini.fuzzy").setup(require("plugins.mini.fuzzy"))
+      require("mini.fuzzy").setup(require("plugins.mini.other.fuzzy"))
     end
     if opts.test.enabled then
-      require("mini.test").setup(require("plugins.mini.test"))
+      require("mini.test").setup(require("plugins.mini.other.test"))
     end
+
+    -- Load keymaps
+    require("config.keymaps.mini")
   end,
 }

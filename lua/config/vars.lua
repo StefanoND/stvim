@@ -1,15 +1,18 @@
 local M = {}
 
--- local vars = require("config.vars")
-
-M.getOS = function()
-  return vim.uv.os_uname().sysname
-end
-
-M.getOSLowerCase = function()
-  return vim.uv.os_uname().sysname:lower()
-end
-
 M.maxFileSize = 2 * 1024 * 1024
+
+M.highlights = {
+  "RainbowDelimiterRed",
+  "RainbowDelimiterYellow",
+  "RainbowDelimiterBlue",
+  "RainbowDelimiterOrange",
+  "RainbowDelimiterGreen",
+  "RainbowDelimiterViolet",
+  "RainbowDelimiterCyan",
+}
+
+-- Probably won't use it
+M.kmOpts = { noremap = true, silent = true, remap = false }
 
 return M

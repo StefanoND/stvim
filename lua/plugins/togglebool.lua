@@ -107,9 +107,6 @@ return {
       },
     })
 
-    -- local opts = { noremap = true, silent = true }
-    -- vim.keymap.set({ "n", "v" }, "<leader>tb", function()
-    --   require("toggle-bool").toggle_bool()
-    -- end, opts)
+    require("config.keymaps.togglebool")
   end,
 }
