@@ -14,12 +14,6 @@ return {
   config = function(_, opts)
     require("true-zen").setup(opts)
 
-    local keymap = vim.keymap.set
-
-    keymap("n", "<leader>zn", ":TZNarrow<CR>", { noremap = true, desc = "Zen Narrow" })
-    keymap("v", "<leader>zn", ":'<,'>TZNarrow<CR>", { noremap = true, desc = "Zen Narrow Visual" })
-    keymap("n", "<leader>zf", ":TZFocus<CR>", { noremap = true, desc = "Zen Focus" })
-    keymap("n", "<leader>zm", ":TZMinimalist<CR>", { noremap = true, desc = "Zen Minimalist" })
-    keymap("n", "<leader>za", ":TZAtaraxis<CR>", { noremap = true, desc = "Zen Ataraxis" })
+    require("config.keymaps.zen")
   end,
 }
