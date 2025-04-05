@@ -1,3 +1,14 @@
+-- Opt-in to use filetype.lua for setting custom filetypes
+vim.g.do_filetype_lua = 1 -- Enable
+
+-- recommended settings
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
@@ -148,4 +159,63 @@ vim.opt.fillchars = {
   eob = " ",
 }
 
+-- Godot
+local pipepath = vim.fn.stdpath("cache") .. "/server.pipe"
+if not vim.loop.fs_stat(pipepath) then
+  vim.fn.serverstart(pipepath)
+end
+
 vim.cmd("let g:netrw_liststlye = 3")
+
+-- Reenable DoMatchParen if it was disabled by a BigFile
+vim.api.nvim_create_autocmd("BufDelete", {
+  callback = function()
+    local vars = require("config.vars")
+    local maxSize = vars.maxFileSize
+    local size = vim.fn.getfsize(vim.fn.expand("%"))
+    if size >= maxSize then
+      -- vim.cmd([[autocmd BufDelete * silent :DoMatchParen]])
+      vim.cmd([[:DoMatchParen]])
+    end
+  end,
+})
+
+-- ftplugin start
+local ftmodule = "ftplugin.%s"
+local function loadftmodule(ft, action)
+  local modname = ftmodule:format(ft)
+  local _, res = pcall(require, modname)
+  if type(res) == "table" then
+    if type(res[action]) == "function" then
+      res[action]()
+    end
+  elseif
+    type(res) == "string"
+    and not res:match("Module '" .. modname .. "' not found")
+    and not res:match("	no file")
+  then
+    print(res)
+  end
+end
+
+vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "Colorscheme" }, {
+  pattern = { "*" },
+  callback = function()
+    loadftmodule(vim.bo.filetype, "ftplugin")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "*" },
+  callback = function()
+    loadftmodule(vim.bo.filetype, "newfile")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "VimEnter", "BufWinEnter", "Colorscheme" }, {
+  pattern = { "*" },
+  callback = function()
+    loadftmodule(vim.bo.filetype, "syntax")
+  end,
+})
+-- ftplugin end

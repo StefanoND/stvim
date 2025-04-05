@@ -27,5 +27,8 @@ return {
     end,
     -- delay after which a pending save is executed (default 1000)
     debounce_delay = 750,
-  }
+  },
+  config = function()
+    require("config.keymaps.autosave")
+  end,
 }

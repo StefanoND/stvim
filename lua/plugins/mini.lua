@@ -35,7 +35,7 @@ local opts = {
   cursorword = { enabled = false },
   hipatterns = { enabled = true },
   hues = { enabled = false },
-  icons = { enabled = true },
+  icons = { enabled = false },
   indentscope = { enabled = false },
   map = { enabled = true },
   notify = { enabled = false },

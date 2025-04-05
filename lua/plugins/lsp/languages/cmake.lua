@@ -1,0 +1,146 @@
+return {
+  {
+    "cdelledonne/vim-cmake",
+    ft = { "c", "cpp", "cmake" },
+    config = function()
+      local opts = { noremap = true, silent = false }
+
+      vim.keymap.set("n", "<leader>cg", "<cmd>CMakeGenerate<CR>", opts)
+      vim.keymap.set("n", "<leader>cb", "<cmd>CMakeBuild<CR>", opts)
+      vim.keymap.set("n", "<leader>cq", "<cmd>CMakeClose<CR>", opts)
+      vim.keymap.set("n", "<leader>cc", "<cmd>CMakeClean<CR>", opts)
+
+      vim.g.cmake_link_compile_commands = 1
+    end,
+  },
+  {
+    "Civitasv/cmake-tools.nvim",
+    dependency = {
+      { "nvim-lua/plenary.nvim", ft = { "c", "cpp", "cmake" } },
+    },
+    ft = { "c", "cpp", "cmake" },
+    opts = {
+      cmake_build_directory = "build",
+    },
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    ft = { "c", "cpp", "cmake" },
+    event = "VeryLazy",
+    opts = {
+      sections = {
+        lualine_c = {
+        -- stylua: ignore
+        { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 }, },
+        -- stylua: ignore
+        { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" }, },
+          {
+            function()
+              return "CMake:"
+            end,
+            icon = "",
+            separator = "",
+            padding = { left = 1, right = 0 },
+            cond = function()
+              return package.loaded["cmake-tools"] and require("cmake-tools").is_cmake_project()
+            end,
+            on_click = function(clicks, button)
+              if button == "l" and clicks == 1 then
+                vim.cmd("CMakeGenerate")
+              end
+            end,
+          },
+          {
+            function()
+              local preset = require("cmake-tools").get_configure_preset()
+              return "[" .. (preset and preset or "") .. "]"
+            end,
+            separator = "",
+            cond = function()
+              return package.loaded["cmake-tools"]
+                and require("cmake-tools").is_cmake_project()
+                and require("cmake-tools").has_cmake_preset()
+            end,
+            on_click = function(clicks, button)
+              if button == "l" and clicks == 1 then
+                vim.cmd("CMakeSelectConfigurePreset")
+              end
+            end,
+          },
+          {
+            function()
+              local type = require("cmake-tools").get_build_type()
+              return "[" .. (type and type or "") .. "]"
+            end,
+            separator = "",
+            cond = function()
+              return package.loaded["cmake-tools"]
+                and require("cmake-tools").is_cmake_project()
+                and not require("cmake-tools").has_cmake_preset()
+            end,
+            on_click = function(clicks, button)
+              if button == "l" and clicks == 1 then
+                vim.cmd("CMakeSelectBuildType")
+              end
+            end,
+          },
+          {
+            function()
+              return "Build"
+            end,
+            icon = "",
+            separator = "",
+            padding = { left = 1, right = 0 },
+            cond = function()
+              return package.loaded["cmake-tools"] and require("cmake-tools").is_cmake_project()
+            end,
+            on_click = function(clicks, button)
+              if clicks == 1 and button == "l" then
+                vim.cmd("CMakeBuild")
+              end
+            end,
+          },
+          {
+            function()
+              local preset = require("cmake-tools").get_build_preset()
+              return "[" .. (preset and preset or "") .. "]"
+            end,
+            separator = "",
+            cond = function()
+              return package.loaded["cmake-tools"]
+                and require("cmake-tools").is_cmake_project()
+                and require("cmake-tools").has_cmake_preset()
+            end,
+            on_click = function(clicks, button)
+              if button == "l" and clicks == 1 then
+                vim.cmd("CMakeSelectBuildPreset")
+              end
+            end,
+          },
+          {
+            function()
+              local type = require("cmake-tools").get_build_target()
+              return "[" .. (type and type or "") .. "]"
+            end,
+            cond = function()
+              return package.loaded["cmake-tools"] and require("cmake-tools").is_cmake_project()
+              -- and not require("cmake-tools").has_cmake_preset()
+            end,
+            on_click = function(clicks, button)
+              if clicks == 1 and button == "l" then
+                vim.cmd("CMakeSelectBuildTarget")
+              end
+            end,
+          },
+          {
+            "navic",
+            cond = function()
+              return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+            end,
+            color_correction = "dynamic",
+          },
+        },
+      },
+    },
+  },
+}
