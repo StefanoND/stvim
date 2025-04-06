@@ -1,16 +1,36 @@
 return {
-  "MeanderingProgrammer/render-markdown.nvim",
-  -- dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-  -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-  dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" }, -- if you prefer nvim-web-devicons
-  opts = {},
-  config = function()
-    require("render-markdown").setup({
-      pipe_table = { preset = "round" },
-      completions = {
-        lsp = { enabled = true },
-        -- blink = { enabled = true },
-      },
-    })
-  end,
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "markdown.mdx" },
+    lazy = true,
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    opts = {},
+    config = function()
+      vim.o.conceallevel = 2
+      require("render-markdown").setup({
+        pipe_table = { preset = "round" },
+        link = {
+          render_modes = true,
+        },
+        completions = {
+          lsp = { enabled = true },
+        },
+        preset = "obsidian",
+        filetypes = { "markdown", "markdown.mdx" },
+      })
+    end,
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown", "markdown.mdx" },
+    lazy = true,
+    build = "cd app && npm install && git restore .",
+    -- build = "cd app && yarn install && git restore .", -- If you prefer yarn over npm
+    init = function()
+      vim.o.conceallevel = 2
+      vim.g.mkdp_filetypes = { "markdown" }
+      require("config.keymaps.languages.markdown")
+    end,
+  },
 }

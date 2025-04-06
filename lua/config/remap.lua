@@ -13,142 +13,120 @@ local wk = require("which-key")
 wk.add({
   { -- Visual mode only
     mode = { "v" },
-    -- { keymap, function, desc = "" },
+    -- Keep things highlighted after moving with < and >
+    { "<", "<gv", desc = "Move left keeping highlight" },
+    { ">", ">gv", desc = "Move right keeping highlight" },
+
+    {
+      "<leader>s",
+      [[y:<C-u>%s/<C-r>0/<C-r>0/gI<Left><Left><Left>]],
+      desc = "Replace all instances of the selection",
+    },
   },
   { -- Normal mode only
     mode = { "n" },
 
+    {
+      "<leader><leader>",
+      function()
+        vim.cmd("so")
+      end,
+      desc = "Source file",
+    },
+
+    -- Diff
+    { "<leader>dt", ":windo diffthis<CR>", desc = "Diff current split windows" },
+    { "<leader>do", ":windo diffoff<CR>", desc = "Stop Diff" },
+
+    -- splits a one liner {} block separated by ';' into separate lines
+    { "]j", "f{i<CR><ESC>lli<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>", desc = "" },
+
+    -- Rectangular selection
+    { "<leader>su", vim.cmd.UndotreeToggle, desc = "Open undotree" },
+    { "<leader>nh", "<cmd>nohl<CR>", desc = "[N]o [H]ighlights" },
+    { "D", "<cmd>bd<CR>", desc = "Cloes current buffer/tab" },
+    { "<M-d>", "<cmd>delete<CR>", desc = "Same as 'dd'" },
+
+    { "J", "mzJ`z", desc = "J stays at beginning of line" },
+    { "<C-u>", "<C-u>zz", desc = "Half-page jump up" },
+    { "<C-d>", "<C-d>zz", desc = "Half-page jump down" },
+
+    -- Keep stuff centered while moving around
+    { "*", "*zzzv", desc = "Next item in search" },
+    { "#", "#zzzv", desc = "Previous item in search" },
+    { ",", ",zzzv", desc = "Next item in search" },
+    { ";", ";zzzv", desc = "Previous item in search" },
+    { "n", "nzzzv", desc = "Next item in search" },
+    { "N", "Nzzzv", desc = "Previous item in search" },
+
+    { "Q", "<Nop>", desc = "No more [Q]uitting by mistake" },
+
+    { "j", "gj", desc = "Move down wrapped line" },
+    { "k", "gk", desc = "Move up wrapped line" },
+
+    -- vim's quickfix navigation
+    { "<C-k>", "<cmd>cnext<CR>zz", desc = "Next Quickfix" },
+    { "<C-j>", "<cmd>cprev<CR>zz", desc = "Previous Quickfix" },
+    { "<leader>po", "<cmd>copen<CR>zz", desc = "Open Quickfix" },
+    { "<leader>k", "<cmd>lnext<CR>zz", desc = "Next Location" },
+    { "<leader>j", "<cmd>lprev<CR>zz", desc = "Previous Location" },
+
+    -- Window management
+    { "<C-M-i>", "<C-w>+", desc = "Increase Split relative to the current active split" },
+    { "<C-M-d>", "<C-w>-", desc = "Decrease Split relative to the current active split" },
+    { "<M-m>", "<C-w><", desc = "Increase Split relative to the current active split" },
+    { "<M-p>", "<C-w>>", desc = "Decrease Split relative to the current active split" },
+    { "<leader>sv", "<C-w>v<C-w>><C-w>><C-w>><C-w>>", desc = "Split window vertically" },
+    { "<leader>sh", "<C-w>s", desc = "Split window horizontally" },
+    { "<leader>se", "<C-w>=", desc = "Make splits equal size" },
+    { "<leader>sx", "<cmd>close<CR>", desc = "Close current split" },
+
+    -- -- Tab management
+    -- { "<leader>to", "<cmd>tabnew<CR>", desc = "Open new tab" },
+    -- { "<leader>tf", "<cmd>tabnew %<CR>", desc = "Open current buffer in new tab" },
+    -- { "<leader>tt", "<cmd>tabn<CR>", desc = "Go to previous tab" },
+    -- { "<leader>tT", "<cmd>tabp<CR>", desc = "Go to previous tab" },
+    -- { "<leader>tx", "<cmd>tabclose<CR>", desc = "Close current tab" },
+
+    { "<leader>x", "<cmd>!chmod +x %<CR>", desc = "Same as 'chmod +x file'" },
+
+    { "<leader>it", "<cmd>InspectTree<CR>", desc = "Inspect Tree" },
+
+    {
+      "<leader>s",
+      [[:%s/\<<C-r><C-w>\>//gI<Left><Left><Left>]],
+      desc = "Replace all instances of the word under the cursor",
+    },
+
     -- Tmux
+    {
+      "<C-f>",
+      "<cmd>silent !tmux neww ~/dotfiles/scripts/tmux-sessionizer<CR>",
+      desc = "Search and create a new tmux session based on the basename of the file chosen",
+    },
     { "<M-Left>", "<cmd>TmuxNavigateLeft<CR>", desc = "Move to left window" },
     { "<M-Down>", "<cmd>TmuxNavigateDown<CR>", desc = "Move to Down window" },
     { "<M-Up>", "<cmd>TmuxNavigateUp<CR>", desc = "Move to Up window" },
     { "<M-Right>", "<cmd>TmuxNavigateRight<CR>", desc = "Move to right window" },
+    {
+      "<leader>tm",
+      function()
+        vim.cmd([[silent !tmux set status]])
+      end,
+      desc = "Toggle tmux statusline on/off",
+    },
   },
   { -- Normal and Visual and Select modes
     mode = { "n", "v" },
-    -- { keymap, function, desc = "" },
+    -- Enable/Disable rectangular selection
+    { "<leader>ven", ":set ve=none<CR>", desc = "Disable rectangular selection" },
+    { "<leader>vea", ":set ve=all<CR>", desc = "Enable rectangular selection" },
+
+    -- Register
+    { "<leader>d", [["_d]], desc = "Delete without copying deleted content" },
   },
   { -- Visual mode only
     mode = { "x" },
+    { "<leader>p", [["_dP]], desc = "Paste preserving yank" },
   },
 })
-
--- local opts = { noremap = true, silent = true }
---
--- local extend = function(desc)
---   vim.tbl_deep_extend("force", opts, { desc = desc })
--- end
---
--- local keymap = vim.keymap.set
---
--- -- Vertical selection
--- keymap({ "n", "v" }, "<leader>ven", ":set ve=none<CR>", opts)
---
--- -- Rectangular selection
--- keymap({ "n", "v" }, "<leader>vea", ":set ve=all<CR>", opts)
--- keymap("n", "<leader>su", vim.cmd.UndotreeToggle, extend("Open undotree"))
--- keymap("n", "<leader>nh", "<cmd>nohl<CR>", extend("[N]o [H]ighlights"))
--- keymap("n", "D", "<cmd>bd<CR>", extend("Cloes current buffer/tab"))
--- keymap("n", "<M-d>", "<cmd>delete<CR>", extend("Same as 'dd'"))
---
--- keymap("n", "J", "mzJ`z", extend("J stays at beginning of line"))
--- keymap("n", "<C-u>", "<C-u>zz", extend("Half-page jump up"))
--- keymap("n", "<C-d>", "<C-d>zz", extend("Half-page jump down"))
---
--- -- Keep stuff centered while moving around
--- keymap("n", "*", "*zzzv", extend("Next item in search"))
--- keymap("n", "#", "#zzzv", extend("Previous item in search"))
--- keymap("n", ",", ",zzzv", extend("Next item in search"))
--- keymap("n", ";", ";zzzv", extend("Previous item in search"))
--- keymap("n", "n", "nzzzv", extend("Next item in search"))
--- keymap("n", "N", "Nzzzv", extend("Previous item in search"))
---
--- -- Register stuff
--- keymap({ "n", "v" }, "<leader>d", [["_d]], extend("Delete without copying deleted content"))
--- keymap("x", "<leader>p", [["_dP]], extend("Paste preserving yank"))
---
--- keymap("n", "Q", "<Nop>", extend("No more [Q]uitting by mistake"))
---
--- -- Keep things highlighted after moving with < and >
--- keymap("v", "<", "<gv", extend("Move left keeping highlight"))
--- keymap("v", ">", ">gv", extend("Move right keeping highlight"))
---
--- -- tmux
--- keymap(
---   "n",
---   "<C-f>",
---   "<cmd>silent !tmux neww ~/dotfiles/scripts/tmux-sessionizer<CR>",
---   extend("Search and create a new tmux session based on the basename of the file chosen")
--- )
--- keymap("n", "<M-Left>", "<cmd>TmuxNavigateLeft<CR>", extend("Move to left window"))
--- keymap("n", "<M-Down>", "<cmd>TmuxNavigateDown<CR>", extend("Move to Down window"))
--- keymap("n", "<M-Up>", "<cmd>TmuxNavigateUp<CR>", extend("Move to Up window"))
--- keymap("n", "<M-Right>", "<cmd>TmuxNavigateRight<CR>", extend("Move to right window"))
---
--- keymap("n", "j", "gj", extend("Move down wrapped line"))
--- keymap("n", "k", "gk", extend("Move up wrapped line"))
---
--- keymap("n", "<leader>tm", function()
---   vim.cmd([[silent !tmux set status]])
--- end, extend("Toggle tmux statusline on/off"))
---
--- -- Window management
--- keymap("n", "<C-M-i>", "<C-w>+", extend("Increase Split relative to the current active split"))
--- keymap("n", "<C-M-d>", "<C-w>-", extend("Decrease Split relative to the current active split"))
--- keymap("n", "<M-m>", "<C-w><", extend("Increase Split relative to the current active split"))
--- keymap("n", "<M-p>", "<C-w>>", extend("Decrease Split relative to the current active split"))
--- keymap("n", "<leader>sv", "<C-w>v<C-w>><C-w>><C-w>><C-w>>", extend("Split window vertically"))
--- keymap("n", "<leader>sh", "<C-w>s", extend("Split window horizontally"))
--- keymap("n", "<leader>se", "<C-w>=", extend("Make splits equal size"))
--- keymap("n", "<leader>sx", "<cmd>close<CR>", extend("Close current split"))
---
--- -- -- Tab management
--- -- keymap("n", "<leader>to", "<cmd>tabnew<CR>", extend("Open new tab"))
--- -- keymap("n", "<leader>tf", "<cmd>tabnew %<CR>", extend("Open current buffer in new tab"))
--- -- keymap("n", "<leader>tt", "<cmd>tabn<CR>", extend("Go to previous tab"))
--- -- keymap("n", "<leader>tT", "<cmd>tabp<CR>", extend("Go to previous tab"))
--- -- keymap("n", "<leader>tx", "<cmd>tabclose<CR>", extend("Close current tab"))
---
--- -- vim's quickfix navigation
--- keymap("n", "<C-k>", "<cmd>cnext<CR>zz", extend("Next Quickfix"))
--- keymap("n", "<C-j>", "<cmd>cprev<CR>zz", extend("Previous Quickfix"))
--- keymap("n", "<leader>po", "<cmd>copen<CR>zz", extend("Open Quickfix"))
--- keymap("n", "<leader>k", "<cmd>lnext<CR>zz", extend("Next Location"))
--- keymap("n", "<leader>j", "<cmd>lprev<CR>zz", extend("Previous Location"))
---
--- keymap(
---   "n",
---   "<leader>s",
---   [[:%s/\<<C-r><C-w>\>//gI<Left><Left><Left>]],
---   extend("Replace all instances of the word under the cursor")
--- )
---
--- keymap(
---   "v",
---   "<leader>s",
---   [[y:<C-u>%s/<C-r>0/<C-r>0/gI<Left><Left><Left>]],
---   extend("Replace all instances of the selection")
--- )
---
--- keymap("n", "<leader>x", "<cmd>!chmod +x %<CR>", extend("Same as 'chmod +x file'"))
---
--- keymap("n", "<leader>it", "<cmd>InspectTree<CR>", extend("Inspect Tree"))
---
--- keymap("n", "<leader><leader>", function()
---   vim.cmd("so")
--- end, extend("Shout Out"))
---
--- -- Diff
--- keymap("n", "<leader>dt", ":windo diffthis<CR>", extend("Diff current split windows"))
--- keymap("n", "<leader>do", ":windo diffoff<CR>", extend("Stop Diff"))
---
--- -- splits a one liner {} block separated by ';' into separate lines
--- keymap("n", "]j", "f{i<CR><ESC>lli<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>")
---
--- -- Spelling
--- vim.api.nvim_set_keymap(
---   "n",
---   "<leader>sc",
---   ":setlocal spell spelllang=en_us<CR>",
---   { noremap = true, silent = true }
--- )

@@ -52,59 +52,38 @@ M.repeatable_keymap_set = function(mode, key, name, func, opts)
 end
 
 M.getOS = function()
-  return vim.uv.os_uname().sysname
+  return (vim.uv or vim.loop).os_uname().sysname
 end
 
 M.getOSLowerCase = function()
-  return vim.uv.os_uname().sysname:lower()
+  return (vim.uv or vim.loop).os_uname().sysname:lower()
+end
+
+M.ignore = function(filename)
+  local lines = {}
+  local ignorefile = vim.fn.getcwd() .. "/" .. filename
+  if vim.fn.filereadable(ignorefile) == 1 then
+    for line in io.lines(ignorefile) do
+      table.insert(lines, line)
+    end
+  end
+  return lines
 end
 
 M.ignoreAll = function()
-  local lines = {}
-  local ignorefile = vim.fn.getcwd() .. "/.allignore"
-  if vim.fn.filereadable(ignorefile) == 1 then
-    for line in io.lines(ignorefile) do
-      table.insert(lines, line)
-    end
-    return lines
-  end
-  return nil
+  return M.ignore(".allignore")
 end
 
 M.ignoreExplorer = function()
-  local lines = {}
-  local ignorefile = vim.fn.getcwd() .. "/.explorerignore"
-  if vim.fn.filereadable(ignorefile) == 1 then
-    for line in io.lines(ignorefile) do
-      table.insert(lines, line)
-    end
-    return lines
-  end
-  return nil
+  return M.ignore(".explorerignore")
 end
 
 M.ignoreFiles = function()
-  local lines = {}
-  local ignorefile = vim.fn.getcwd() .. "/.filesignore"
-  if vim.fn.filereadable(ignorefile) == 1 then
-    for line in io.lines(ignorefile) do
-      table.insert(lines, line)
-    end
-    return lines
-  end
-  return nil
+  return M.ignore(".filesignore")
 end
 
 M.ignoreGrep = function()
-  local lines = {}
-  local ignorefile = vim.fn.getcwd() .. "/.grepignore"
-  if vim.fn.filereadable(ignorefile) == 1 then
-    for line in io.lines(ignorefile) do
-      table.insert(lines, line)
-    end
-    return lines
-  end
-  return nil
+  return M.ignore(".grepignore")
 end
 
 M.ext = function(opts, args)
@@ -119,6 +98,7 @@ M.getRoot = function(fname)
   return require("lspconfig.util").root_pattern(
     ".csproj",
     ".git",
+    ".luarc.json",
     ".null-ls-root",
     ".sln",
     ".uproject",
@@ -135,7 +115,8 @@ M.getRoot = function(fname)
     "meson_options.txt",
     "nasher.cfg",
     "package.json",
-    "project.godot"
+    "project.godot",
+    ".marksman.toml"
   )(fname) or require("lspconfig.util").find_git_ancestor(fname)
 end
 

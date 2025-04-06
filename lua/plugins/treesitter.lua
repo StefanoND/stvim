@@ -1,20 +1,20 @@
 return {
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    config = function()
-      require("treesitter-context").setup({
-        enable = true,
-      })
-    end,
-  },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   config = function()
+  --     require("treesitter-context").setup({
+  --       enable = true,
+  --     })
+  --   end,
+  -- },
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
     event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
-    dependencies = {
-      "JoosepAlviste/nvim-ts-context-commentstring",
-    },
+    -- dependencies = {
+    --   "JoosepAlviste/nvim-ts-context-commentstring",
+    -- },
     opts = {
       -- A list of parser names, or "all" (the five listed parsers should always be installed)
       ensure_installed = {
@@ -39,7 +39,7 @@ return {
         "ini",
         "javascript",
         "json",
-        -- "latex",
+        "latex",
         "llvm",
         "lua",
         "make",
@@ -69,7 +69,8 @@ return {
       -- Syntax highlighting
       highlight = {
         enable = true,
-        additional_vim_regex_highlighting = false,
+        -- additional_vim_regex_highlighting = false,
+        additional_vim_regex_highlighting = { "markdown" },
       },
 
       incremental_selection = {
@@ -109,7 +110,7 @@ return {
       vim.opt.foldmethod = "expr"
       vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
-      require("ts_context_commentstring").setup()
+      -- require("ts_context_commentstring").setup()
     end,
   },
 }

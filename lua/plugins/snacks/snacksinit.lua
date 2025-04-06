@@ -22,6 +22,7 @@ M.init = function()
   vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",
     callback = function()
+      local Snacks = require("snacks")
       -- Disable animations globally
       vim.g.snacks_animate = false
 
@@ -75,12 +76,12 @@ M.init = function()
       end, p)
 
       local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-      vim.notify(table.concat(msg, "\n"), "info", {
+      vim.notify(table.concat(msg, "\n"), vim.log.levels.INFO, {
         id = "lsp_progress",
         title = client.name,
         opts = function(notif)
           notif.icon = #progress[client.id] == 0 and " "
-            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            or spinner[math.floor((vim.uv or vim.loop).hrtime() / (1e6 * 80)) % #spinner + 1]
         end,
       })
     end,

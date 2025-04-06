@@ -33,12 +33,13 @@ M.picker = vim.tbl_deep_extend("force", configs.files, {
       },
     },
   },
-  exclude = {
+  exclude = vim.tbl_deep_extend(
+    "force",
     funcs.ignoreAll(),
     funcs.ignoreExplorer(),
-    configs.ignoreAll,
-    configs.ignoreExplorer
-  },
+    configs.excludeAll,
+    configs.excludeExplorer
+  ),
 })
 
 return M

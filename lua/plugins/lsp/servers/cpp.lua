@@ -1,5 +1,6 @@
 local lspconfig = require("config.lsp.setup")
 local capabilities = require("config.lsp.capabilities").capabilities
+
 local funcs = require("config.functions")
 
 local clangd_ext_opts = require("clangd_extensions").opts

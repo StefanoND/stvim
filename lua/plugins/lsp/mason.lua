@@ -91,6 +91,8 @@ return {
           -- LUA
           "lua-language-server", -- LSP
           "stylua", -- formatter and linter
+          -- MARKDOWN
+          "marksman",
           -- -- RUST cpptools and ast-grep
           -- "rust_analyzer", -- LSP
           -- SQL

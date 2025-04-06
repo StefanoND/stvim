@@ -1,16 +1,18 @@
 return {
   "nvim-neorg/neorg",
   version = "*",
-  lazy = false,
-  -- ft = { "norg", "neorg" },
+  -- lazy = false,
+  ft = { "norg", "neorg" },
   -- build = ":Neorg sync-parsers",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "benlubas/neorg-interim-ls",
     "benlubas/neorg-query",
-    "mrcapivaro/true-zen.nvim"
+    "mrcapivaro/true-zen.nvim",
   },
   config = function()
+    vim.o.conceallevel = 2
+
     require("neorg").setup({
       load = {
         ["external.query"] = {
@@ -150,5 +152,5 @@ return {
     })
 
     require("config.keymaps.neorg")
-  end
+  end,
 }

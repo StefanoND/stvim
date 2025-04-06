@@ -1,9 +1,11 @@
 local max_height = 30
+local max_width = 120
 
 return {
   {
     "xzbdmw/colorful-menu.nvim",
     lazy = false,
+    opts = {},
     config = function()
       -- You don't need to set these options.
       require("colorful-menu").setup({
@@ -14,7 +16,7 @@ return {
           -- between 0 and 1, it'll be treated as percentage of the width of
           -- the window: math.floor(max_width * vim.api.nvim_win_get_width(0))
           -- Default 60.
-          max_width = 120,
+          max_width = max_width,
         },
       })
     end,
@@ -30,7 +32,7 @@ return {
       "mikavilpas/blink-ripgrep.nvim",
       {
         "saghen/blink.compat",
-        lazy = false,
+        lazy = true,
         opts = { enable_events = true, impersonate_nvim_cmp = true },
         config = function()
           require("blink.compat").setup()
@@ -65,8 +67,8 @@ return {
           draw = {
             treesitter = { "lsp" },
             columns = {
-              { "label", "label_description", gap = 1 },
-              { "kind_icon", "source_name", gap = 1 },
+              { "kind_icon", gap = 1 },
+              { "label", "source_name", gap = 1 },
             },
             components = {
               kind_icon = {
@@ -76,11 +78,27 @@ return {
                 ellipsis = true,
               },
               label = {
+                width = { fill = true, max = max_width },
                 text = function(ctx)
-                  return require("colorful-menu").blink_components_text(ctx)
+                  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+                  if highlights_info ~= nil then
+                    -- Or you want to add more item to label
+                    return highlights_info.label
+                  else
+                    return ctx.label
+                  end
                 end,
                 highlight = function(ctx)
-                  return require("colorful-menu").blink_components_highlight(ctx)
+                  local highlights = {}
+                  local highlights_info = require("colorful-menu").blink_highlights(ctx)
+                  if highlights_info ~= nil then
+                    highlights = highlights_info.highlights
+                  end
+                  for _, idx in ipairs(ctx.label_matched_indices) do
+                    table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+                  end
+                  -- Do something else
+                  return highlights
                 end,
               },
             },
@@ -160,29 +178,28 @@ return {
       -- Requires the LazyVim blink.cmp extra
       snippets = {
         preset = "luasnip",
-        -- use_show_condition = true,
-        -- show_autosnippets = true,
-        -- expand = function(snippet)
-        --   require("luasnip").lsp_expand(snippet)
-        -- end,
-        -- active = function(filter)
-        --   if filter and filter.direction then
-        --     return require("luasnip").jumpable(filter.direction)
-        --   end
-        --   return require("luasnip").in_snippet()
-        -- end,
-        -- jump = function(direction)
-        --   require("luasnip").jump(direction)
-        -- end,
+        expand = function(snippet)
+          require("luasnip").lsp_expand(snippet)
+        end,
+        active = function(filter)
+          if filter and filter.direction then
+            return require("luasnip").jumpable(filter.direction)
+          end
+          return require("luasnip").in_snippet()
+        end,
+        jump = function(direction)
+          require("luasnip").jump(direction)
+        end,
       },
       sources = {
         default = {
           "codeium",
-          "snippets",
-          "lsp",
+          "cmdline",
           "lazydev",
-          "buffer",
+          "lsp",
+          "snippets",
           "path",
+          "buffer",
           "omni",
           "emoji",
           "ripgrep",
@@ -209,40 +226,69 @@ return {
               return items
             end,
           },
-          snippets = {
-            name = "[snip]",
-            score_offset = 95,
+          cmdline = {
+            module = "blink.cmp.sources.cmdline",
+            name = "[cmd]",
+            score_offset = 100,
+            async = true,
+            -- Disable shell commands on windows, since they cause neovim to hang
+            enabled = function()
+              return vim.fn.has("win32") == 0
+                or vim.fn.getcmdtype() ~= ":"
+                or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+            end,
           },
           lazydev = {
             name = "[LazyDev]",
             module = "lazydev.integrations.blink",
-            score_offset = 90,
+            score_offset = 95,
+            async = true,
           },
           lsp = {
             name = "[LSP]",
-            score_offset = 80,
+            score_offset = 95,
+            async = true,
+          },
+          snippets = {
+            name = "[snip]",
+            score_offset = 90,
+            async = true,
+            opts = {
+              use_show_condition = true,
+              show_autosnippets = true,
+            },
+          },
+          path = {
+            name = "[path]",
+            score_offset = 85,
             async = true,
           },
           buffer = {
             name = "[buf]",
-            score_offset = 60,
-          },
-          path = {
-            name = "[path]",
-            score_offset = 60,
+            score_offset = 75,
+            async = true,
           },
           omni = {
-            score_offset = 50,
-          },
-          emoji = {
-            name = "[emoji]",
-            module = "blink-emoji",
-            score_offset = 50,
+            score_offset = 70,
+            async = true,
+            ---@type blink.cmp.CompleteFuncOpts
+            opts = {
+              complete_func = function()
+                return vim.bo.omnifunc
+              end,
+            },
           },
           ripgrep = {
             name = "[ripgrep]",
             module = "blink-ripgrep",
-            score_offset = 40,
+            score_offset = 65,
+            async = true,
+          },
+          emoji = {
+            name = "[emoji]",
+            module = "blink-emoji",
+            score_offset = 60,
+            async = true,
           },
         },
       },
@@ -259,4 +305,3 @@ return {
     opts_extend = { "sources.default" },
   },
 }
-

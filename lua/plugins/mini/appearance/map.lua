@@ -8,8 +8,7 @@ return {
     map.gen_integration.gitsigns(),
   },
   window = {
-    width = 8,
+    width = 6,
     show_integration_count = true,
   },
 }
-

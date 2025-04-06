@@ -31,7 +31,6 @@ M.textDocument = {
       },
     },
   },
-  formatting = true,
   foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,
@@ -39,8 +38,6 @@ M.textDocument = {
 }
 
 M.lspCapabilities = require("lspconfig.util").default_config.capabilities
--- M.cmpCapabilities = require("cmp_nvim_lsp").default_capabilities()
--- M.allCapabilities = vim.tbl_deep_extend("force", M.lspCapabilities, M.cmpCapabilities, M.encoding)
 M.allCapabilities = vim.tbl_deep_extend("force", M.lspCapabilities, M.encoding)
 
 M.allCapabilities.workspace = M.workspace

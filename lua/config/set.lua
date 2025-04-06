@@ -107,7 +107,6 @@ vim.opt.hidden = true
 vim.opt.termguicolors = true
 
 vim.opt.background = "dark" -- Colorschemes that can be light or dark will be made dark
-vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
 
 vim.opt.backspace = "indent,eol,start" -- Allow backspace on indent, end of line or insert mode start position
 
@@ -119,7 +118,8 @@ vim.opt.splitbelow = true -- Split horizontal window to the bottom
 vim.opt.scrolloff = 8
 -- vim.opt.isfname:append("@-@")
 
-vim.opt.updatetime = 30
+-- Decrease update time
+vim.opt.updatetime = 250
 
 -- Better completion experience
 vim.opt.completeopt = "menu,menuone,preview,noselect"
@@ -127,18 +127,22 @@ vim.opt.completeopt = "menu,menuone,preview,noselect"
 -- Show gutter after column 105
 vim.opt.textwidth = 105
 vim.opt.colorcolumn = "+1"
+vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
 
 -- Spelling
 -- medical spellfile from https://github.com/melvio/medical-spell-files
-vim.opt.spelllang = { "en_us", "pt_pt", "pt_br", "medical" }
+-- vim.opt.spelllang = { "en_us", "pt_pt", "pt_br", "medical" }
+vim.opt.spelllang = { "en_us", "pt_pt", "medical" }
 vim.opt.spellfile = { os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add" } -- extra words
 vim.opt.spelloptions = "camel" -- Split camelCase words when spellchecking
 
 -- Mini.nvim comment
 vim.g.commentstring = ""
 
--- Concealer for Neorg
-vim.o.conceallevel = 2
+-- Don't use it here, as it'll cause problems with treesitter and render-markdown if using
+-- snacks explorer with preview. It's set in plugins.neorg
+-- -- Concealer for Neorg
+-- vim.o.conceallevel = 2
 
 -- Leading "᛫"
 vim.opt.list = true
@@ -161,7 +165,7 @@ vim.opt.fillchars = {
 
 -- Godot
 local pipepath = vim.fn.stdpath("cache") .. "/server.pipe"
-if not vim.loop.fs_stat(pipepath) then
+if not (vim.uv or vim.loop).fs_stat(pipepath) then
   vim.fn.serverstart(pipepath)
 end
 

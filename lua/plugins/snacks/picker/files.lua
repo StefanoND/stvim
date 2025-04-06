@@ -5,12 +5,13 @@ local funcs = require("config.functions")
 
 M.picker = vim.tbl_deep_extend("force", configs.files, {
   cmd = "rg",
-  exclude = {
+  exclude = vim.tbl_deep_extend(
+    "force",
     funcs.ignoreAll(),
     funcs.ignoreFiles(),
-    configs.ignoreAll,
-    configs.ignoreFiles
-  },
+    configs.excludeAll,
+    configs.excludeFiles
+  ),
 })
 
 return M
