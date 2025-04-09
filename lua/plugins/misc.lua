@@ -1,30 +1,20 @@
 return {
+  { "mbbill/undotree" },
+  { "mg979/vim-visual-multi" },
+  { "tpope/vim-abolish" },
+  { "tpope/vim-repeat", event = "VeryLazy" },
+  { "nvim-lua/plenary.nvim", lazy = true },
+  { "MunifTanjim/nui.nvim", lazy = true },
+  { "LunarVim/bigfile.nvim", lazy = false },
+  { "nvim-tree/nvim-web-devicons", lazy = true },
+  { "2kabhishek/nerdy.nvim", lazy = true, cmd = "Nerdy" },
+  { "smjonas/inc-rename.nvim", lazy = false, cmd = "IncRename", opts = {} },
   {
-    "mbbill/undotree",
-  },
-  {
-    "mg979/vim-visual-multi",
-  },
-  {
-    "nvim-tree/nvim-web-devicons",
+    "dstein64/vim-startuptime",
+    cmd = "StartupTime",
     config = function()
-      local devicons = require("nvim-web-devicons")
-
-      devicons.set_icon({
-        gql = {
-          icon = " ",
-          color = "#e535ab",
-          cterm_color = "199",
-          name = "GraphQL",
-        },
-      })
-
-      devicons.setup()
+      vim.g.startuptime_tries = 10
     end,
-  },
-  {
-    "2kabhishek/nerdy.nvim",
-    cmd = "Nerdy",
   },
   {
     "christoomey/vim-tmux-navigator",
@@ -38,23 +28,15 @@ return {
   },
   {
     "ThePrimeagen/vim-be-good",
+    lazy = true,
     config = function()
       require("config.keymaps.vim-be-good")
     end,
   },
   {
-    "tpope/vim-repeat",
-    lazy = false,
-    -- use function to overwrite default event, otherwise it just merges with the default
-    -- and `VeryLazy` keeps existing
-    event = function()
-      return { "BufReadPost", "BufNewFile" }
-    end,
-  },
-  {
-    "tpope/vim-abolish",
-  },
-  {
-    "LunarVim/bigfile.nvim",
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = {},
+    keys = require("config.keymaps.persistence"),
   },
 }

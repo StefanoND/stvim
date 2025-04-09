@@ -4,7 +4,7 @@ local wk = require("which-key")
 
 M.keymaps = wk.add({
   mode = { "n" },
-  { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header (C/C++)" },
+  { "<leader>cR", "<cmd>ClangdSwitchSourceHeader<CR>", desc = "Switch Source/Header (C/C++)" },
   -- switch between header and source file creating if any are missing
   {
     "<M-o>",

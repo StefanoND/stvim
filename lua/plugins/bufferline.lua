@@ -6,9 +6,7 @@ return {
   -- lazy = false,
   event = "VeryLazy",
   config = function()
-    local bufferline = require("bufferline")
-
-    bufferline.setup({
+    require("bufferline").setup({
       options = {
         mode = "buffers", -- set to "tabs" to only show tabpages instead
         separator_style = "slant",

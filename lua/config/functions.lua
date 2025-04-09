@@ -95,33 +95,47 @@ M.kmExt = function(args)
 end
 
 M.getRoot = function(fname)
-  return require("lspconfig.util").root_pattern(
-    ".csproj",
-    ".git",
-    ".luarc.json",
-    ".null-ls-root",
-    ".sln",
-    ".uproject",
-    "CMakefile",
-    "Makefile",
-    "biome.json",
-    "build.ninja",
-    "compile_commands.json",
-    "compile_flags.txt",
-    "config.h.in",
-    "configure.ac",
-    "configure.in",
-    "meson.build",
-    "meson_options.txt",
-    "nasher.cfg",
-    "package.json",
-    "project.godot",
-    ".marksman.toml"
-  )(fname) or require("lspconfig.util").find_git_ancestor(fname)
+  return require("lspconfig.util").root_pattern(vars.rootPatterns)(fname)
+    or require("lspconfig.util").find_git_ancestor(fname)
 end
 
 M.reloadModule = function(name)
   require("plenary.reload").reload_module(name)
+end
+
+M.isLoaded = function(name)
+  assert(type(name) == "string", "Expected a string value")
+  return package.loaded[name]
+end
+
+M.action = setmetatable({}, {
+  __index = function(_, action)
+    return function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = {
+          only = { action },
+          diagnostics = {},
+        },
+      })
+    end
+  end,
+})
+
+---@param opts LspCommand
+function M.execute(opts)
+  local params = {
+    command = opts.command,
+    arguments = opts.arguments,
+  }
+  if opts.open then
+    require("trouble").open({
+      mode = "lsp_command",
+      params = params,
+    })
+  else
+    return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
+  end
 end
 
 return M

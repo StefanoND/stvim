@@ -1,7 +1,7 @@
 return {
   {
     "cdelledonne/vim-cmake",
-    ft = { "c", "cpp", "cmake" },
+    ft = { "cmake" },
     config = function()
       local opts = { noremap = true, silent = false }
 
@@ -15,17 +15,36 @@ return {
   },
   {
     "Civitasv/cmake-tools.nvim",
+    lazy = true,
     dependency = {
-      { "nvim-lua/plenary.nvim", ft = { "c", "cpp", "cmake" } },
+      { "nvim-lua/plenary.nvim", ft = { "cmake" } },
     },
-    ft = { "c", "cpp", "cmake" },
+    ft = { "cmake" },
     opts = {
       cmake_build_directory = "build",
     },
+    init = function()
+      local loaded = false
+      local function check()
+        local cwd = vim.uv.cwd()
+        if vim.fn.filereadable(cwd .. "/CMakeLists.txt") == 1 then
+          require("lazy").load({ plugins = { "cmake-tools.nvim" } })
+          loaded = true
+        end
+      end
+      check()
+      vim.api.nvim_create_autocmd("DirChanged", {
+        callback = function()
+          if not loaded then
+            check()
+          end
+        end,
+      })
+    end,
   },
   {
     "nvim-lualine/lualine.nvim",
-    ft = { "c", "cpp", "cmake" },
+    ft = { "cmake" },
     event = "VeryLazy",
     opts = {
       sections = {

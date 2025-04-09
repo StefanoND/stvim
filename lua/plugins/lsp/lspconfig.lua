@@ -1,9 +1,11 @@
 local api = vim.api
 
 return {
-  { -- Linting
-    "mfussenegger/nvim-lint",
-    lazy = true,
+  { -- Global/local settings
+    "folke/neoconf.nvim",
+    cmd = "Neoconf",
+    opts = {},
+    config = function() end,
   },
   { -- Preview
     "rmagatti/goto-preview",
@@ -14,7 +16,7 @@ return {
       require("goto-preview").setup({
         width = 90, -- Width of the floating window
         height = 20, -- Height of the floating window
-        border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
+        border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, -- Border characters of the floating window
         default_mappings = true,
         debug = false, -- Print debug information
         opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
@@ -33,23 +35,24 @@ return {
       })
     end,
   },
+  {
+    "SmiteshP/nvim-navic",
+    config = function()
+      local navic = require("nvim-navic")
+      navic.setup({
+        highlight = true,
+        lazy_update_context = true,
+        lsp = { auto_attach = true },
+        depth_limit = 5,
+        icons = require("blink.cmp").kind_icons,
+      })
+    end,
+  },
   { -- Breadcrumbs-like navigation
     "SmiteshP/nvim-navbuddy",
     lazy = true,
     dependencies = {
-      {
-        "SmiteshP/nvim-navic",
-        opts = { lsp = { auto_attach = true } },
-        config = function()
-          local navic = require("nvim-navic")
-          navic.setup({
-            highlight = true,
-            lsp = {
-              auto_attach = true,
-            },
-          })
-        end,
-      },
+      "SmiteshP/nvim-navic",
       "MunifTanjim/nui.nvim",
     },
     opts = { lsp = { auto_attach = true } },
@@ -59,15 +62,32 @@ return {
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
     dependencies = {
+      "mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
       "mfussenegger/nvim-lint",
       "SmiteshP/nvim-navbuddy",
       "rmagatti/goto-preview",
+      "folke/neoconf.nvim",
+      "smjonas/inc-rename.nvim",
       { "antosha417/nvim-lsp-file-operations", config = true },
     },
     opts = function()
       local ret = {
-        codeLens = {
+        servers = { tsserver = { enabled = false }, ts_ls = { enabled = false } },
+        setup = {
+          tsserver = function()
+            return true
+          end,
+          ts_ls = function()
+            return true
+          end,
+        },
+        codelens = {
           enable = true,
+        },
+        inlay_hints = {
+          enabled = true,
+          exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
         },
       }
       return ret
@@ -101,15 +121,10 @@ return {
 
           -- Codelens
           -- if client and client:supports_method(vim.lsp.protocol.Methods.codeLens) then
-          if client and client:supports_method(vim.lsp.protocol.Methods.codeLens, buffer) then
-            local enableCodelens = function()
+          if opts.codelens.enabled and vim.lsp.codelens then
+            if client and client:supports_method(vim.lsp.protocol.Methods.codelens, buffer) then
               vim.lsp.codelens.refresh()
-              api.nvim_create_autocmd("User", {
-                pattern = "LspAttach",
-                once = true,
-                callback = vim.lsp.codelens.refresh,
-              })
-              api.nvim_create_autocmd(
+              vim.api.nvim_create_autocmd(
                 { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
                 {
                   buffer = buffer,
@@ -117,32 +132,23 @@ return {
                 }
               )
             end
-
-            if opts.codeLens.enabled and vim.lsp.codelens then
-              enableCodelens()
-            end
           end
 
-          -- Toggle inlay hints in your code, if the language server you are using supports them
-          -- This may be unwanted, since they displace some of your code
-          -- if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          -- main.on_supports_method("textDocument/inlayHint", function(client, buffer)
-          -- if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
-          --   if
-          --     api.nvim_buf_is_valid(bufnr)
-          --     and vim.bo[bufnr].buftype == ""
-          --     and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[bufnr].filetype)
-          --   then
-          --     kmn("<leader>th", function()
-          --       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = buffer }))
-          --     end, ext("(t)oggle inlay (h)ints"))
-          --   end
-          -- end
+          if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
+            if
+              api.nvim_buf_is_valid(bufnr)
+              and vim.bo[bufnr].buftype == ""
+              and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[bufnr].filetype)
+            then
+              vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+            end
+          end
         end,
       })
 
       -- border = "rounded",
       vim.diagnostic.config({
+        underline = true,
         update_in_insert = true,
         float = {
           focusable = false,

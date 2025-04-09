@@ -6,6 +6,31 @@ return { -- C++
     -- dependencies = { "mortepau/codicons.nvim" },
     -- lazy = true,
     ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
+    opts = {
+      inlay_hints = {
+        inline = false,
+      },
+      ast = {
+        --These require codicons (https://github.com/microsoft/vscode-codicons)
+        role_icons = {
+          type = "",
+          declaration = "",
+          expression = "",
+          specifier = "",
+          statement = "",
+          ["template argument"] = "",
+        },
+        kind_icons = {
+          Compound = "",
+          Recovery = "",
+          TranslationUnit = "",
+          PackExpansion = "",
+          TemplateTypeParm = "",
+          TemplateTemplateParm = "",
+          TemplateParamObject = "",
+        },
+      },
+    },
     config = function() end, -- avoid duplicate setup call.
   },
   {

@@ -2,7 +2,7 @@ local vars = require("config.vars")
 
 return {
   "L3MON4D3/LuaSnip",
-  version = "v2.*",
+  lazy = true,
   -- build = vars.getOSLowerCase():match("windows") ~= 0 and "make install_jsregexp" or nil,
   build = "make install_jsregexp",
   dependencies = {
@@ -13,6 +13,8 @@ return {
   end,
   opts = {
     enable_autosnippets = true,
+    history = true,
+    delete_check_events = "TextChanged",
   },
   config = function(_, opts)
     local luasnip = require("luasnip")
@@ -20,11 +22,13 @@ return {
       luasnip.setup(opts)
     end
 
-    local path = os.getenv("XDG_CONFIG_HOME") .. "/nvim/snippets"
+    local path = vim.fn.stdpath("config") .. "/snippets"
 
+    require("luasnip.loaders.from_lua").lazy_load()
     require("luasnip.loaders.from_lua").lazy_load({ paths = path })
     require("luasnip.loaders.from_snipmate").lazy_load()
     require("luasnip.loaders.from_vscode").lazy_load()
+    require("luasnip.loaders.from_vscode").lazy_load({ paths = path })
 
     luasnip.filetype_extend("c", { "cdoc" })
     luasnip.filetype_extend("cpp", { "cppdoc" })

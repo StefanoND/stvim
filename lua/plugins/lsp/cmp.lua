@@ -24,12 +24,14 @@ return {
   {
     "Saghen/blink.cmp",
     lazy = false,
-    event = { "BufReadPre", "InsertEnter", "CursorMoved", "TextChanged" },
+    -- event = { "BufReadPre", "InsertEnter", "CursorMoved", "TextChanged" },
+    event = { "InsertEnter" },
     dependencies = {
       "saadparwaiz1/cmp_luasnip",
       "rafamadriz/friendly-snippets",
       "moyiz/blink-emoji.nvim",
       "mikavilpas/blink-ripgrep.nvim",
+      "kristijanhusak/vim-dadbod-completion",
       {
         "saghen/blink.compat",
         lazy = true,
@@ -39,12 +41,23 @@ return {
         end,
       },
       {
-        "Exafunction/codeium.nvim",
+        -- "Exafunction/codeium.nvim",
+        "Exafunction/windsurf.nvim",
         lazy = true,
-        dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = "Codeium",
+        event = "InsertEnter",
+        dependencies = { "nvim-lua/plenary.nvim", "saghen/blink.compat" },
         opts = {
-          virtual_text = { enabled = true },
-          enable_chat = true,
+          enable_cmp_source = true,
+          virtual_text = {
+            enabled = true,
+            enable_chat = true,
+            -- filetypes = {
+            --   python = true,
+            --   markdown = true,
+            -- },
+            default_filetype_enabled = true,
+          },
         },
         config = function()
           require("codeium").setup()
@@ -55,7 +68,7 @@ return {
     opts = {
       completion = {
         -- trigger = {
-        -- show_in_snippet = false,
+        --   show_in_snippet = false,
         -- },
         documentation = {
           window = { border = "rounded", max_height = max_height },
@@ -194,7 +207,8 @@ return {
       sources = {
         default = {
           "codeium",
-          "cmdline",
+          -- "cmdline",
+          "dadbod",
           "lazydev",
           "lsp",
           "snippets",
@@ -226,21 +240,27 @@ return {
               return items
             end,
           },
-          cmdline = {
-            module = "blink.cmp.sources.cmdline",
-            name = "[cmd]",
-            score_offset = 100,
-            async = true,
-            -- Disable shell commands on windows, since they cause neovim to hang
-            enabled = function()
-              return vim.fn.has("win32") == 0
-                or vim.fn.getcmdtype() ~= ":"
-                or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
-            end,
-          },
+          -- cmdline = {
+          --   module = "blink.cmp.sources.cmdline",
+          --   name = "[cmd]",
+          --   score_offset = 100,
+          --   async = true,
+          --   -- Disable shell commands on windows, since they cause neovim to hang
+          --   enabled = function()
+          --     return vim.fn.has("win32") == 0
+          --       or vim.fn.getcmdtype() ~= ":"
+          --       or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+          --   end,
+          -- },
           lazydev = {
             name = "[LazyDev]",
             module = "lazydev.integrations.blink",
+            score_offset = 95,
+            async = true,
+          },
+          dadbod = {
+            name = "[DB]",
+            module = "vim_dadbod_completion.blink",
             score_offset = 95,
             async = true,
           },

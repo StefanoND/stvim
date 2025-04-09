@@ -16,7 +16,8 @@ M.keymaps = wk.add({
     { "K", "<cmd>lua vim.lsp.buf.hover({ popup_opts = { border = 'rounded' } })<CR>", desc = "" },
     { "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "" },
     { "<leader>cA", "<cmd>lua vim.lsp.buf.range_code_action()<CR>", desc = "" },
-    { "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "" },
+    -- { "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "" },
+    { "<leader>cr", ":IncRename " .. vim.fn.expand("<cword>"), desc = "Rename" },
 
     { "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", desc = "" },
     { "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", desc = "" },
@@ -44,7 +45,7 @@ M.keymaps = wk.add({
       function()
         enableCodelens()
       end,
-      desc = "Refresh & Display Codelens"
+      desc = "Refresh & Display Codelens",
     },
 
     {
@@ -67,16 +68,16 @@ M.keymaps = wk.add({
         print("False")
         return false
       end,
-      desc = "Check if any attached LSP supports codelens"
-    }
+      desc = "Check if any attached LSP supports codelens",
+    },
   },
   {
     mode = { "i" },
-    { "<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", desc = "" }
+    { "<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", desc = "" },
   },
   {
     mode = { "n", "v" },
-    { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens" }
+    { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens" },
   },
   {
     mode = { "n", "x" },
@@ -85,9 +86,9 @@ M.keymaps = wk.add({
       function()
         conform.format({ bufnr = bufnr })
       end,
-      desc = "Format buffer"
-    }
-  }
+      desc = "Format buffer",
+    },
+  },
 })
 
 return M.keymaps

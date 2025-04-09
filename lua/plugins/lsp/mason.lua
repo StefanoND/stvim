@@ -1,14 +1,12 @@
 return {
+  { "jay-babu/mason-nvim-dap.nvim", config = function() end },
+  { "williamboman/mason-lspconfig.nvim", config = function() end },
   {
     "williamboman/mason.nvim",
     dependencies = {
-      {
-        "williamboman/mason-lspconfig.nvim",
-        dependencies = {
-          "neovim/nvim-lspconfig",
-        },
-      },
+      "williamboman/mason-lspconfig.nvim",
       "WhoIsSethDaniel/mason-tool-installer.nvim",
+      "jay-babu/mason-nvim-dap.nvim",
     },
     lazy = false,
     cmd = {
@@ -59,23 +57,21 @@ return {
         ensure_installed = {
           -- BASH
           "bash-language-server", -- LSP
-          -- "bash-debug-adapter", -- DAP
+          "bash-debug-adapter", -- DAP
           "shellharden", -- formatter and linter
           -- C/C++
-          -- 'cpptools', -- DAP
           "clangd", -- LSP and linter
-          -- "ccls", -- Used for Codelens
-          -- "codelldb", -- DAP
+          "codelldb", -- DAP (lldb)
           "clang-format", -- formatter
-          -- "cpplint", -- linter - DEPRECATED, use clangd
           -- CSHARP
           "csharp-language-server", -- LSP
           "omnisharp", -- LSP
           "omnisharp-mono", -- LSP
           "csharpier", -- Formatter
+          "netcoredbg",
           -- CMAKE
-          "cmake-language-server", -- LSP
-          "cmakelang", -- formatter and linter
+          "cmakelang", -- LSP
+          "cmakelint", -- formatter and linter
           -- GOLANG
           -- "gopls", -- LSP
           -- GODOT SCRIPT
@@ -83,27 +79,29 @@ return {
           "gdtoolkit", -- formatter and linter
           -- JavaScript/TypeScript
           "typescript-language-server", -- LSP
+          "vtsls", -- LSP
           "tailwindcss-language-server", -- Autocomplete
-          "eslint-lsp", -- Linter
+          "js-debug-adapter", -- DAP
           -- JSON
-          "biome", -- formatter and linter
           "jsonls", -- LSP
           -- LUA
           "lua-language-server", -- LSP
           "stylua", -- formatter and linter
           -- MARKDOWN
           "marksman",
-          -- -- RUST cpptools and ast-grep
-          -- "rust_analyzer", -- LSP
+          "markdownlint-cli2", -- Linter
+          "markdown-toc",
+          -- RUST ast-grep
+          "rust_analyzer", -- LSP
           -- SQL
           "sqlls", -- LSP
           "sql-formatter", -- formatter
           "sqlfluff", -- linter
-          -- -- YAML
-          -- "yaml-language-server", -- LSP
-          -- "yamllint", -- linter
-          -- GLOBAL (Not really)
-          "prettierd", -- formatter
+          -- YAML
+          "yaml-language-server", -- LSP
+          "yamllint", -- linter
+          -- GLOBAL (JS/TS, md, json)
+          "biome", -- formatter and linter
         },
         automatic_installation = true,
         auto_update = true,

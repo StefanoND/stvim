@@ -39,6 +39,7 @@ return { -- colorscheme
         operators = {},
         miscs = {}, -- Uncomment to turn off hard-coded styles
       },
+      optional = true,
       default_integrations = true,
       integrations = {
         blink_cmp = true,
@@ -53,6 +54,7 @@ return { -- colorscheme
         mason = true,
         notify = true,
         nvimtree = false,
+        overseer = true,
         rainbow_delimiters = true,
         semantic_tokens = true,
         telescope = false,

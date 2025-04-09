@@ -1,35 +1,8 @@
 local lspconfig = require("config.lsp.setup")
-local capabilities = require("config.lsp.capabilities").capabilities
 
 local funcs = require("config.functions")
 
 local clangd_ext_opts = require("clangd_extensions").opts
-
-clangd_ext_opts = {
-  inlay_hints = {
-    inline = false,
-  },
-  ast = {
-    --These require codicons (https://github.com/microsoft/vscode-codicons)
-    role_icons = {
-      type = "",
-      declaration = "",
-      expression = "",
-      specifier = "",
-      statement = "",
-      ["template argument"] = "",
-    },
-    kind_icons = {
-      Compound = "",
-      Recovery = "",
-      TranslationUnit = "",
-      PackExpansion = "",
-      TemplateTypeParm = "",
-      TemplateTemplateParm = "",
-      TemplateParamObject = "",
-    },
-  },
-}
 
 return {
   -- lspconfig.ccls.setup({ cclsConf }),
@@ -39,7 +12,7 @@ return {
       lspconfig = {
         filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
         disabled_filetypes = { "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
-        flags = { allow_incremental_sync = true },
+        flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
         init_options = {
           compilationDatabaseDirectory = "build",
           cache = {
@@ -94,11 +67,9 @@ return {
     },
   }),
   lspconfig.setupServer("clangd", {
-    capabilities = capabilities,
-    opts = require("clangd_extensions").setup(clangd_ext_opts or {}),
+    opts = require("clangd_extensions").setup(),
     cmd = {
       "clangd",
-      -- "--offsetEncoding=utf-16",
       "--background-index",
       "--clang-tidy",
       "--suggest-missing-includes",
@@ -107,17 +78,13 @@ return {
       "--function-arg-placeholders",
       "--fallback-style=microsoft",
     },
-    flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-    default_config = {
-      flags = { allow_incremental_sync = true, debounce_text_changes = 500 },
-      filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
-      disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
-      root_dir = funcs.getRoot(),
-      init_options = {
-        usePlaceholders = true,
-        completeUnimported = true,
-        clangdFileStatus = true,
-      },
+    filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
+    disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
+    root_dir = funcs.getRoot(),
+    init_options = {
+      usePlaceholders = true,
+      completeUnimported = true,
+      clangdFileStatus = true,
     },
     on_attach = function(client, bufnr)
       require("config.keymaps.languages.cpp")

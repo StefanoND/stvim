@@ -1,7 +1,7 @@
 return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown", "markdown.mdx" },
+    ft = { "markdown", "markdown.mdx", "rmd", "org", "norg" },
     lazy = true,
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     opts = {},
@@ -23,7 +23,7 @@ return {
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown", "markdown.mdx" },
+    ft = { "markdown", "markdown.mdx", "rmd", "org", "norg" },
     lazy = true,
     build = "cd app && npm install && git restore .",
     -- build = "cd app && yarn install && git restore .", -- If you prefer yarn over npm
