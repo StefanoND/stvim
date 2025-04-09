@@ -1,0 +1,22 @@
+local lspconfig = require("config.lsp.setup")
+
+-- You'll need to create a bash (or adapted version for other shells) for this
+-- Example: /home/USER/godotrc.sh
+
+-- #!/usr/bin/env bash
+-- [ -n "$1" ] && file=$1
+-- nvim --server ~/.cache/nvim/godot.pipe --remote-send ':e '"$file"'<CR>'
+
+-- Then in Godot go to "Editor->Editor Settings->Text Editor->External" and make sure they look like this
+--
+-- "Exec Path": /home/USER/godotrc.sh
+-- "Exec Flags": {file}
+-- "Use External Editor": Checked
+
+return {
+  lspconfig.setupServer("gdscript", {
+    on_attach = function(client, bufnr)
+      print("Hello Godot")
+    end,
+  }),
+}

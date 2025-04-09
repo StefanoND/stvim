@@ -28,7 +28,6 @@ return {
         csharpier = {
           command = "dotnet-csharpier",
           args = { "--write-stdout" },
-          -- stdin = true,
         },
         sqlfluff = {
           args = { "format", "--dialect=ansi", "-" },
@@ -43,6 +42,7 @@ return {
         cs = { "csharpier" },
         csharp = { "csharpier" },
         lua = { "stylua" },
+        gdscript = { "gdtoolkit" },
         nwscript = { "clang-format" },
         objc = { "clang-format" },
         objcpp = { "clang-format" },
@@ -54,13 +54,14 @@ return {
         plsql = { "sqlfluff" },
         ["markdown"] = { "biome", "markdownlint-cli2", "markdown-toc" },
         ["markdown.mdx"] = { "biome", "markdownlint-cli2", "markdown-toc" },
+        javascript = { "biome" },
+        javascriptreact = { "biome" },
+        ["javascript.jsx"] = { "biome" },
+        typescript = { "biome" },
+        typescriptreact = { "biome" },
+        ["typescript.tsx"] = { "biome" },
         -- Stop searching after finding first formatter
-        javascript = { "biome", stop_after_first = true },
-        javascriptreact = { "biome", stop_after_first = true },
-        ["javascript.jsx"] = { "biome", stop_after_first = true },
-        typescript = { "biome", stop_after_first = true },
-        typescriptreact = { "biome", stop_after_first = true },
-        ["typescript.tsx"] = { "biome", stop_after_first = true },
+        -- name = { "formatter1", "formatter2", stop_after_first = true },
       },
       format_on_save = {
         timeout_ms = 500,

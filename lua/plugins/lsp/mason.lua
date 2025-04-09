@@ -76,6 +76,7 @@ return {
           -- "gopls", -- LSP
           -- GODOT SCRIPT
           -- "gdscript", -- LSP
+          -- "gdformat", -- formatter
           "gdtoolkit", -- formatter and linter
           -- JavaScript/TypeScript
           "typescript-language-server", -- LSP
