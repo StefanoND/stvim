@@ -4,6 +4,7 @@ vim.g.do_filetype_lua = 1 -- Enable
 -- recommended settings
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+-- vim.g.netrw_keepdir = 1
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
@@ -117,7 +118,7 @@ vim.opt.mouse = "a" -- Enable mouse mode
 -- vim.opt.mousemoveevent = true
 vim.opt.sidescrolloff = 8 -- Columns of context
 vim.opt.scrolloff = 8 -- Lines of context
--- vim.opt.isfname:append("@-@")
+vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 250 -- Decrease update time
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
