@@ -37,6 +37,8 @@ return {
   keys = require("config.keymaps.todo-comments"),
   config = function()
     require("todo-comments").setup({
+      signs = true,
+      sign_priority = 1000,
       colors = {
         peach = { "hl_fg_peach", "#FAB387" },
         sky = { "hl_fg_sky", "#89DCEB" },
