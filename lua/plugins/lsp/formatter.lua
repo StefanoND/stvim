@@ -42,7 +42,7 @@ return {
         cs = { "csharpier" },
         csharp = { "csharpier" },
         lua = { "stylua" },
-        gdscript = { "gdtoolkit" },
+        gdscript = { "gdformat" },
         nwscript = { "clang-format" },
         objc = { "clang-format" },
         objcpp = { "clang-format" },

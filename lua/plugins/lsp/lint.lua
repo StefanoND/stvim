@@ -12,6 +12,7 @@ return { -- Linting
       fish = { "fish" },
       cmake = { "cmakelint" },
       markdown = { "markdownlint-cli2" },
+      gdscript = { "gdlint" },
       sql = { "sqlfluff" },
       mysql = { "sqlfluff" },
       plsql = { "sqlfluff" },
