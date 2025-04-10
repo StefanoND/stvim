@@ -49,6 +49,9 @@ vim.g.python3_host_prog = "/usr/bin/python3"
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
+-- 1 to use the stdio version of OmniSharp-roslyn (Recommended), 0 for HTTP version (Not recommended)
+vim.g.OmniSharp_server_stdio = 1
+
 -- Turn on/off tmux statusline on vim enter/leave
 vim.cmd([[silent !tmux set status off]])
 vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
