@@ -224,8 +224,8 @@ return {
   },
   {
     "mfussenegger/nvim-dap",
-    after = { "mason" },
-    dependencies = { "rcarriga/nvim-dap-ui", "theHamsta/nvim-dap-virtual-text" },
+    -- stylua: ignore
+    dependencies = { "rcarriga/nvim-dap-ui", "theHamsta/nvim-dap-virtual-text", "williamboman/mason.nvim" },
     keys = keys.dapKeymap,
     config = function()
       local dap = require("dap")

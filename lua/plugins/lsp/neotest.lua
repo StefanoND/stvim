@@ -4,30 +4,33 @@ return {
   {
     "nvim-neotest/neotest",
     dependencies = {
+      "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-plenary",
       "Issafalcon/neotest-dotnet", -- Dotnet
       "alfaix/neotest-gtest", -- C++
       "rcasia/neotest-bash", -- Bash
     },
-    opts = {
-      adapters = {
-        ["neotest-dotnet"] = {},
-        ["neotest-plenary"] = {},
-        ["neotest-gtest"] = {},
-        ["neotest-bash"] = {},
-      },
-      status = { virtual_text = true },
-      output = { open_on_run = true },
-      quickfix = {
-        open = function()
-          if funcs.isLoaded("trouble.nvim") then
-            require("trouble").open({ mode = "quickfix", focus = false })
-          else
-            vim.cmd("copen")
-          end
-        end,
-      },
-    },
+    opts = function()
+      return {
+        adapters = {
+          ["neotest-dotnet"] = {},
+          ["neotest-plenary"] = {},
+          ["neotest-gtest"] = {},
+          ["neotest-bash"] = {},
+        },
+        status = { virtual_text = true },
+        output = { open_on_run = true },
+        quickfix = {
+          open = function()
+            if funcs.isLoaded("trouble.nvim") then
+              require("trouble").open({ mode = "quickfix", focus = false })
+            else
+              vim.cmd("copen")
+            end
+          end,
+        },
+      }
+    end,
     config = function(_, opts)
       local neotest_ns = vim.api.nvim_create_namespace("neotest")
       vim.diagnostic.config({
