@@ -139,7 +139,7 @@ vim.opt.spellfile = { os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add" } 
 vim.opt.spelloptions = "camel" -- Split camelCase words when spellchecking
 
 vim.g.commentstring = "" -- Mini.nvim comment
-vim.o.conceallevel = 2 -- Concealer for Neorg
+
 vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
 vim.opt.list = true -- Show some invisible characters (tab...
 vim.opt.listchars:append("lead:᛫")
@@ -226,6 +226,17 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
 end
 
+vim.g.conceallevel = 0
+vim.o.conceallevel = 0
+-- Set conceallevel for certain file types
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = augroup("ft_conceal"),
+  pattern = { "markdown", "markdown.mdx", "rmd", "org", "norg" },
+  callback = function()
+    vim.opt_local.conceallevel = 2
+  end,
+})
+
 -- Check if we need to reload the file when it changed
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = augroup("checktime"),
@@ -265,14 +276,14 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Fix conceallevel for json files
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = augroup("json_conceal"),
-  pattern = { "json", "jsonc", "json5" },
-  callback = function()
-    vim.opt_local.conceallevel = 0
-  end,
-})
+-- -- Fix conceallevel for json files
+-- vim.api.nvim_create_autocmd({ "FileType" }, {
+--   group = augroup("json_conceal"),
+--   pattern = { "json", "jsonc", "json5" },
+--   callback = function()
+--     vim.opt_local.conceallevel = 0
+--   end,
+-- })
 
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {

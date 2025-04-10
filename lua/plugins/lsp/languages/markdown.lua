@@ -6,7 +6,6 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
     opts = {},
     config = function()
-      vim.o.conceallevel = 2
       require("render-markdown").setup({
         pipe_table = { preset = "round" },
         link = {
@@ -28,7 +27,6 @@ return {
     build = "cd app && npm install && git restore .",
     -- build = "cd app && yarn install && git restore .", -- If you prefer yarn over npm
     init = function()
-      vim.o.conceallevel = 2
       vim.g.mkdp_filetypes = { "markdown" }
       require("config.keymaps.languages.markdown")
     end,

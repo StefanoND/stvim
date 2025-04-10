@@ -11,8 +11,6 @@ return {
     "mrcapivaro/true-zen.nvim",
   },
   config = function()
-    vim.o.conceallevel = 2
-
     require("neorg").setup({
       load = {
         ["external.query"] = {
