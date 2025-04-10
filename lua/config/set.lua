@@ -231,7 +231,7 @@ vim.o.conceallevel = 0
 -- Set conceallevel for certain file types
 vim.api.nvim_create_autocmd({ "FileType" }, {
   group = augroup("ft_conceal"),
-  pattern = { "markdown", "markdown.mdx", "rmd", "org", "norg" },
+  pattern = { "*.md", "*.json", "*.org", "*.norg", "markdown", "markdown.mdx", "rmd", "org", "norg" },
   callback = function()
     vim.opt_local.conceallevel = 2
   end,
