@@ -1,8 +1,7 @@
 local M = {}
 
-M.words = {
+M.conf = {
   enabled = true,
 }
 
 return M
-

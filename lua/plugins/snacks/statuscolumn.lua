@@ -1,6 +1,6 @@
 local M = {}
 
-M.statuscolumn = {
+M.conf = {
   enabled = true,
   left = { "fold", "git" },
   right = { "mark", "sign" },
@@ -14,4 +14,3 @@ M.statuscolumn = {
 }
 
 return M
-

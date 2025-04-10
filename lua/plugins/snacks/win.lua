@@ -1,6 +1,6 @@
 local M = {}
 
-M.win = {
+M.conf = {
   enabled = false,
 }
 

@@ -1,8 +1,7 @@
 local M = {}
 
-M.scratch = {
+M.conf = {
   enabled = true,
 }
 
 return M
-

@@ -1,8 +1,7 @@
 local M = {}
 
-M.scope = {
+M.conf = {
   enabled = true,
 }
 
 return M
-

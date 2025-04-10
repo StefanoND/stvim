@@ -1,6 +1,6 @@
 local M = {}
 
-M.image = {
+M.conf = {
   enabled = true,
 }
 

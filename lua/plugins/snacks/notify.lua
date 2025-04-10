@@ -1,6 +1,6 @@
 local M = {}
 
-M.notify = {
+M.conf = {
   enabled = true,
 }
 

@@ -3,20 +3,18 @@ local M = {}
 local configs = require("plugins.snacks.configs")
 local funcs = require("config.functions")
 
-M.explorer = {
+M.conf = {
   enabled = true,
   replace_netrw = true,
 }
 
-M.picker = vim.tbl_deep_extend("force", configs.files, {
+M.pkr = vim.tbl_deep_extend("force", configs.files, {
   auto_close = true,
   layout = {
     preview = true,
     layout = {
       zindex = 35, -- 1 Below Lazy window
       box = "vertical",
-      -- backdrop = false,
-      -- row = -1,
       width = 0,
       height = 0.999,
       border = "top",
@@ -33,10 +31,9 @@ M.picker = vim.tbl_deep_extend("force", configs.files, {
       },
     },
   },
-  exclude = vim.tbl_deep_extend(
-    "force",
-    funcs.ignoreAll(),
-    funcs.ignoreExplorer(),
+  exclude = funcs.mergeTablesNoDup(
+    funcs.ignore(".allignore"),
+    funcs.ignore(".explorerignore"),
     configs.excludeAll,
     configs.excludeExplorer
   ),

@@ -1,6 +1,7 @@
 local M = {}
 
 M.excludeAll = {
+  -- "Utilities",
   -- "node_modules",
   -- "Utilities/omnisharp*",
   -- ".git",
@@ -9,6 +10,7 @@ M.excludeAll = {
 }
 
 M.excludeExplorer = {
+  -- "Utilities",
   -- "node_modules",
   -- "Utilities/omnisharp*",
   -- ".git",
@@ -46,7 +48,7 @@ M.files = {
   ignored = true,
   follow = true,
   show_empty = true,
-  win = M.win
+  win = M.win,
 }
 
 return M

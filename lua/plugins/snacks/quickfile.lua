@@ -1,6 +1,6 @@
 local M = {}
 
-M.quickfile = {
+M.conf = {
   enabled = true,
 }
 

@@ -2,7 +2,7 @@ local M = {}
 
 local vars = require("config.vars")
 
-M.indent = {
+M.conf = {
   enabled = true,
   animate = {
     enabled = false,

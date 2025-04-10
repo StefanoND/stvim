@@ -60,30 +60,16 @@ M.getOSLowerCase = function()
 end
 
 M.ignore = function(filename)
+  filename = filename or ""
+  assert(type(filename) == "string", "Expected a string value from filename")
   local lines = {}
   local ignorefile = vim.fn.getcwd() .. "/" .. filename
   if vim.fn.filereadable(ignorefile) == 1 then
     for line in io.lines(ignorefile) do
-      table.insert(lines, line)
+      table.insert(lines, tostring(line))
     end
   end
   return lines
-end
-
-M.ignoreAll = function()
-  return M.ignore(".allignore")
-end
-
-M.ignoreExplorer = function()
-  return M.ignore(".explorerignore")
-end
-
-M.ignoreFiles = function()
-  return M.ignore(".filesignore")
-end
-
-M.ignoreGrep = function()
-  return M.ignore(".grepignore")
 end
 
 M.ext = function(opts, args)
@@ -136,6 +122,22 @@ function M.execute(opts)
   else
     return vim.lsp.buf_request(0, "workspace/executeCommand", params, opts.handler)
   end
+end
+
+M.mergeTablesNoDup = function(...)
+  local result = {}
+  local set = {}
+
+  for _, tab in ipairs({ ... }) do
+    for _, value in ipairs(tab) do
+      if not set[value] then
+        table.insert(result, tostring(value))
+        set[value] = true
+      end
+    end
+  end
+
+  return result
 end
 
 return M

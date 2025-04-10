@@ -1,8 +1,7 @@
 local M = {}
 
-M.gitbrowse = {
+M.conf = {
   enabled = false,
 }
 
 return M
-

@@ -1,8 +1,7 @@
 local M = {}
 
-M.zend = {
+M.conf = {
   enabled = false,
 }
 
 return M
-

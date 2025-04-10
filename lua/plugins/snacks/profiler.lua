@@ -1,6 +1,6 @@
 local M = {}
 
-M.profiler = {
+M.conf = {
   enabled = true,
 }
 

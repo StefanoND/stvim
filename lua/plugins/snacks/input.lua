@@ -1,6 +1,6 @@
 local M = {}
 
-M.input = {
+M.conf = {
   enabled = true,
 }
 

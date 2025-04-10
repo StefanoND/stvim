@@ -1,8 +1,7 @@
 local M = {}
 
-M.dim = {
+M.conf = {
   enabled = false,
 }
 
 return M
-

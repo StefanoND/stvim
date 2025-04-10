@@ -8,17 +8,13 @@ local shouldOpenExplorer = function()
   return false -- There's a buffer open, don't open explorer
 end
 
-local openExplorer = function()
-  vim.cmd([[lua require("snacks").explorer.open()]])
-end
-
-local checkOpenExplorer = function()
+local checkExplorer = function()
   if shouldOpenExplorer() then
-    openExplorer()
+    require("snacks").explorer()
   end
 end
 
-M.init = function()
+M.conf = function()
   vim.api.nvim_create_autocmd("User", {
     pattern = "VeryLazy",
     callback = function()
@@ -38,7 +34,9 @@ M.init = function()
       Snacks.toggle.profiler():map("<leader>ppp") -- Toggle the profiler
       Snacks.toggle.profiler_highlights():map("<leader>pph") -- Toggle the profiler highlights
 
-      checkOpenExplorer()
+      -- NOTE: Snacks explorer seems to take 100ms to finish, so we run our function after it
+      local timeToWait_ms = 102
+      vim.defer_fn(checkExplorer, timeToWait_ms)
     end,
   })
 

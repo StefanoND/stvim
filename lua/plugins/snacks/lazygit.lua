@@ -1,6 +1,6 @@
 local M = {}
 
-M.lazygit = {
+M.conf = {
   enabled = true,
 }
 

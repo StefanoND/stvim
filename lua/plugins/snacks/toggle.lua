@@ -1,8 +1,7 @@
 local M = {}
 
-M.toggle = {
+M.conf = {
   enabled = true,
 }
 
 return M
-

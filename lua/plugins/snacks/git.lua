@@ -1,6 +1,6 @@
 local M = {}
 
-M.git = {
+M.conf = {
   enabled = false,
 }
 

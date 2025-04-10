@@ -2,10 +2,10 @@ local M = {}
 
 local vars = require("config.vars")
 
-M.bigfile = {
+M.conf = {
   enabled = true,
   notify = true,
-  size = vars.maxFileSize
+  size = vars.maxFileSize,
 }
 
 return M

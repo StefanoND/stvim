@@ -1,8 +1,7 @@
 local M = {}
 
-M.util = {
+M.conf = {
   enabled = true,
 }
 
 return M
-

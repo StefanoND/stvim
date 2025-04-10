@@ -1,6 +1,6 @@
 local M = {}
 
-M.dashboard = {
+M.conf = {
   enabled = false,
   sections = {
     { section = "header" },

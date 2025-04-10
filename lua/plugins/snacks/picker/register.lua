@@ -2,7 +2,7 @@ local M = {}
 
 local configs = require("plugins.snacks.configs")
 
-M.picker = {
+M.pkr = {
   finder = "vim_registers",
   format = "register",
   preview = "preview",

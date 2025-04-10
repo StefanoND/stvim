@@ -1,9 +1,7 @@
 local M = {}
 
-M.scroll = {
+M.conf = {
   enabled = false,
 }
 
 return M
-
-

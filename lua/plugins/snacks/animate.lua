@@ -1,6 +1,6 @@
 local M = {}
 
-M.animate = {
+M.conf = {
   enabled = false,
   fps = 30,
 }

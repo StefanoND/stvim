@@ -1,6 +1,6 @@
 local M = {}
 
-M.debug = {
+M.conf = {
   enabled = false,
 }
 

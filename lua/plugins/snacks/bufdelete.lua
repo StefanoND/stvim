@@ -1,6 +1,6 @@
 local M = {}
 
-M.bufdelete = {
+M.conf = {
   enabled = true,
 }
 

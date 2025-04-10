@@ -3,12 +3,11 @@ local M = {}
 local configs = require("plugins.snacks.configs")
 local funcs = require("config.functions")
 
-M.picker = vim.tbl_deep_extend("force", configs.files, {
+M.pkr = vim.tbl_deep_extend("force", configs.files, {
   cmd = "rg",
-  exclude = vim.tbl_deep_extend(
-    "force",
-    funcs.ignoreAll(),
-    funcs.ignoreFiles(),
+  exclude = funcs.mergeTablesNoDup(
+    funcs.ignore(".allignore"),
+    funcs.ignore(".filesignore"),
     configs.excludeAll,
     configs.excludeFiles
   ),

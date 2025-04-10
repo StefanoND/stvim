@@ -1,6 +1,6 @@
 local M = {}
 
-M.rename = {
+M.conf = {
   enabled = true,
 }
 
