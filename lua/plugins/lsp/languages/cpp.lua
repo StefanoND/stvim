@@ -6,32 +6,42 @@ return { -- C++
     -- dependencies = { "mortepau/codicons.nvim" },
     -- lazy = true,
     ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
-    opts = {
-      inlay_hints = {
-        inline = false,
-      },
-      ast = {
-        --These require codicons (https://github.com/microsoft/vscode-codicons)
-        role_icons = {
-          type = "",
-          declaration = "",
-          expression = "",
-          specifier = "",
-          statement = "",
-          ["template argument"] = "",
+    opts = function()
+      return {
+        ast = {
+          --These require codicons (https://github.com/microsoft/vscode-codicons)
+          role_icons = {
+            type = "",
+            declaration = "",
+            expression = "",
+            specifier = "",
+            statement = "",
+            ["template argument"] = "",
+          },
+          kind_icons = {
+            Compound = "",
+            Recovery = "",
+            TranslationUnit = "",
+            PackExpansion = "",
+            TemplateTypeParm = "",
+            TemplateTemplateParm = "",
+            TemplateParamObject = "",
+          },
+          highlights = {
+            detail = "Comment",
+          },
         },
-        kind_icons = {
-          Compound = "",
-          Recovery = "",
-          TranslationUnit = "",
-          PackExpansion = "",
-          TemplateTypeParm = "",
-          TemplateTemplateParm = "",
-          TemplateParamObject = "",
+        memory_usage = {
+          border = "Rounded",
         },
-      },
-    },
-    config = function() end, -- avoid duplicate setup call.
+        symbol_info = {
+          border = "Rounded",
+        },
+      }
+    end,
+    config = function(_, opts)
+      require("clangd_extensions").setup(opts)
+    end, -- avoid duplicate setup call.
   },
   {
     "Badhi/nvim-treesitter-cpp-tools",

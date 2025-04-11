@@ -9,6 +9,7 @@ return {
   { "nvim-tree/nvim-web-devicons", lazy = true },
   { "2kabhishek/nerdy.nvim", lazy = true, cmd = "Nerdy" },
   { "smjonas/inc-rename.nvim", lazy = false, cmd = "IncRename", opts = {} },
+  { "chrisgrieser/nvim-lsp-endhints", dependencies = "nvim-lspconfig", event = "LspAttach", opts = {} },
   {
     "dstein64/vim-startuptime",
     cmd = "StartupTime",

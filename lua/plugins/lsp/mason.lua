@@ -101,8 +101,9 @@ return {
           -- YAML
           "yaml-language-server", -- LSP
           "yamllint", -- linter
-          -- GLOBAL (JS/TS, md, json)
-          "biome", -- formatter and linter
+          -- GLOBAL
+          "biome", -- formatter and linter - JS/TS, Json
+          "prettier", -- formatter - Markdown
         },
         automatic_installation = true,
         auto_update = true,

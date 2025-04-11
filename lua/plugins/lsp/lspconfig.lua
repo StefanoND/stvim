@@ -73,7 +73,10 @@ return {
     },
     opts = function()
       local ret = {
-        servers = { tsserver = { enabled = false }, ts_ls = { enabled = false } },
+        servers = {
+          tsserver = { enabled = false },
+          ts_ls = { enabled = false },
+        },
         setup = {
           tsserver = function()
             return true
@@ -87,7 +90,7 @@ return {
         },
         inlay_hints = {
           enabled = true,
-          exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
+          -- exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
         },
       }
       return ret
@@ -114,8 +117,7 @@ return {
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
           -- Enable completion triggered by <c-x><c-o>
-          -- vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
-          api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
+          -- api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
 
           require("config.keymaps.lspconfig")
 
@@ -134,15 +136,15 @@ return {
             end
           end
 
-          if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
-            if
-              api.nvim_buf_is_valid(bufnr)
-              and vim.bo[bufnr].buftype == ""
-              and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[bufnr].filetype)
-            then
-              vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
-            end
-          end
+          -- if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
+          --   if
+          --     api.nvim_buf_is_valid(bufnr)
+          --     and vim.bo[bufnr].buftype == ""
+          --     and not vim.tbl_contains(opts.inlay_hints.exclude, vim.bo[bufnr].filetype)
+          --   then
+          --     vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
+          --   end
+          -- end
         end,
       })
 

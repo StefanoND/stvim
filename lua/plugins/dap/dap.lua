@@ -105,8 +105,8 @@ local servers = function()
     },
   }
 
-  -- Rust
-  dap.configurations.rust = dap.configurations.cpp
+  -- -- Rust
+  -- dap.configurations.rust = dap.configurations.cpp
 
   -- Typescript
   if not dap.adapters["pwa-node"] then

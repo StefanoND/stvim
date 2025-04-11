@@ -86,6 +86,17 @@ return {
       completeUnimported = true,
       clangdFileStatus = true,
     },
+    settings = {
+      clangd = {
+        InlayHints = {
+          Designators = true,
+          Enabled = true,
+          ParameterNames = true,
+          DeducedTypes = true,
+        },
+        fallbackFlags = { "-std=c++20" },
+      },
+    },
     on_attach = function(client, bufnr)
       require("config.keymaps.languages.cpp")
 

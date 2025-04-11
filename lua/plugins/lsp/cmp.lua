@@ -213,10 +213,10 @@ return {
           "lsp",
           "snippets",
           "path",
-          "buffer",
-          "omni",
-          "emoji",
-          "ripgrep",
+          -- "buffer",
+          -- "omni",
+          -- "emoji",
+          -- "ripgrep",
         },
         -- per_filetype = {
         --   org = { "orgmode" },
@@ -283,33 +283,33 @@ return {
             score_offset = 85,
             async = true,
           },
-          buffer = {
-            name = "[buf]",
-            score_offset = 75,
-            async = true,
-          },
-          omni = {
-            score_offset = 70,
-            async = true,
-            ---@type blink.cmp.CompleteFuncOpts
-            opts = {
-              complete_func = function()
-                return vim.bo.omnifunc
-              end,
-            },
-          },
-          ripgrep = {
-            name = "[ripgrep]",
-            module = "blink-ripgrep",
-            score_offset = 65,
-            async = true,
-          },
-          emoji = {
-            name = "[emoji]",
-            module = "blink-emoji",
-            score_offset = 60,
-            async = true,
-          },
+          -- buffer = {
+          --   name = "[buf]",
+          --   score_offset = 75,
+          --   async = true,
+          -- },
+          -- omni = {
+          --   score_offset = 70,
+          --   async = true,
+          --   ---@type blink.cmp.CompleteFuncOpts
+          --   opts = {
+          --     complete_func = function()
+          --       return vim.bo.omnifunc
+          --     end,
+          --   },
+          -- },
+          -- ripgrep = {
+          --   name = "[ripgrep]",
+          --   module = "blink-ripgrep",
+          --   score_offset = 65,
+          --   async = true,
+          -- },
+          -- emoji = {
+          --   name = "[emoji]",
+          --   module = "blink-emoji",
+          --   score_offset = 60,
+          --   async = true,
+          -- },
         },
       },
       signature = {

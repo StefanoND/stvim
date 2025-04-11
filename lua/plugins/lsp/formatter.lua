@@ -6,6 +6,7 @@ return {
     require("conform").setup({
       formatters = {
         biome = {
+          -- args = { "--fix" },
           require_cwd = true,
         },
         ["markdown-toc"] = {
@@ -52,8 +53,8 @@ return {
         sql = { "sqlfluff" },
         mysql = { "sqlfluff" },
         plsql = { "sqlfluff" },
-        ["markdown"] = { "biome", "markdownlint-cli2", "markdown-toc" },
-        ["markdown.mdx"] = { "biome", "markdownlint-cli2", "markdown-toc" },
+        ["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" }, -- Don't stop after first
+        ["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" }, -- Don't stop after first
         javascript = { "biome" },
         javascriptreact = { "biome" },
         ["javascript.jsx"] = { "biome" },
