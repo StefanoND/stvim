@@ -3,6 +3,7 @@ local funcs = require("config.functions")
 return {
   {
     "Saecki/crates.nvim",
+    version = false,
     tag = "stable",
     event = { "BufRead Cargo.toml" },
     opts = function()
@@ -29,7 +30,7 @@ return {
     "mrcjkb/rustaceanvim",
     version = "^6",
     ft = { "rust" },
-    dependencies = { "mason.nvim" },
+    dependencies = { "williamboman/mason.nvim" },
     opts = {
       server = {
         on_attach = function(_, bufnr)

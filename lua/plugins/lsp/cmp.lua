@@ -4,11 +4,10 @@ local max_width = 120
 return {
   {
     "xzbdmw/colorful-menu.nvim",
+    version = false,
     lazy = false,
-    opts = {},
-    config = function()
-      -- You don't need to set these options.
-      require("colorful-menu").setup({
+    opts = function()
+      return {
         ls = {
           -- If provided, the plugin truncates the final displayed text to
           -- this width (measured in display cells). Any highlights that extend
@@ -18,11 +17,15 @@ return {
           -- Default 60.
           max_width = max_width,
         },
-      })
+      }
+    end,
+    config = function(_, opts)
+      require("colorful-menu").setup(opts)
     end,
   },
   {
     "Saghen/blink.cmp",
+    version = "*",
     lazy = false,
     -- event = { "BufReadPre", "InsertEnter", "CursorMoved", "TextChanged" },
     event = { "InsertEnter" },
@@ -34,6 +37,7 @@ return {
       "kristijanhusak/vim-dadbod-completion",
       {
         "saghen/blink.compat",
+        version = "*",
         lazy = true,
         opts = { enable_events = true, impersonate_nvim_cmp = true },
         config = function()
@@ -43,28 +47,30 @@ return {
       {
         -- "Exafunction/codeium.nvim",
         "Exafunction/windsurf.nvim",
+        version = false,
         lazy = true,
         cmd = "Codeium",
         event = "InsertEnter",
         dependencies = { "nvim-lua/plenary.nvim", "saghen/blink.compat" },
-        opts = {
-          enable_cmp_source = true,
-          virtual_text = {
-            enabled = true,
-            enable_chat = true,
-            -- filetypes = {
-            --   python = true,
-            --   markdown = true,
-            -- },
-            default_filetype_enabled = true,
-          },
-        },
-        config = function()
-          require("codeium").setup()
+        opts = function()
+          return {
+            enable_cmp_source = true,
+            virtual_text = {
+              enabled = true,
+              enable_chat = true,
+              -- filetypes = {
+              --   python = true,
+              --   markdown = true,
+              -- },
+              default_filetype_enabled = true,
+            },
+          }
+        end,
+        config = function(_, opts)
+          require("codeium").setup(opts)
         end,
       },
     },
-    version = "*",
     opts = {
       completion = {
         -- trigger = {
@@ -207,20 +213,38 @@ return {
       sources = {
         default = {
           "codeium",
-          -- "cmdline",
-          "dadbod",
-          "lazydev",
+          "cmdline",
           "lsp",
           "snippets",
           "path",
-          -- "buffer",
-          -- "omni",
+          "buffer",
+          "omni",
           -- "emoji",
           -- "ripgrep",
         },
-        -- per_filetype = {
-        --   org = { "orgmode" },
-        -- },
+        per_filetype = {
+          -- org = { "orgmode" },
+          sql = {
+            "codeium",
+            "snippets",
+            "dadbod",
+            "buffer",
+            "omni",
+            -- "emoji",
+            -- "ripgrep",}
+          },
+          lua = {
+            "codeium",
+            "lazydev",
+            "lsp",
+            "snippets",
+            "path",
+            "buffer",
+            "omni",
+            -- "emoji",
+            -- "ripgrep",}
+          },
+        },
         providers = {
           -- orgmode = {
           --   name = "Orgmode",
@@ -240,18 +264,18 @@ return {
               return items
             end,
           },
-          -- cmdline = {
-          --   module = "blink.cmp.sources.cmdline",
-          --   name = "[cmd]",
-          --   score_offset = 100,
-          --   async = true,
-          --   -- Disable shell commands on windows, since they cause neovim to hang
-          --   enabled = function()
-          --     return vim.fn.has("win32") == 0
-          --       or vim.fn.getcmdtype() ~= ":"
-          --       or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
-          --   end,
-          -- },
+          cmdline = {
+            module = "blink.cmp.sources.cmdline",
+            name = "[cmd]",
+            score_offset = 100,
+            async = true,
+            -- Disable shell commands on windows, since they cause neovim to hang
+            enabled = function()
+              return vim.fn.has("win32") == 0
+                or vim.fn.getcmdtype() ~= ":"
+                or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+            end,
+          },
           lazydev = {
             name = "[LazyDev]",
             module = "lazydev.integrations.blink",
@@ -283,33 +307,33 @@ return {
             score_offset = 85,
             async = true,
           },
-          -- buffer = {
-          --   name = "[buf]",
-          --   score_offset = 75,
-          --   async = true,
-          -- },
-          -- omni = {
-          --   score_offset = 70,
-          --   async = true,
-          --   ---@type blink.cmp.CompleteFuncOpts
-          --   opts = {
-          --     complete_func = function()
-          --       return vim.bo.omnifunc
-          --     end,
-          --   },
-          -- },
-          -- ripgrep = {
-          --   name = "[ripgrep]",
-          --   module = "blink-ripgrep",
-          --   score_offset = 65,
-          --   async = true,
-          -- },
-          -- emoji = {
-          --   name = "[emoji]",
-          --   module = "blink-emoji",
-          --   score_offset = 60,
-          --   async = true,
-          -- },
+          buffer = {
+            name = "[buf]",
+            score_offset = 75,
+            async = true,
+          },
+          omni = {
+            score_offset = 70,
+            async = true,
+            ---@type blink.cmp.CompleteFuncOpts
+            opts = {
+              complete_func = function()
+                return vim.bo.omnifunc
+              end,
+            },
+          },
+          ripgrep = {
+            name = "[ripgrep]",
+            module = "blink-ripgrep",
+            score_offset = 65,
+            async = true,
+          },
+          emoji = {
+            name = "[emoji]",
+            module = "blink-emoji",
+            score_offset = 60,
+            async = true,
+          },
         },
       },
       signature = {

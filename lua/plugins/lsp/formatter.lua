@@ -1,9 +1,10 @@
 return {
   "stevearc/conform.nvim",
+  version = false,
   lazy = true,
   cmd = "ConformInfo",
-  config = function()
-    require("conform").setup({
+  opts = function()
+    return {
       formatters = {
         biome = {
           -- args = { "--fix" },
@@ -12,7 +13,7 @@ return {
         ["markdown-toc"] = {
           condition = function(_, ctx)
             for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
-              if line:find("<!%-%- toc %-%->") then
+              if line:find("<!%-%- toc %-%->") or line:find("<!%-%-toc:start%-%->") then
                 return true
               end
             end
@@ -38,7 +39,7 @@ return {
         bash = { "shellharden" },
         c = { "clang-format" },
         cc = { "clang-format" },
-        cmake = { "cmake-format" },
+        cmake = { vim.fn.exepath("cmake-format") },
         cpp = { "clang-format" },
         cs = { "csharpier" },
         csharp = { "csharpier" },
@@ -68,6 +69,9 @@ return {
         timeout_ms = 500,
         lsp_format = "fallback",
       },
-    })
+    }
+  end,
+  config = function(_, opts)
+    require("conform").setup(opts)
   end,
 }

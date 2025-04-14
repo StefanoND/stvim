@@ -3,6 +3,7 @@ local funcs = require("config.functions")
 return {
   {
     "nvim-neotest/neotest",
+    version = false,
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-plenary",
@@ -11,6 +12,7 @@ return {
       "rcasia/neotest-bash", -- Bash
     },
     opts = function()
+      require("config.keymaps.neotest")
       return {
         adapters = {
           ["neotest-dotnet"] = {},
@@ -104,7 +106,6 @@ return {
       end
 
       require("neotest").setup(opts)
-      require("config.keymaps.neotest")
     end,
   },
 }

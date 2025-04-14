@@ -1,10 +1,3 @@
-local devIcons = function()
-  package.preload["nvim-web-devicons"] = function()
-    require("mini.icons").mock_nvim_web_devicons()
-    return package.loaded["nvim-web-devicons"]
-  end
-end
-
 return {
   file = {
     [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
@@ -21,6 +14,6 @@ return {
   },
   filetype = {
     dotenv = { glyph = "", hl = "MiniIconsYellow" },
+    -- nwscript = { glyph = "", hl = "MiniIconsBlue" },
   },
-  devIcons(),
 }

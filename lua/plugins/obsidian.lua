@@ -1,6 +1,6 @@
 return {
   "obsidian-nvim/obsidian.nvim",
-  version = "*",
+  version = "*", -- Don't change
   ft = { "markdown", "markdown.mdx" },
   lazy = true,
   dependencies = { "nvim-lua/plenary.nvim" },

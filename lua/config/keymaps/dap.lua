@@ -4,6 +4,7 @@ local dap = ":lua require('dap')."
 local dapui = ":lua require('dapui')."
 local widgets = ":lua require('dap.ui.widgets')."
 local neotest = ":lua require('neotest')."
+local vimkind = ":lua require('osv')."
 
 M.dapUIKeymap = {
   { "<leader>du", dapui .. ".toggle()<CR>", desc = "DAP UI" },
@@ -21,12 +22,13 @@ M.dapKeymap = {
   { "<leader>dj", dap .. "down()<CR>", desc = "DAP Down" },
   { "<leader>dk", dap .. "up()<CR>", desc = "DAP Up" },
   { "<leader>dl", dap .. "run_last()<CR>", desc = "DAP Run Last" },
+  { "<leader>dL", vimkind .. "launch({ port = 8086 })<CR>", desc = "DAP Start Lua DAP" },
   { "<leader>do", dap .. "step_out()<CR>", desc = "DAP Step Out" },
   { "<leader>dO", dap .. "step_over()<CR>", desc = "DAP Step Over" },
   { "<leader>dP", dap .. "pause()<CR>", desc = "DAP Pause" },
   { "<leader>dr", dap .. "repl.toggle()<CR>", desc = "DAP Toggle REPL" },
   { "<leader>ds", dap .. "session()<CR>", desc = "DAP Session" },
-  { "<leader>dt", dap .. "terminate()<CR>", desc = "DAP Terminate" },
+  { "<leader>dT", dap .. "terminate()<CR>", desc = "DAP Terminate" },
   { "<leader>dw", widgets .. "hover()<CR>", desc = "DAP Widgets" },
   { "<leader>dn", neotest .. "run.run({ strategy = 'dap' })<CR>", desc = "Debug Nearest" },
 }

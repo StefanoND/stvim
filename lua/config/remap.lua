@@ -1,5 +1,7 @@
 local wk = require("which-key")
 
+local funcs = require("config.functions")
+
 -- Modes:
 -- n = normal
 -- i = insert
@@ -114,6 +116,16 @@ wk.add({
         vim.cmd([[silent !tmux set status]])
       end,
       desc = "Toggle tmux statusline on/off",
+    },
+
+    -- HACK: Create table of contents in neovim with markdown-toc
+    -- https://youtu.be/BVyrXsZ_ViA
+    {
+      "<leader>mtt",
+      function()
+        funcs.update_markdown_toc("## Contents", "### Table of contents")
+      end,
+      { desc = "[P]Insert/update Markdown TOC (English)" },
     },
   },
   { -- Normal and Visual and Select modes

@@ -1,12 +1,11 @@
 return { -- colorscheme
   "catppuccin/nvim",
+  version = false,
   name = "catppuccin",
   lazy = false,
   priority = 1000,
-  config = function()
-    local catppuccin = require("catppuccin")
-
-    catppuccin.setup({
+  opts = function()
+    return {
       flavour = "mocha",
       compile_path = vim.fn.stdpath("cache") .. "/catppuccin",
       background = { -- :h background
@@ -44,12 +43,12 @@ return { -- colorscheme
       integrations = {
         blink_cmp = true,
         cmp = false,
-        dap = false,
-        dap_ui = false,
+        dap = true,
+        dap_ui = true,
         fidget = true,
         gitgutter = false,
         gitsigns = true,
-        harpoon = false,
+        harpoon = true,
         lsp_trouble = true,
         mason = true,
         notify = true,
@@ -69,7 +68,7 @@ return { -- colorscheme
         },
         navic = {
           enabled = true,
-          custom_bg = "#1e1e2e", -- "lualine" will set background to mantle (#181825)
+          -- custom_bg = "#1e1e2e", -- "lualine" will set background to mantle (#181825)
         },
         snacks = {
           enabled = true,
@@ -97,8 +96,10 @@ return { -- colorscheme
           },
         },
       },
-    })
-
+    }
+  end,
+  config = function(_, opts)
+    require("catppuccin").setup(opts)
     -- Setup must be called before loading
     vim.cmd.colorscheme("catppuccin")
   end,

@@ -1,7 +1,8 @@
 return {
   "stevearc/aerial.nvim",
+  version = false,
   opts = function()
-    local opts = {
+    return {
       attach_mode = "global",
       backends = { "lsp", "treesitter", "markdown", "man" },
       show_guides = true,
@@ -26,7 +27,7 @@ return {
         whitespace = "  ",
       },
     }
-    return opts
   end,
   keys = require("config.keymaps.aerial"),
+  config = true,
 }

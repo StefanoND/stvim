@@ -4,7 +4,7 @@ vim.g.do_filetype_lua = 1 -- Enable
 -- recommended settings
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
--- vim.g.netrw_keepdir = 1
+vim.g.netrw_keepdir = 1
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
@@ -51,6 +51,10 @@ vim.g.loaded_ruby_provider = 0
 
 -- 1 to use the stdio version of OmniSharp-roslyn (Recommended), 0 for HTTP version (Not recommended)
 vim.g.OmniSharp_server_stdio = 1
+
+-- Omnifunc
+-- api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
+vim.cmd([[autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni]])
 
 -- Turn on/off tmux statusline on vim enter/leave
 vim.cmd([[silent !tmux set status off]])
@@ -138,7 +142,7 @@ vim.opt.spelllang = { "en_us" }
 vim.opt.spellfile = { os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add" } -- extra words
 vim.opt.spelloptions = "camel" -- Split camelCase words when spellchecking
 
-vim.g.commentstring = "" -- Mini.nvim comment
+-- vim.g.commentstring = "" -- Mini.nvim comment
 
 vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
 vim.opt.list = true -- Show some invisible characters (tab...

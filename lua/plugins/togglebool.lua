@@ -1,7 +1,9 @@
 return {
   "gerazov/toggle-bool.nvim",
-  config = function()
-    require("toggle-bool").setup({
+  version = false,
+  opts = function()
+    require("config.keymaps.togglebool")
+    return {
       mapping = "<leader>tb",
       additional_toggles = {
         Foo = "Bar",
@@ -105,8 +107,9 @@ return {
         encrypting = "decrypting",
         ENCRYPTING = "DECRYPTING",
       },
-    })
-
-    require("config.keymaps.togglebool")
+    }
+  end,
+  config = function(_, opts)
+    require("toggle-bool").setup(opts)
   end,
 }

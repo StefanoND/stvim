@@ -1,5 +1,6 @@
 return {
   "stevearc/overseer.nvim",
+  version = false,
   cmd = {
     "OverseerOpen",
     "OverseerClose",

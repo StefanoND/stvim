@@ -2,11 +2,15 @@ local vars = require("config.vars")
 
 return {
   "ahmedkhalf/project.nvim",
-  opts = {
-    -- manual_mode = true,
-    patterns = vars.rootPatterns,
-    show_hidden = true,
-  },
+  version = false,
+  opts = function()
+    require("config.keymaps.project")
+    return {
+      -- manual_mode = false, -- Change rootDir automatically (false) or manually (true)
+      patterns = vars.rootPatterns,
+      show_hidden = true,
+    }
+  end,
   event = "VeryLazy",
   config = function(_, opts)
     require("project_nvim").setup(opts)
@@ -19,6 +23,5 @@ return {
         end
       end
     end
-    require("config.keymaps.project")
   end,
 }

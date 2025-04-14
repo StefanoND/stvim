@@ -1,9 +1,15 @@
 return {
   "danymat/neogen",
+  version = false,
   cmd = "Neogen",
   dependencies = { "nvim-treesitter/nvim-treesitter", "L3MON4D3/LuaSnip" },
-  config = function()
-    require("neogen").setup({ snippet_engine = "luasnip" })
+  opts = function()
     require("config.keymaps.neogen")
+    return {
+      snippet_engine = "luasnip",
+    }
+  end,
+  config = function(_, opts)
+    require("neogen").setup(opts)
   end,
 }

@@ -24,6 +24,10 @@ M.keymaps = wk.add({
     end,
     desc = "Switch Source/Header (C/C++), create them if needed.",
   },
+  { "<leader>tsd", ":TSCppDefineClassFunc<CR>", desc = "Implement out of class member function" },
+  { "<leader>tsc", ":TSCppMakeConcreteClass<CR>", desc = "Create concrete class" },
+  { "<leader>ts3", ":TSCppRuleOf3<CR>", desc = "Adds missing functions declarations to obey rule of 3" },
+  { "<leader>ts5", ":TSCppRuleOf5<CR>", desc = "Adds missing functions declarations to obey rule of 5" },
 })
 
 return M.keymaps

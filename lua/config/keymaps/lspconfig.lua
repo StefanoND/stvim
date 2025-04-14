@@ -1,52 +1,44 @@
 local M = {}
 
 local wk = require("which-key")
-local conform = require("conform")
+local conform = ":lua require('conform')."
+local lsp = ":lua vim.lsp.buf."
+local preview = ":lua require('goto-preview')."
+local diagnostic = ":lua vim.diagnostic."
+local codelens = ":lua vim.lsp.codelens."
 
 M.keymaps = wk.add({
   {
     mode = { "n" },
-    { "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", desc = "" },
-    { "gr", "<cmd>lua vim.lsp.buf.references()<CR>", desc = "" },
-    { "gw", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", desc = "" },
-    { "gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", desc = "" },
-    { "gtd", "<cmd>lua vim.lsp.buf.type_definition()<CR>", desc = "" },
-    { "gD", "<cmd>lua vim.lsp.buf.declaration({ border = 'rounded' })<CR>", desc = "" },
-    { "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", desc = "" },
-    { "K", "<cmd>lua vim.lsp.buf.hover({ popup_opts = { border = 'rounded' } })<CR>", desc = "" },
-    { "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "" },
-    { "<leader>cA", "<cmd>lua vim.lsp.buf.range_code_action()<CR>", desc = "" },
-    -- { "<leader>cr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "" },
+    { "gw", lsp .. "document_symbol()<CR>", desc = "" },
+    { "gW", lsp .. "workspace_symbol()<CR>", desc = "" },
+    { "gD", lsp .. "declaration({ border = 'rounded' })<CR>", desc = "" },
+    { "K", lsp .. "hover({ popup_opts = { border = 'rounded' } })<CR>", desc = "" },
+    { "<leader>ca", lsp .. "code_action()<CR>", desc = "" },
+    { "<leader>cA", lsp .. "range_code_action()<CR>", desc = "" },
+    -- { "<leader>cr", lsp .. "rename()<CR>", desc = "" },
     { "<leader>cr", ":IncRename " .. vim.fn.expand("<cword>"), desc = "Rename" },
 
-    { "<leader>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", desc = "" },
-    { "<leader>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", desc = "" },
+    { "<leader>wa", lsp .. "add_workspace_folder()<CR>", desc = "" },
+    { "<leader>wr", lsp .. "remove_workspace_folder()<CR>", desc = "" },
     { "<leader>wi", "<cmd>print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", desc = "" },
 
-    { "gpd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", desc = "" },
-    { "gpt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>", desc = "" },
-    { "gpD", "<cmd>lua require('goto-preview').goto_preview_declaration()<CR>", desc = "" },
-    { "gpi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>", desc = "" },
-    { "gpr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>", desc = "" },
-    { "gP", "<cmd>lua require('goto-preview').close_all_win()<CR>", desc = "" },
+    { "gpd", preview .. "goto_preview_definition()<CR>", desc = "" },
+    { "gpt", preview .. "goto_preview_type_definition()<CR>", desc = "" },
+    { "gpD", preview .. "goto_preview_declaration()<CR>", desc = "" },
+    { "gpi", preview .. "goto_preview_implementation()<CR>", desc = "" },
+    { "gpr", preview .. "goto_preview_references()<CR>", desc = "" },
+    { "gP", preview .. "close_all_win()<CR>", desc = "" },
 
-    { "gG", "<cmd>lua vim.diagnostic.open_float()<CR>", desc = "" },
-    { "gL", "<cmd>lua vim.diagnostic.show_line_diagnostic({ border = 'rounded' })<CR>", desc = "" },
-    { "]d", "<cmd>lua vim.diagnostic.goto_next({ border = 'rounded' })<CR>", desc = "" },
-    { "[d", "<cmd>lua vim.diagnostic.goto_prev({ border = 'rounded' })<CR>", desc = "" },
+    { "gG", diagnostic .. "open_float()<CR>", desc = "" },
+    { "gL", diagnostic .. "show_line_diagnostic({ border = 'rounded' })<CR>", desc = "" },
+    { "]d", diagnostic .. "goto_next({ border = 'rounded' })<CR>", desc = "" },
+    { "[d", diagnostic .. "goto_prev({ border = 'rounded' })<CR>", desc = "" },
     { "<leader>sl", ":LspStop<CR>", desc = "" },
 
     { "<leader>bc", ":Navbuddy<CR>", desc = "Open breadcrumbs" },
 
-    { "<leader>cL", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens" },
-
-    {
-      "<leader>cle",
-      function()
-        enableCodelens()
-      end,
-      desc = "Refresh & Display Codelens",
-    },
+    { "<leader>cL", codelens .. "refresh()<CR>", desc = "Refresh & Display Codelens" },
 
     {
       "<leader>lsc",
@@ -73,21 +65,15 @@ M.keymaps = wk.add({
   },
   {
     mode = { "i" },
-    { "<C-s>", "<cmd>lua vim.lsp.buf.signature_help({ border = 'rounded' })<CR>", desc = "" },
+    { "<C-s>", lsp .. "signature_help({ border = 'rounded' })<CR>", desc = "" },
   },
   {
     mode = { "n", "v" },
-    { "<leader>cl", vim.lsp.codelens.run, desc = "Run Codelens" },
+    { "<leader>cl", codelens .. "run()<CR>", desc = "Run Codelens" },
   },
   {
     mode = { "n", "x" },
-    {
-      "<leader>cf",
-      function()
-        conform.format({ bufnr = bufnr })
-      end,
-      desc = "Format buffer",
-    },
+    { "<leader>cf", conform .. "format({ bufnr = bufnr })<CR>", desc = "Format buffer" },
   },
 })
 

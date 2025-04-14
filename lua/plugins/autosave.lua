@@ -1,14 +1,14 @@
 return {
   "okuuva/auto-save.nvim",
-  version = "*",
+  version = "*", -- Don't change
   cmd = "ASToggle", -- optional for lazy loading on command
   event = { "InsertLeave", "TextChanged" },
   opts = {
     trigger_events = { -- See :h events
-      -- Disabling this, as it's autosaving when leave buffer and autoformatting stuff
-      -- when in insert mode and following a tutorial
-      -- immediate_save = { "BufLeave", "FocusLost", "QuitPre", "VimSuspend" },
-      immediate_save = nil,
+      -- immediate_save = nil,
+      immediate_save = { "BufLeave", "QuitPre", "VimSuspend" },
+      defer_save = { "InsertLeave", "TextChanged" }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
+      cancel_deferred_save = { "InsertEnter" }, -- vim events that cancel a pending deferred save
     },
     -- function that takes the buffer handle and determines whether to save the current buffer or not
     -- return true: if buffer is ok to be saved

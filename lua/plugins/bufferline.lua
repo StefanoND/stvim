@@ -1,12 +1,12 @@
 return {
   "akinsho/bufferline.nvim",
   after = "catppuccin",
-  dependencies = { "nvim-tree/nvim-web-devicons" },
-  version = "*",
+  dependencies = { "echasnovski/mini.nvim" },
+  version = false,
   -- lazy = false,
   event = "VeryLazy",
-  config = function()
-    require("bufferline").setup({
+  opts = function()
+    return {
       options = {
         mode = "buffers", -- set to "tabs" to only show tabpages instead
         separator_style = "slant",
@@ -72,7 +72,10 @@ return {
         },
       },
       highlights = require("catppuccin.groups.integrations.bufferline").get(),
-    })
+    }
+  end,
+  config = function(_, opts)
+    require("bufferline").setup(opts)
     require("config.keymaps.bufferline")
   end,
 }

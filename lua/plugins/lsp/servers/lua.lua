@@ -24,7 +24,7 @@ return {
           -- paramType = true,
           -- paramName = "Disable",
           -- semicolon = "Disable",
-          -- arrayIndex = "Disable",
+          arrayIndex = "Disable",
         },
         workspace = {
           checkThirdParty = false,

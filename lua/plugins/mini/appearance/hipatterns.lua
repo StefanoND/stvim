@@ -12,26 +12,27 @@ local word_color_group = function(_, match)
 end
 
 M.opts = {
-  tailwind = {
-    enabled = true,
-    ft = {
-      "astro",
-      "css",
-      "heex",
-      "html",
-      "html-eex",
-      "javascript",
-      "javascriptreact",
-      "rust",
-      "svelte",
-      "typescript",
-      "typescriptreact",
-      "vue",
-    },
-    -- full: the whole css class will be highlighted
-    -- compact: only the color will be highlighted
-    style = "full",
-  },
+  -- tailwind = {
+  --   enabled = true,
+  --   ft = {
+  --     "astro",
+  --     "css",
+  --     "heex",
+  --     "html",
+  --     "html-eex",
+  --     "javascript",
+  --     "javascriptreact",
+  --     "rust",
+  --     "svelte",
+  --     "typescript",
+  --     "typescriptreact",
+  --     "vue",
+  --   },
+  --   -- full: the whole css class will be highlighted
+  --   -- compact: only the color will be highlighted
+  --   style = "full",
+  -- },
+
   highlighters = {
     -- Highlight hex color strings (`#rrggbb`) using that color
     hex_color = hi.gen_highlighter.hex_color({ priority = 2000 }),
@@ -87,37 +88,37 @@ M.opts = {
     -- Highlight word color strings (`red`, `green`, `blue`, etc) using that color (Themed)
     word_color = { pattern = "%S+", group = word_color_group },
 
-    tailwind = {
-      pattern = function()
-        if not vim.tbl_contains(M.opts.tailwind.ft, vim.bo.filetype) then
-          return
-        end
-        if M.opts.tailwind.style == "full" then
-          return "%f[%w:-]()[%w:-]+%-[a-z%-]+%-%d+()%f[^%w:-]"
-        elseif M.opts.tailwind.style == "compact" then
-          return "%f[%w:-][%w:-]+%-()[a-z%-]+%-%d+()%f[^%w:-]"
-        end
-      end,
-      group = function(_, _, m)
-        ---@type string
-        local match = m.full_match
-        ---@type string, number
-        local color, shade = match:match("[%w-]+%-([a-z%-]+)%-(%d+)")
-        shade = tonumber(shade)
-        local bg = vim.tbl_get(M.colors, color, shade)
-        if bg then
-          local hl = "MiniHipatternsTailwind" .. color .. shade
-          if not M.hl[hl] then
-            M.hl[hl] = true
-            local bg_shade = shade == 500 and 950 or shade < 500 and 900 or 100
-            local fg = vim.tbl_get(M.colors, color, bg_shade)
-            vim.api.nvim_set_hl(0, hl, { bg = "#" .. bg, fg = "#" .. fg })
-          end
-          return hl
-        end
-      end,
-      extmark_opts = { priority = 2000 },
-    },
+    -- tailwind = {
+    --   pattern = function()
+    --     if not vim.tbl_contains(M.opts.tailwind.ft, vim.bo.filetype) then
+    --       return
+    --     end
+    --     if M.opts.tailwind.style == "full" then
+    --       return "%f[%w:-]()[%w:-]+%-[a-z%-]+%-%d+()%f[^%w:-]"
+    --     elseif M.opts.tailwind.style == "compact" then
+    --       return "%f[%w:-][%w:-]+%-()[a-z%-]+%-%d+()%f[^%w:-]"
+    --     end
+    --   end,
+    --   group = function(_, _, m)
+    --     ---@type string
+    --     local match = m.full_match
+    --     ---@type string, number
+    --     local color, shade = match:match("[%w-]+%-([a-z%-]+)%-(%d+)")
+    --     shade = tonumber(shade)
+    --     local bg = vim.tbl_get(M.colors, color, shade)
+    --     if bg then
+    --       local hl = "MiniHipatternsTailwind" .. color .. shade
+    --       if not M.hl[hl] then
+    --         M.hl[hl] = true
+    --         local bg_shade = shade == 500 and 950 or shade < 500 and 900 or 100
+    --         local fg = vim.tbl_get(M.colors, color, bg_shade)
+    --         vim.api.nvim_set_hl(0, hl, { bg = "#" .. bg, fg = "#" .. fg })
+    --       end
+    --       return hl
+    --     end
+    --   end,
+    --   extmark_opts = { priority = 2000 },
+    -- },
   },
 }
 

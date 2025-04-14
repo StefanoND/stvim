@@ -30,8 +30,8 @@ require("lazy").setup({
     { import = "plugins.lsp" },
     { import = "plugins.lsp.languages" },
     { import = "plugins.lsp.servers" },
-    { import = "plugins.dap" },
     { import = "plugins.dap.servers" },
+    { import = "plugins.dap" },
   },
   ui = {
     -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
@@ -57,7 +57,7 @@ require("lazy").setup({
         "gzip",
         -- "matchit",
         -- "matchparen",
-        -- "netrwPlugin",
+        "netrwPlugin",
         "tarPlugin",
         "tohtml",
         "tutor",

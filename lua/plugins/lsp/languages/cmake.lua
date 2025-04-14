@@ -1,28 +1,22 @@
 return {
   {
     "cdelledonne/vim-cmake",
+    version = false,
     ft = { "cmake" },
     config = function()
-      local opts = { noremap = true, silent = false }
-
-      vim.keymap.set("n", "<leader>cg", "<cmd>CMakeGenerate<CR>", opts)
-      vim.keymap.set("n", "<leader>cb", "<cmd>CMakeBuild<CR>", opts)
-      vim.keymap.set("n", "<leader>cq", "<cmd>CMakeClose<CR>", opts)
-      vim.keymap.set("n", "<leader>cc", "<cmd>CMakeClean<CR>", opts)
-
+      require("config.keymaps.languages.cmake")
       vim.g.cmake_link_compile_commands = 1
     end,
   },
   {
     "Civitasv/cmake-tools.nvim",
+    version = false,
     lazy = true,
-    dependency = {
-      { "nvim-lua/plenary.nvim", ft = { "cmake" } },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "stevearc/overseer.nvim",
     },
     ft = { "cmake" },
-    opts = {
-      cmake_build_directory = "build",
-    },
     init = function()
       local loaded = false
       local function check()
@@ -41,6 +35,14 @@ return {
         end,
       })
     end,
+    opts = function()
+      return {
+        cmake_build_directory = "build/${variant:buildType}",
+      }
+    end,
+    config = function(_, opts)
+      require("cmake-tools").setup(opts)
+    end,
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -49,10 +51,6 @@ return {
     opts = {
       sections = {
         lualine_c = {
-        -- stylua: ignore
-        { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 }, },
-        -- stylua: ignore
-        { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" }, },
           {
             function()
               return "CMake:"
@@ -150,13 +148,6 @@ return {
                 vim.cmd("CMakeSelectBuildTarget")
               end
             end,
-          },
-          {
-            "navic",
-            cond = function()
-              return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
-            end,
-            color_correction = "dynamic",
           },
         },
       },

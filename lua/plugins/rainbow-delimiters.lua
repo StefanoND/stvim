@@ -1,10 +1,8 @@
 return {
   "HiPhish/rainbow-delimiters.nvim",
   lazy = false,
-  config = function()
-    local rainbow_delimiters = require("rainbow-delimiters")
-    -- rainbow_delimiters.setup({
-    vim.g.rainbow_delimiters = {
+  opts = function()
+    return {
       strategy = {
         [""] = "rainbow-delimiters.strategy.global",
         vim = "rainbow-delimiters.strategy.local",
@@ -29,6 +27,8 @@ return {
         "RainbowDelimiterCyan",
       },
     }
-    -- })
+  end,
+  config = function(_, opts)
+    require("rainbow-delimiters.setup").setup(opts)
   end,
 }

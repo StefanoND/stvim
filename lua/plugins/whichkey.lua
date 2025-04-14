@@ -1,5 +1,6 @@
 return {
   "folke/which-key.nvim",
+  version = false,
   event = "VeryLazy",
   opts = {
     -- your configuration comes here
@@ -8,6 +9,7 @@ return {
     spec = {
       {
         mode = { "n", "v" },
+        { "<leader>ts", group = "TS CPP Tools" },
         { "<leader>o", group = "overseer" },
         { "<leader>q", group = "persistence" },
         { "<leader>p", group = "pomodoro" },

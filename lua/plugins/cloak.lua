@@ -1,8 +1,9 @@
 return {
   "laytan/cloak.nvim",
+  version = false,
   event = "VeryLazy",
-  config = function()
-    require("cloak").setup({
+  opts = function()
+    return {
       enabled = true,
       cloak_character = "*",
       -- The applied highlight group (colors) on the cloaking, see `:h highlight`.
@@ -22,8 +23,10 @@ return {
           cloak_pattern = "=.+",
         },
       },
-    })
-
+    }
+  end,
+  config = function(_, opts)
+    require("cloak").setup(opts)
     require("config.keymaps.cloak")
   end,
 }

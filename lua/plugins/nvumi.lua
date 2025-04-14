@@ -1,6 +1,7 @@
 return {
   "josephburgess/nvumi",
-  dependencies = { "folke/snacks.nvim" },
+  version = false,
+  dependencies = { "folke/snacks.nvim", "echasnovski/mini.nvim" },
   opts = function()
     require("config.keymaps.nvumi")
     return {

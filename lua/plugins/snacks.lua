@@ -34,6 +34,7 @@ local int = require("plugins.snacks.snacksinit")
 
 return {
   "folke/snacks.nvim",
+  version = false,
   priority = 1000,
   lazy = false,
   opts = {
@@ -75,6 +76,22 @@ return {
         files = fil.pkr,
         grep = grp.pkr,
         register = reg.pkr,
+      },
+      icons = {
+        tree = {
+          vertical = "│ ",
+          middle = "├╴",
+          last = "╰╴",
+        },
+        ft = {
+          nwscript = "",
+        },
+        filetype = {
+          nwscript = "",
+        },
+        file_type = {
+          nwscript = "",
+        },
       },
     },
   },

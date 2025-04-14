@@ -1,16 +1,3 @@
--- local M = {}
---
--- local wk = require("which-key")
---
--- M.keymaps = wk.add({
---   {
---     mode = { "n" },
---     { "<leader>pr", ":ProjectRoot<CR>", desc = "Project set root" },
---   },
--- })
---
--- return M.keymaps
-
 return {
   { "<leader>gi", "<cmd>Octo issue list<CR>", desc = "List Issues (Octo)" },
   { "<leader>gI", "<cmd>Octo issue search<CR>", desc = "Search Issues (Octo)" },

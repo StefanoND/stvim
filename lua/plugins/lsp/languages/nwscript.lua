@@ -1,18 +1,17 @@
 return { -- NWScript
   "StefanoND/nwscript-ee-lsp.nvim",
   ft = "nwscript",
-  event = "VeryLazy",
+  version = false,
+  lazy = true,
   dependencies = {
     "HiPhish/rainbow-delimiters.nvim",
     "L3MON4D3/LuaSnip",
     "akinsho/bufferline.nvim",
     "danymat/neogen",
     "folke/which-key.nvim",
-    -- "kevinhwang91/nvim-ufo",
-    -- "numToStr/Comment.nvim",
     "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
     "nvim-treesitter/nvim-treesitter",
+    "echasnovski/mini.nvim",
     "stevearc/conform.nvim",
     {
       "StefanoND/vim-nwscript",

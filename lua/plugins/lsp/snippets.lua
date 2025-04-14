@@ -2,6 +2,7 @@ local vars = require("config.vars")
 
 return {
   "L3MON4D3/LuaSnip",
+  version = false,
   lazy = true,
   -- build = vars.getOSLowerCase():match("windows") ~= 0 and "make install_jsregexp" or nil,
   build = "make install_jsregexp",
@@ -11,11 +12,13 @@ return {
   keys = function()
     return {}
   end,
-  opts = {
-    enable_autosnippets = true,
-    history = true,
-    delete_check_events = "TextChanged",
-  },
+  opts = function()
+    return {
+      enable_autosnippets = true,
+      history = true,
+      delete_check_events = "TextChanged",
+    }
+  end,
   config = function(_, opts)
     local luasnip = require("luasnip")
     if opts then

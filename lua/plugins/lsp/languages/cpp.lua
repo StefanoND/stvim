@@ -1,10 +1,19 @@
 return { -- C++
-  { "bfrg/vim-cpp-modern", ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" } },
-  { "ranjithshegde/ccls.nvim", ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" } },
+  {
+    "bfrg/vim-c-cpp-modern",
+    version = false,
+    ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
+    config = function()
+      vim.g.cpp_member_highlight = 1
+      vim.g.cpp_operator_highlight = 1
+    end,
+  },
+  { "ranjithshegde/ccls.nvim", version = false, ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" } },
   {
     "p00f/clangd_extensions.nvim",
     -- dependencies = { "mortepau/codicons.nvim" },
     -- lazy = true,
+    version = false,
     ft = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
     opts = function()
       return {
@@ -45,9 +54,10 @@ return { -- C++
   },
   {
     "Badhi/nvim-treesitter-cpp-tools",
+    version = false,
     dependencies = "nvim-treesitter/nvim-treesitter",
     opts = function()
-      local options = {
+      return {
         preview = {
           quit = "q", -- optional keymapping for quit preview
           accept = "<tab>", -- optional keymapping for accept preview
@@ -68,7 +78,6 @@ return { -- C++
                 ]]
         },
       }
-      return options
     end,
     -- End configuration
     config = true,

@@ -1,7 +1,6 @@
 return {
   "nvim-neorg/neorg",
-  version = "*",
-  -- lazy = false,
+  version = "*", -- Don't change
   ft = { "norg", "neorg" },
   -- build = ":Neorg sync-parsers",
   dependencies = {
@@ -10,8 +9,8 @@ return {
     "benlubas/neorg-query",
     "mrcapivaro/true-zen.nvim",
   },
-  config = function()
-    require("neorg").setup({
+  opts = function()
+    return {
       load = {
         ["external.query"] = {
           -- Populate the database. Indexing happens on a separate thread, so doesn't block
@@ -147,8 +146,10 @@ return {
         ["core.tempus"] = {},
         ["core.text-objects"] = {},
       },
-    })
-
+    }
+  end,
+  config = function(_, opts)
+    require("neorg").setup(opts)
     require("config.keymaps.neorg")
   end,
 }

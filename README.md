@@ -4,13 +4,13 @@
 
 ## FOR WINDOWS USERS
 
-### You'll have issues with treesitter and telescope-fzf, follow the steps below to remedy that.
+### You'll have issues with treesitter and telescope-fzf, follow the steps below to remedy that
 
 ## Treesitter
 
-#### Go to https://www.msys2.org/ and download the "msys2-x86_64-XXXXXX.exe" file
+#### Go to <https://www.msys2.org/> and download the "msys2-x86_64-XXXXXX.exe" file
 
-#### Install it, open the terminal and run the following commands:
+#### Install it, open the terminal and run the following commands
 
         pacman -Syu
         pacman -S base-devel mingw-w64-ucrt-x86_64-toolchain --needed
@@ -36,7 +36,7 @@
 
 ## Telescope-fzf
 
-### For telescope it's easier, just copy paste all the lines below in your terminal.
+### For telescope it's easier, just copy paste all the lines below in your terminal
 
         cd ~\AppData\Local\nvim-data\lazy\telescope-fzf-native.nvim
         make clean

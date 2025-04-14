@@ -1,6 +1,11 @@
 local M = {}
 
-M.encoding = { offsetEncoding = { "utf-8", "utf-16", "utf-32" } }
+M.encoding = {
+  offsetEncoding = { "utf-8", "utf-16", "utf-32" },
+  general = {
+    positionEncoding = { "utf-8", "utf-16", "utf-32" },
+  },
+}
 
 M.workspace = {
   configuration = true,

@@ -1,51 +1,53 @@
 return { -- Linting
   "mfussenegger/nvim-lint",
   lazy = true,
+  version = false,
   events = { "BufWritePost", "BufReadPost", "InsertLeave" },
-  opts = {
-    events = { "BufWritePost", "BufReadPost", "InsertLeave" },
-    -- Event to trigger linters
-    linters_by_ft = {
-      bash = { "shellharden" },
-      c = { "clangd" },
-      cpp = { "clangd" },
-      fish = { "fish" },
-      cmake = { "cmakelint" },
-      markdown = { "markdownlint-cli2" },
-      gdscript = { "gdlint" },
-      sql = { "sqlfluff" },
-      mysql = { "sqlfluff" },
-      plsql = { "sqlfluff" },
-      javascript = { "biome" },
-      javascriptreact = { "biome" },
-      ["javascript.jsx"] = { "biome" },
-      typescript = { "biome" },
-      typescriptreact = { "biome" },
-      ["typescript.tsx"] = { "biome" },
-      -- Use the "*" filetype to run linters on all filetypes.
-      ["*"] = { "global linter" },
-      -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
-      -- ['_'] = { 'fallback linter' },
-      -- ["*"] = { "typos" },
-    },
-    -- LazyVim extension to easily override linter options
-    -- or add custom linters.
-    ---@type table<string,table>
-    linters = {
-      -- -- Example of using selene only when a selene.toml file is present
-      -- selene = {
-      --   -- `condition` is another LazyVim extension that allows you to
-      --   -- dynamically enable/disable linters based on the context.
-      --   condition = function(ctx)
-      --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
-      --   end,
-      -- },
-    },
-  },
+  opts = function()
+    return {
+      events = { "BufWritePost", "BufReadPost", "InsertLeave" },
+      -- Event to trigger linters
+      linters_by_ft = {
+        bash = { "shellharden" },
+        c = { "clangd" },
+        cpp = { "clangd" },
+        fish = { "fish" },
+        cmake = { "cmakelint" },
+        markdown = { "markdownlint-cli2" },
+        gdscript = { "gdlint" },
+        sql = { "sqlfluff" },
+        mysql = { "sqlfluff" },
+        plsql = { "sqlfluff" },
+        javascript = { "biome" },
+        javascriptreact = { "biome" },
+        ["javascript.jsx"] = { "biome" },
+        typescript = { "biome" },
+        typescriptreact = { "biome" },
+        ["typescript.tsx"] = { "biome" },
+        -- Use the "*" filetype to run linters on all filetypes.
+        ["*"] = { "global linter" },
+        -- Use the "_" filetype to run linters on filetypes that don't have other linters configured.
+        -- ['_'] = { 'fallback linter' },
+        -- ["*"] = { "typos" },
+      },
+      -- LazyVim extension to easily override linter options
+      -- or add custom linters.
+      ---@type table<string,table>
+      linters = {
+        -- -- Example of using selene only when a selene.toml file is present
+        -- selene = {
+        --   -- `condition` is another LazyVim extension that allows you to
+        --   -- dynamically enable/disable linters based on the context.
+        --   condition = function(ctx)
+        --     return vim.fs.find({ "selene.toml" }, { path = ctx.filename, upward = true })[1]
+        --   end,
+        -- },
+      },
+    }
+  end,
   config = function(_, opts)
-    local M = {}
-
     local lint = require("lint")
+
     for name, linter in pairs(opts.linters) do
       if type(linter) == "table" and type(lint.linters[name]) == "table" then
         lint.linters[name] = vim.tbl_deep_extend("force", lint.linters[name], linter)
@@ -59,7 +61,7 @@ return { -- Linting
     end
     lint.linters_by_ft = opts.linters_by_ft
 
-    function M.debounce(ms, fn)
+    local debounce = function(ms, fn)
       local timer = vim.uv.new_timer()
       return function(...)
         local argv = { ... }
@@ -70,7 +72,7 @@ return { -- Linting
       end
     end
 
-    function M.lint()
+    local lint = function()
       -- Use nvim-lint's logic first:
       -- * checks if linters exist for the full filetype first
       -- * otherwise will split filetype by "." and add all those linters
@@ -108,7 +110,7 @@ return { -- Linting
 
     vim.api.nvim_create_autocmd(opts.events, {
       group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
-      callback = M.debounce(100, M.lint),
+      callback = debounce(100, lint),
     })
   end,
 }

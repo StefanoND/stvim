@@ -1,4 +1,6 @@
-local function merge_colors(foreground, background)
+local M = {}
+
+M.merge_colors = function(foreground, background)
   local new_name = foreground .. background
 
   local hl_fg = vim.api.nvim_get_hl(0, { name = foreground })
@@ -11,10 +13,9 @@ local function merge_colors(foreground, background)
   return new_name
 end
 
-local function get_dap_repl_winbar(active)
-  local get_mode = require("lualine.highlight").get_mode_suffix
-
+M.get_dap_repl_winbar = function(active)
   return function()
+    local get_mode = require("lualine.highlight").get_mode_suffix
     local filetype = vim.bo.filetype
     local disabled_filetypes = { "dap-repl" }
 
@@ -29,7 +30,7 @@ local function get_dap_repl_winbar(active)
       local color, action = string.match(element, "%%#(.*)#(%%.*)%%#0#")
       controls_string = controls_string
         .. " %#"
-        .. merge_colors(color, background_color)
+        .. M.merge_colors(color, background_color)
         .. "#"
         .. action
     end
@@ -37,11 +38,22 @@ local function get_dap_repl_winbar(active)
   end
 end
 
+M.diff_source = function()
+  local added = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.added or 0
+  local modified = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.changed or 0
+  local removed = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.removed or 0
+  if added == 0 and modified == 0 and removed == 0 then
+    return nil
+  else
+    return { added = added, modified = modified, removed = removed }
+  end
+end
+
 local colors = require("config.colors").words
 
-local conditions = {
+M.conditions = {
   buffer_not_empty = function()
-    return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
+    return vim.fn.empty(vim.fn.expand("%:t")) ~= 1 and M.conditions.checkFileSize()
   end,
   hide_in_width = function()
     return vim.fn.winwidth(0) > 80
@@ -50,6 +62,25 @@ local conditions = {
     local filepath = vim.fn.expand("%:p:h")
     local gitdir = vim.fn.finddir(".git", filepath .. ";")
     return gitdir and #gitdir > 0 and #gitdir < #filepath
+  end,
+  check_diff = function()
+    local added = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.added or 0
+    local modified = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.changed or 0
+    local removed = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.removed or 0
+    if added ~= 0 or modified ~= 0 or removed ~= 0 then
+      return true
+    end
+    return false
+  end,
+  check_diagnostic = function()
+    local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+    local warns = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+    local infos = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
+    local hints = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
+    if #errors > 0 or #warns > 0 or #infos > 0 or #hints > 0 then
+      return true
+    end
+    return false
   end,
   checkFileSize = function()
     local file = vim.fn.expand("%:p")
@@ -84,287 +115,250 @@ local conditions = {
   end,
 }
 
-return {
+M.line = function()
+  local lazy_status = require("lazy.status") -- to configure lazy pending updates count
+  local snacks = require("snacks")
+  return {
+    line_a = {
+      "mode",
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.checkFileSize,
+      },
+      {
+        -- filesize component
+        "filesize",
+        cond = M.conditions.checkFileSize,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.buffer_not_empty,
+      },
+      {
+        "filename",
+        path = 0,
+        newfile_status = true,
+        cond = M.conditions.buffer_not_empty,
+      },
+    },
+    line_b = {
+      {
+        "branch",
+        cond = M.conditions.check_git_workspace,
+      },
+      {
+        function()
+          return ""
+        end,
+        -- cond = M.conditions.check_git_workspace,
+        cond = (M.conditions.check_git_workspace and M.conditions.check_diagnostic)
+          or (M.conditions.check_diff and M.conditions.check_git_workspace),
+      },
+      {
+        "diff",
+        colored = true,
+        symbols = { added = "+", modified = "~", removed = "-" },
+        source = M.diff_source,
+        cond = M.conditions.hide_in_width,
+      },
+      {
+        function()
+          return ""
+        end,
+        -- cond = M.conditions.check_diagnostic
+        cond = (M.conditions.check_diagnostic and M.conditions.check_git_workspace)
+          or (M.conditions.check_diagnostic and M.conditions.check_diff),
+      },
+      {
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        symbols = { error = "✘ ", warn = "▲ ", hint = "⚑ ", info = "» " },
+        diagnostics_color = {
+          error = { fg = colors.red },
+          warn = { fg = colors.yellow },
+          hint = { fg = colors.blue },
+          info = { fg = colors.cyan },
+        },
+        always_visible = false,
+        update_in_insert = true,
+      },
+    },
+    line_c = {
+      {
+        function()
+          return "%="
+        end,
+        cond = M.conditions.checkLsp,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.checkLsp,
+      },
+      {
+        M.conditions.lspInfo,
+        icon = " LSP:",
+        color = { fg = colors.white, gui = "bold" },
+        cond = M.conditions.checkLsp,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.checkLsp,
+      },
+    },
+    line_x = {
+      {
+        function()
+          return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+        end,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = snacks.profiler.running,
+      },
+      {
+        snacks.profiler.status,
+        cond = snacks.profiler.running,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = lazy_status.has_updates,
+      },
+      {
+        lazy_status.updates,
+        cond = lazy_status.has_updates,
+      },
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.buffer_not_empty,
+      },
+      { "encoding", cond = M.conditions.buffer_not_empty },
+      function()
+        return ""
+      end,
+      { "fileformat" },
+      {
+        function()
+          return ""
+        end,
+        cond = M.conditions.buffer_not_empty,
+      },
+      {
+        "filetype",
+      },
+    },
+    line_y = {
+      "progress",
+      function()
+        return ""
+      end,
+      "location",
+    },
+    line_z = {
+      "os.date('%d/%m/%Y %H:%M:%S')",
+    },
+  }
+end
+
+M.win = {
+  win_a = {},
+  win_b = {
+    M.get_dap_repl_winbar(true),
+  },
+  win_c = {
+    {
+      "navic",
+      cond = function()
+        return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+      end,
+      color_correction = "dynamic",
+    },
+  },
+  win_x = {
+
+    {
+      function()
+        return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+      end,
+    },
+  },
+  win_y = {
+    "os.date('%d/%m/%Y %H:%M:%S')",
+  },
+  win_z = {
+
+    function()
+      return "   "
+    end,
+  },
+}
+
+M.lualine = {
   "nvim-lualine/lualine.nvim",
-  -- lazy = false,
+  version = false,
+  lazy = true,
   event = "VeryLazy",
   dependencies = {
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.nvim",
   },
-  config = function()
-    local lualine = require("lualine")
-
-    local lazy_status = require("lazy.status") -- to configure lazy pending updates count
-    local snacks = require("snacks")
-
-    lualine.setup({
+  opts = function()
+    return {
       options = {
         component_separators = "",
         theme = "catppuccin",
       },
       sections = {
-        lualine_a = {
-          "mode",
-          function()
-            return ""
-          end,
-          {
-            -- filesize component
-            "filesize",
-            cond = conditions.checkFileSize,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkFileSize,
-          },
-          {
-            "filename",
-            cond = conditions.buffer_not_empty,
-          },
-        },
-        lualine_b = {
-          {
-            "branch",
-            cond = conditions.check_git_workspace,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.check_git_workspace,
-          },
-          {
-            "diff",
-            cond = conditions.check_git_workspace,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.check_git_workspace,
-          },
-          {
-            "diagnostics",
-            cond = conditions.check_git_workspace,
-            sources = { "nvim_diagnostic" },
-            symbols = { error = "✘ ", warn = "▲ ", hint = "⚑ ", info = "» " },
-            diagnostics_color = {
-              error = { fg = colors.red },
-              warn = { fg = colors.yellow },
-              hint = { fg = colors.blue },
-              info = { fg = colors.cyan },
-            },
-          },
-        },
-        lualine_c = {
-          {
-            function()
-              return "%="
-            end,
-            cond = conditions.checkLsp,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkLsp,
-          },
-          {
-            conditions.lspInfo,
-            icon = " LSP:",
-            color = { fg = colors.white, gui = "bold" },
-            cond = conditions.checkLsp,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkLsp,
-          },
-        },
-        lualine_x = {
-          {
-            function()
-              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
-            end,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = snacks.profiler.running,
-          },
-          {
-            snacks.profiler.status,
-            cond = snacks.profiler.running,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = lazy_status.has_updates,
-          },
-          {
-            lazy_status.updates,
-            cond = lazy_status.has_updates,
-          },
-          function()
-            return ""
-          end,
-          { "encoding" },
-          function()
-            return ""
-          end,
-          { "fileformat" },
-          function()
-            return ""
-          end,
-          {
-            "filetype",
-          },
-        },
-        lualine_y = {
-          "progress",
-          function()
-            return ""
-          end,
-          "location",
-        },
-        lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
+        lualine_a = M.line().line_a,
+        lualine_b = M.line().line_b,
+        lualine_c = M.line().line_c,
+        lualine_x = M.line().line_x,
+        lualine_y = M.line().line_y,
+        lualine_z = M.line().line_z,
       },
       inactive_sections = {
-        lualine_a = {
-          "mode",
-          function()
-            return ""
-          end,
-          {
-            -- filesize component
-            "filesize",
-            cond = conditions.checkFileSize,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkFileSize,
-          },
-          {
-            "filename",
-            cond = conditions.buffer_not_empty,
-          },
-        },
-        lualine_b = {
-          {
-            "branch",
-            cond = conditions.check_git_workspace,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.check_git_workspace,
-          },
-          {
-            "diff",
-            cond = conditions.check_git_workspace,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.check_git_workspace,
-          },
-          {
-            "diagnostics",
-            cond = conditions.check_git_workspace,
-            sources = { "nvim_diagnostic" },
-            symbols = { error = "✘ ", warn = "▲ ", hint = "⚑ ", info = "» " },
-            diagnostics_color = {
-              error = { fg = colors.red },
-              warn = { fg = colors.yellow },
-              hint = { fg = colors.blue },
-              info = { fg = colors.cyan },
-            },
-          },
-        },
-        lualine_c = {
-          {
-            function()
-              return "%="
-            end,
-            cond = conditions.checkLsp,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkLsp,
-          },
-          {
-            conditions.lspInfo,
-            icon = " LSP:",
-            color = { fg = colors.white, gui = "bold" },
-            cond = conditions.checkLsp,
-          },
-          {
-            function()
-              return ""
-            end,
-            cond = conditions.checkLsp,
-          },
-        },
-        lualine_x = {
-          {
-            function()
-              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
-            end,
-          },
-        },
-        lualine_z = { "os.date('%d/%m/%Y %H:%M:%S')" },
+        lualine_a = M.line().line_a,
+        lualine_b = M.line().line_b,
+        lualine_c = M.line().line_c,
+        lualine_x = M.line().line_x,
+        lualine_y = M.line().line_y,
+        lualine_z = M.line().line_z,
       },
       tabline = {},
       extensions = {},
       winbar = {
-        lualine_a = {
-          "navic",
-        },
-        lualine_b = { get_dap_repl_winbar(true) },
-        lualine_x = {
-          {
-            function()
-              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
-            end,
-          },
-        },
-        lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
-        lualine_z = {
-          function()
-            return "   "
-          end,
-        },
+        lualine_a = M.win.win_a,
+        lualine_b = M.win.win_b,
+        lualine_c = M.win.win_c,
+        lualine_x = M.win.win_x,
+        lualine_y = M.win.win_y,
+        lualine_z = M.win.win_z,
       },
       inactive_winbar = {
-        lualine_a = {
-          "navic",
-        },
-        lualine_b = { get_dap_repl_winbar(false) },
-        lualine_x = {
-          {
-            function()
-              return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
-            end,
-          },
-        },
-        lualine_y = { "os.date('%d/%m/%Y %H:%M:%S')" },
-        lualine_z = {
-          function()
-            return "   "
-          end,
-        },
+        lualine_a = M.win.win_a,
+        lualine_b = M.win.win_b,
+        lualine_c = M.win.win_c,
+        lualine_x = M.win.win_x,
+        lualine_y = M.win.win_y,
+        lualine_z = M.win.win_z,
       },
-    })
+    }
+  end,
+  config = function(_, opts)
+    require("lualine").setup(opts)
   end,
 }
+
+return M.lualine

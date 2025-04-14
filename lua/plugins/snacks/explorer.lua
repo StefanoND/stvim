@@ -10,6 +10,7 @@ M.conf = {
 
 M.pkr = vim.tbl_deep_extend("force", configs.files, {
   auto_close = true,
+  -- cwd = vim.fn.getcwd(),
   layout = {
     preview = true,
     layout = {

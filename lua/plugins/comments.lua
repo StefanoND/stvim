@@ -30,13 +30,14 @@
 -- FAIL: working
 
 return {
-  "folke/todo-comments.nvim",
-  lazy = false,
-  dependencies = { "nvim-lua/plenary.nvim" },
-  cmd = { "TodoTrouble" },
-  keys = require("config.keymaps.todo-comments"),
-  config = function()
-    require("todo-comments").setup({
+  {
+    "folke/todo-comments.nvim",
+    version = false,
+    lazy = false,
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "TodoTrouble" },
+    keys = require("config.keymaps.comments"),
+    opts = {
       signs = true,
       sign_priority = 1000,
       colors = {
@@ -58,6 +59,19 @@ return {
         NOTE = { icon = " ", color = "blue", alt = { "INFO", "TRACK", "KEEPTRACK" } },
         TEST = { icon = "󰅐 ", color = "white", alt = { "TESTING", "PASS", "PASSED", "FAILED", "FAIL" } },
       },
-    })
-  end,
+    },
+  },
+  {
+    "numToStr/Comment.nvim",
+    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+    version = false,
+    opts = function()
+      return {
+        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+      }
+    end,
+    config = function(_, opts)
+      require("Comment").setup(opts)
+    end,
+  },
 }

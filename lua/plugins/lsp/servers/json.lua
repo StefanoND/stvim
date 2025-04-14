@@ -7,24 +7,19 @@ return {
     root_dir = funcs.getRoot(),
   }),
   lspconfig.setupServer("jsonls", {
+    on_new_config = function(new_config)
+      new_config.settings.json.schemas = require("schemastore").json.schemas or {}
+      vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+    end,
     settings = {
-      jsonls = {
-        settings = {
-          json = {
-            format = { enable = true },
-            validate = { enable = true },
-            schemas = {
-              {
-                require("schemastore").json.schemas(),
-              },
-              {
-                description = "Biome configuration schema",
-                fileMatch = { "biome.json" },
-                url = "https://biomejs.dev/schemas/1.9.4/schema.json",
-              },
-            },
-          },
+      json = {
+        format = { enable = true },
+        schemas = {
+          description = "Biome configuration schema",
+          fileMatch = "biome.json",
+          url = "https://biomejs.dev/schemas/1.9.4/schema.json",
         },
+        validate = { enable = true },
       },
     },
     on_attach = function(client, bufnr)

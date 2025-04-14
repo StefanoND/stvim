@@ -1,19 +1,27 @@
 local api = vim.api
+local funcs = require("config.functions")
 
 return {
   { -- Global/local settings
     "folke/neoconf.nvim",
+    version = false,
+    lazy = false,
     cmd = "Neoconf",
-    opts = {},
-    config = function() end,
+    opts = function()
+      return {}
+    end,
+    config = function(_, opts)
+      require("neoconf").setup(opts)
+    end,
   },
   { -- Preview
     "rmagatti/goto-preview",
+    version = false,
     lazy = true,
     dependencies = { "rmagatti/logger.nvim" },
     event = "BufEnter",
-    config = function()
-      require("goto-preview").setup({
+    opts = function()
+      return {
         width = 90, -- Width of the floating window
         height = 20, -- Height of the floating window
         border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, -- Border characters of the floating window
@@ -32,47 +40,71 @@ return {
         bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
         stack_floating_preview_windows = true, -- Whether to nest floating windows
         preview_window_title = { enable = true, position = "left" }, -- Whether
-      })
+      }
+    end,
+    config = function(_, opts)
+      require("goto-preview").setup(opts)
     end,
   },
   {
     "SmiteshP/nvim-navic",
-    config = function()
-      local navic = require("nvim-navic")
-      navic.setup({
+    version = false,
+    init = function()
+      vim.g.navic_silence = true
+      funcs.on_attach(function(client, buffer)
+        if client.supports_method("textDocument/documentSymbol") then
+          require("nvim-navic").attach(client, buffer)
+        end
+      end)
+    end,
+    opts = function()
+      return {
         highlight = true,
         lazy_update_context = true,
         lsp = { auto_attach = true },
         depth_limit = 5,
         icons = require("blink.cmp").kind_icons,
-      })
+        click = true,
+      }
+    end,
+    config = function(_, opts)
+      require("nvim-navic").setup(opts)
     end,
   },
   { -- Breadcrumbs-like navigation
     "SmiteshP/nvim-navbuddy",
+    version = false,
     lazy = true,
     dependencies = {
       "SmiteshP/nvim-navic",
       "MunifTanjim/nui.nvim",
     },
-    opts = { lsp = { auto_attach = true } },
+    opts = function()
+      return { lsp = { auto_attach = true } }
+    end,
+    config = function(_, opts)
+      require("nvim-navbuddy").setup(opts)
+    end,
   },
   {
     "neovim/nvim-lspconfig",
+    version = false,
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
+    after = "folke/neoconf.nvim",
     dependencies = {
-      "mason.nvim",
+      "folke/neoconf.nvim",
+      "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
       "mfussenegger/nvim-lint",
       "SmiteshP/nvim-navbuddy",
       "rmagatti/goto-preview",
-      "folke/neoconf.nvim",
       "smjonas/inc-rename.nvim",
       { "antosha417/nvim-lsp-file-operations", config = true },
     },
     opts = function()
-      local ret = {
+      require("config.keymaps.lspconfig")
+      return {
         servers = {
           tsserver = { enabled = false },
           ts_ls = { enabled = false },
@@ -93,7 +125,6 @@ return {
           -- exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
         },
       }
-      return ret
     end,
     config = function(_, opts)
       local vars = require("config.vars")
@@ -119,8 +150,6 @@ return {
           -- Enable completion triggered by <c-x><c-o>
           -- api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
 
-          require("config.keymaps.lspconfig")
-
           -- Codelens
           -- if client and client:supports_method(vim.lsp.protocol.Methods.codeLens) then
           if opts.codelens.enabled and vim.lsp.codelens then
@@ -145,6 +174,14 @@ return {
           --     vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
           --   end
           -- end
+
+          if client then
+            if client.name ~= "omnisharp" and client.name ~= "omnisharp_mono" then
+              require("config.keymaps.languages.global")
+            else
+              require("config.keymaps.languages.c_sharp")
+            end
+          end
         end,
       })
 
@@ -164,10 +201,10 @@ return {
         severity_sort = true,
         signs = {
           text = {
-            [vim.diagnostic.severity.ERROR] = "✘ ",
-            [vim.diagnostic.severity.WARN] = "▲ ",
-            [vim.diagnostic.severity.HINT] = "⚑ ",
-            [vim.diagnostic.severity.INFO] = "» ",
+            [vim.diagnostic.severity.ERROR] = "✘",
+            [vim.diagnostic.severity.WARN] = "▲",
+            [vim.diagnostic.severity.HINT] = "⚑",
+            [vim.diagnostic.severity.INFO] = "»",
           },
           linehl = {
             [vim.diagnostic.severity.ERROR] = "ErrorMsg",

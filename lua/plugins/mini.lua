@@ -2,11 +2,11 @@ local opts = {
   -- Text editing
   ai = { enabled = true }, -- Extend and create a/i textobjects. "sa" and "si"
   align = { enabled = true },
-  comment = { enabled = true },
+  comment = { enabled = false },
   completion = { enabled = false },
   move = { enabled = true },
   operators = { enabled = true },
-  pairs = { enabled = true }, -- Auto-pairs
+  pairs = { enabled = false }, -- Auto-pairs
   snippets = { enabled = false },
   splitjoin = { enabled = true },
   surround = { enabled = true },
@@ -53,6 +53,13 @@ local opts = {
 return {
   "echasnovski/mini.nvim",
   version = false,
+  lazy = true,
+  init = function()
+    package.preload["nvim-web-devicons"] = function()
+      require("mini.icons").mock_nvim_web_devicons()
+      return package.loaded["nvim-web-devicons"]
+    end
+  end,
   config = function()
     -- Text editing
     if opts.ai.enabled then
