@@ -1,6 +1,7 @@
 return {
   {
     "jay-babu/mason-nvim-dap.nvim",
+    enabled = true,
     dependencies = { "williamboman/mason.nvim" },
     version = false,
     config = function()
@@ -9,6 +10,7 @@ return {
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    enabled = true,
     dependencies = { "williamboman/mason.nvim" },
     version = false,
     config = function()
@@ -17,6 +19,7 @@ return {
   },
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
+    enabled = true,
     dependencies = { "williamboman/mason.nvim" },
     version = false,
     opts = function()
@@ -84,7 +87,9 @@ return {
   },
   {
     "williamboman/mason.nvim",
+    enabled = true,
     version = false,
+    priority = 1000,
     lazy = false,
     cmd = {
       "Mason",

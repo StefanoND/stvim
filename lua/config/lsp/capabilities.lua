@@ -42,12 +42,18 @@ M.textDocument = {
   },
 }
 
-M.lspCapabilities = require("lspconfig.util").default_config.capabilities
-M.allCapabilities = vim.tbl_deep_extend("force", M.lspCapabilities, M.encoding)
+M.lspCapabilities = vim.tbl_deep_extend("force", require("lspconfig.util").default_config, {
+  capabilities = vim.tbl_deep_extend(
+    "force",
+    vim.lsp.protocol.make_client_capabilities(),
+    require("lsp-file-operations").default_capabilities()
+  ),
+})
 
-M.allCapabilities.workspace = M.workspace
-M.allCapabilities.textDocument = M.textDocument
+M.lspCapabilities.capabilities.encoding = M.encoding
+M.lspCapabilities.capabilities.workspace = M.workspace
+M.lspCapabilities.capabilities.textDocument = M.textDocument
 
-M.capabilities = require("blink.cmp").get_lsp_capabilities(M.allCapabilities)
+M.capabilities = require("blink.cmp").get_lsp_capabilities(M.lspCapabilities.capabilities)
 
 return M

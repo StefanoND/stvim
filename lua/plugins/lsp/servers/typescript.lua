@@ -1,5 +1,6 @@
 local lspconfig = require("config.lsp.setup")
 local funcs = require("config.functions")
+local vars = require("config.vars")
 
 local settings = {
   updateImportsOnFileMove = { enabled = "always" },
@@ -34,23 +35,23 @@ local filetypes = {
 }
 
 return {
-  lspconfig.setupServer("tailwindcss", {
-    filetypes_exclude = { "markdown" },
-    settings = {
-      tailwindCSS = {
-        includeLanguages = {
-          elixir = "html-eex",
-          heex = "html-eex",
-        },
-      },
-    },
-    on_attach = function(client, bufnr)
-      print("Hello Tailwind")
-    end,
-  }),
+  -- lspconfig.setupServer("tailwindcss", {
+  --   filetypes_exclude = { "markdown" },
+  --   settings = {
+  --     tailwindCSS = {
+  --       includeLanguages = {
+  --         elixir = "html-eex",
+  --         heex = "html-eex",
+  --       },
+  --     },
+  --   },
+  --   on_attach = function(client, bufnr)
+  --     print("Hello Tailwind")
+  --   end,
+  -- }),
   lspconfig.setupServer("biome", {
     cmd = { "biome", "lsp-proxy" },
-    root_dir = funcs.getRoot(),
+    root_dir = funcs.getRoot(vars.rootPatterns.biome, false),
   }),
   lspconfig.setupServer("vtsls", {
     filetypes = filetypes,

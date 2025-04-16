@@ -80,9 +80,14 @@ M.kmExt = function(args)
   vim.tbl_deep_extend("force", vars.kmOpts, args)
 end
 
-M.getRoot = function(fname)
-  return require("lspconfig.util").root_pattern(vars.rootPatterns)(fname)
-    or require("lspconfig.util").find_git_ancestor(fname)
+--- @param fname table|string
+--- @param git boolean
+M.getRoot = function(name, git)
+  local ret = require("lspconfig.util").root_pattern(name)
+  if git then
+    ret = require("lspconfig.util").root_pattern(name) or require("lspconfig.util").find_git_ancestor
+  end
+  return ret
 end
 
 M.reloadModule = function(name)

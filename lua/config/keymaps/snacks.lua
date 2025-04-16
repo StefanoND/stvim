@@ -1,12 +1,12 @@
 return {
   -- BufDelete
-  {
-    "D",
-    function()
-      Snacks.bufdelete()
-    end,
-    desc = "Delete Active Buffer",
-  },
+  -- {
+  --   "D",
+  --   function()
+  --     Snacks.bufdelete()
+  --   end,
+  --   desc = "Delete Active Buffer",
+  -- },
   -- Explorer
   {
     "<leader>op",

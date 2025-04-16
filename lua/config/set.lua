@@ -10,6 +10,11 @@ vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
+vim.cmd([[autocmd VimEnter * cd $PWD]])
+
+vim.g.nvim_tree_respect_buf_cwd = 1
+vim.g.nvim_tree_update_cwd = 1
+
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)

@@ -1,21 +1,32 @@
 local api = vim.api
-local funcs = require("config.functions")
 
 return {
-  { -- Global/local settings
-    "folke/neoconf.nvim",
-    version = false,
-    lazy = false,
-    cmd = "Neoconf",
+  {
+    "antosha417/nvim-lsp-file-operations",
     opts = function()
-      return {}
+      return {
+        -- used to see debug logs in file `vim.fn.stdpath("cache") .. lsp-file-operations.log`
+        debug = false,
+        -- select which file operations to enable
+        operations = {
+          willRenameFiles = true,
+          didRenameFiles = true,
+          willCreateFiles = true,
+          didCreateFiles = true,
+          willDeleteFiles = true,
+          didDeleteFiles = true,
+        },
+        -- how long to wait (in milliseconds) for file rename information before cancelling
+        timeout_ms = 10000,
+      }
     end,
     config = function(_, opts)
-      require("neoconf").setup(opts)
+      require("lsp-file-operations").setup(opts)
     end,
   },
   { -- Preview
     "rmagatti/goto-preview",
+    enabled = true,
     version = false,
     lazy = true,
     dependencies = { "rmagatti/logger.nvim" },
@@ -47,61 +58,13 @@ return {
     end,
   },
   {
-    "SmiteshP/nvim-navic",
-    version = false,
-    init = function()
-      vim.g.navic_silence = true
-      funcs.on_attach(function(client, buffer)
-        if client.supports_method("textDocument/documentSymbol") then
-          require("nvim-navic").attach(client, buffer)
-        end
-      end)
-    end,
-    opts = function()
-      return {
-        highlight = true,
-        lazy_update_context = true,
-        lsp = { auto_attach = true },
-        depth_limit = 5,
-        icons = require("blink.cmp").kind_icons,
-        click = true,
-      }
-    end,
-    config = function(_, opts)
-      require("nvim-navic").setup(opts)
-    end,
-  },
-  { -- Breadcrumbs-like navigation
-    "SmiteshP/nvim-navbuddy",
-    version = false,
-    lazy = true,
-    dependencies = {
-      "SmiteshP/nvim-navic",
-      "MunifTanjim/nui.nvim",
-    },
-    opts = function()
-      return { lsp = { auto_attach = true } }
-    end,
-    config = function(_, opts)
-      require("nvim-navbuddy").setup(opts)
-    end,
-  },
-  {
     "neovim/nvim-lspconfig",
+    enabled = true,
     version = false,
     cmd = { "LspInfo", "LspInstall", "LspStart" },
     event = { "BufReadPre", "BufNewFile" },
     after = "folke/neoconf.nvim",
-    dependencies = {
-      "folke/neoconf.nvim",
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
-      "mfussenegger/nvim-lint",
-      "SmiteshP/nvim-navbuddy",
-      "rmagatti/goto-preview",
-      "smjonas/inc-rename.nvim",
-      { "antosha417/nvim-lsp-file-operations", config = true },
-    },
+    dependencies = { "folke/neoconf.nvim", "williamboman/mason.nvim" },
     opts = function()
       require("config.keymaps.lspconfig")
       return {

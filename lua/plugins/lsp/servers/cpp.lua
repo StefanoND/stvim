@@ -1,6 +1,7 @@
 local lspconfig = require("config.lsp.setup")
 
 local funcs = require("config.functions")
+local vars = require("config.vars")
 
 local clangd_ext_opts = require("clangd_extensions").opts
 
@@ -80,7 +81,7 @@ return {
     },
     filetypes = { "c", "cc", "cpp", "objc", "objcpp", "opencl" },
     disabled_filetypes = { "cmake", "nss", "nwscript", "cs", "csharp" }, -- Don't want it messing with C#
-    root_dir = funcs.getRoot(),
+    root_dir = funcs.getRoot(vars.rootPatterns.cpp, true),
     init_options = {
       usePlaceholders = true,
       completeUnimported = true,

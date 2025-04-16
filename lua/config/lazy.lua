@@ -26,12 +26,26 @@ require("lazy").setup({
   },
   spec = {
     -- import your plugins
-    { import = "plugins" },
+    -- { import = "plugins" },
+    { import = "plugins.colorscheme" },
+    { import = "plugins.ui" },
+    { import = "plugins.treesitter" },
+    { import = "plugins.editor" },
+    { import = "plugins.coding" },
+
     { import = "plugins.lsp" },
-    { import = "plugins.lsp.languages" },
-    { import = "plugins.lsp.servers" },
     { import = "plugins.dap.servers" },
     { import = "plugins.dap" },
+
+    { import = "plugins.lang" },
+    { import = "plugins.util" },
+
+    { import = "plugins.test" },
+    { import = "plugins.formatting" },
+    { import = "plugins.linting" },
+
+    { import = "plugins.lsp.servers" },
+    { import = "plugins.misc" },
   },
   ui = {
     -- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
