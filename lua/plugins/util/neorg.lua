@@ -120,8 +120,12 @@ return {
             workspaces = {
               main = "~/norg",
               learn = "~/norg/learn",
-              nwn = os.getenv("NWN_DEV") .. "/norg",
-              -- nwn = os.getenv("NWN_STORAGE") .. "/norg",
+              nwn = function()
+                if os.getenv("NWN_DEV") ~= "v:null" then
+                  return os.getenv("NWN_DEV") .. "/norg"
+                end
+                return ""
+              end,
             },
             default_workspace = "main",
           },

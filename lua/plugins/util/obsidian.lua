@@ -24,7 +24,12 @@ return {
       },
       {
         name = "nwn",
-        path = os.getenv("NWN_DEV") .. "/vaults",
+        path = function()
+          if os.getenv("NWN_DEV") ~= "v:null" then
+            return os.getenv("NWN_DEV") .. "/vaults"
+          end
+          return ""
+        end,
         -- Optional, override certain settings.
         overrides = {
           notes_subdir = "notes",

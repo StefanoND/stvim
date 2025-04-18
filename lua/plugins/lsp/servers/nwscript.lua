@@ -25,8 +25,18 @@ return {
           os = funcs.getOS(),
           verbose = true,
           reportWarnings = true,
-          nwnHome = os.getenv("NWN_HOME"),
-          nwnInstallation = os.getenv("NWN_ROOT"),
+          nwnHome = function()
+            if os.getenv("NWN_HOME") ~= "v:null" then
+              return os.getenv("NWN_HOME")
+            end
+            return ""
+          end,
+          nwnInstallation = function()
+            if os.getenv("NWN_ROOT") ~= "v:null" then
+              return os.getenv("NWN_ROOT")
+            end
+            return ""
+          end,
           workspaceIncludes = { vim.fn.getcwd() },
         },
       },
