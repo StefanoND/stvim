@@ -1,193 +1,123 @@
-local opts = {
-  -- Text editing
-  ai = { enabled = true }, -- Extend and create a/i textobjects. "sa" and "si"
-  align = { enabled = true },
-  comment = { enabled = false },
-  completion = { enabled = false },
-  move = { enabled = true },
-  operators = { enabled = true },
-  pairs = { enabled = false }, -- Auto-pairs
-  snippets = { enabled = false },
-  splitjoin = { enabled = true },
-  surround = { enabled = true },
+local words = require("config.colors").words
 
-  -- General workflow
-  basics = { enabled = true },
-  bracketed = { enabled = true },
-  bufremove = { enabled = false },
-  clue = { enabled = true },
-  deps = { enabled = false },
-  diff = { enabled = true },
-  extra = { enabled = false },
-  files = { enabled = false },
-  git = { enabled = false },
-  jump = { enabled = true },
-  jump2d = { enabled = true }, -- This will make me lazy
-  misc = { enabled = false },
-  pick = { enabled = false },
-  sessions = { enabled = false },
-  visits = { enabled = false },
-
-  -- Appearance
-  animate = { enabled = false },
-  base16 = { enabled = false },
-  colors = { enabled = false },
-  cursorword = { enabled = false },
-  hipatterns = { enabled = true },
-  hues = { enabled = false },
-  indentscope = { enabled = false },
-  map = { enabled = true },
-  notify = { enabled = false },
-  starter = { enabled = false },
-  statusline = { enabled = false },
-  tabline = { enabled = false },
-  trailspace = { enabled = true },
-
-  -- Other
-  doc = { enabled = false },
-  fuzzy = { enabled = false },
-  test = { enabled = false },
-}
+local word_color_group = function(_, match)
+  local hi = require("mini.hipatterns")
+  local hex = words[match]
+  if hex == nil then
+    return nil
+  end
+  return hi.compute_hex_color_group(hex, "bg")
+end
 
 return {
   "echasnovski/mini.nvim",
   enabled = true,
   version = false,
-  -- lazy = false,
   event = "VeryLazy",
   config = function()
     -- Text editing
-    if opts.ai.enabled then
-      require("mini.ai").setup(require("plugins.editor.mini.text.ai"))
-    end
-    if opts.align.enabled then
-      require("mini.align").setup(require("plugins.editor.mini.text.align"))
-    end
-    if opts.comment.enabled then
-      require("mini.comment").setup(require("plugins.editor.mini.text.comment"))
-    end
-    if opts.completion.enabled then
-      require("mini.completion").setup(require("plugins.editor.mini.text.completion"))
-    end
-    if opts.move.enabled then
-      require("mini.move").setup(require("plugins.editor.mini.text.move"))
-    end
-    if opts.operators.enabled then
-      require("mini.operators").setup(require("plugins.editor.mini.text.operators"))
-    end
-    if opts.pairs.enabled then
-      require("mini.pairs").setup(require("plugins.editor.mini.text.pairs"))
-    end
-    if opts.snippets.enabled then
-      require("mini.snippets").setup(require("plugins.editor.mini.text.snippets"))
-    end
-    if opts.splitjoin.enabled then
-      require("mini.splitjoin").setup(require("plugins.editor.mini.text.splitjoin"))
-    end
-    if opts.surround.enabled then
-      require("mini.surround").setup(require("plugins.editor.mini.text.surround"))
-    end
+    require("mini.ai").setup({})
+    require("mini.align").setup({})
+    require("mini.move").setup({
+      mappings = {
+        left = "<M-h>",
+        right = "<M-l>",
+        down = "<M-j>",
+        up = "<M-k>",
+        line_left = "<M-h>",
+        line_right = "<M-l>",
+        line_down = "<M-j>",
+        line_up = "<M-k>",
+      },
+      options = { reindent_linewise = true },
+    })
+    require("mini.operators").setup({})
+    require("mini.splitjoin").setup({})
+    require("mini.surround").setup({})
 
     -- General workflow
-    if opts.basics.enabled then
-      require("mini.basics").setup(require("plugins.editor.mini.general.basics"))
-    end
-    if opts.bracketed.enabled then
-      require("mini.bracketed").setup(require("plugins.editor.mini.general.bracketed"))
-    end
-    if opts.bufremove.enabled then
-      require("mini.bufremove").setup(require("plugins.editor.mini.general.bufremove"))
-    end
-    if opts.clue.enabled then
-      require("mini.clue").setup(require("plugins.editor.mini.general.clue"))
-    end
-    if opts.deps.enabled then
-      require("mini.deps").setup(require("plugins.editor.mini.general.deps"))
-    end
-    if opts.diff.enabled then
-      require("mini.diff").setup(require("plugins.editor.mini.general.diff"))
-      -- vim.keymap.set("v", "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
-    end
-    if opts.extra.enabled then
-      require("mini.extra").setup(require("plugins.editor.mini.general.extra"))
-    end
-    if opts.files.enabled then
-      require("mini.files").setup(require("plugins.editor.mini.general.files"))
-    end
-    if opts.git.enabled then
-      require("mini.git").setup(require("plugins.editor.mini.general.git"))
-    end
-    if opts.jump.enabled then
-      require("mini.jump").setup(require("plugins.editor.mini.general.jump"))
-    end
-    if opts.jump2d.enabled then
-      require("mini.jump2d").setup(require("plugins.editor.mini.general.jump2d"))
-    end
-    if opts.misc.enabled then
-      require("mini.misc").setup(require("plugins.editor.mini.general.misc"))
-    end
-    if opts.pick.enabled then
-      require("mini.pick").setup(require("plugins.editor.mini.general.pick"))
-    end
-    if opts.sessions.enabled then
-      require("mini.sessions").setup(require("plugins.editor.mini.general.sessions"))
-    end
-    if opts.visits.enabled then
-      require("mini.visits").setup(require("plugins.editor.mini.general.visits"))
-    end
+    require("mini.basics").setup({})
+    require("mini.bracketed").setup({})
+    require("mini.clue").setup({})
+    require("mini.diff").setup({
+      view = {
+        style = vim.go.number and "number",
+        signs = { add = "+", change = "~", delete = "-", topdelete = "‾", changedelete = "~" },
+      },
+    })
+    -- vim.keymap.set("v", "<leader>to", ":lua require('mini.diff').toggle_overlay()<CR>", kopts)
+    require("mini.jump").setup({ mappings = { forward = "<M-f>", backward = "<M-F>" } })
+    require("mini.jump2d").setup({ mappings = { start_jumping = "<M-CR>" } })
 
     -- Appearance
-    if opts.animate.enabled then
-      require("mini.animate").setup(require("plugins.editor.mini.appearance.animate"))
-    end
-    if opts.base16.enabled then
-      require("mini.base16").setup(require("plugins.editor.mini.appearance.base16"))
-    end
-    if opts.colors.enabled then
-      require("mini.colors").setup(require("plugins.editor.mini.appearance.colors"))
-    end
-    if opts.cursorword.enabled then
-      require("mini.cursorword").setup(require("plugins.editor.mini.appearance.cursorword"))
-    end
-    if opts.hipatterns.enabled then
-      require("mini.hipatterns").setup(require("plugins.editor.mini.appearance.hipatterns"))
-    end
-    if opts.hues.enabled then
-      require("mini.hues").setup(require("plugins.editor.mini.appearance.hues"))
-    end
-    if opts.indentscope.enabled then
-      require("mini.indentscope").setup(require("plugins.editor.mini.appearance.indentscope"))
-    end
-    if opts.map.enabled then
-      require("mini.map").setup(require("plugins.editor.mini.appearance.map"))
-      require("mini.map").toggle()
-    end
-    if opts.notify.enabled then
-      require("mini.notify").setup(require("plugins.editor.mini.appearance.notify"))
-    end
-    if opts.starter.enabled then
-      require("mini.starter").setup(require("plugins.editor.mini.appearance.starter"))
-    end
-    if opts.statusline.enabled then
-      require("mini.statusline").setup(require("plugins.editor.mini.appearance.statusline"))
-    end
-    if opts.tabline.enabled then
-      require("mini.tabline").setup(require("plugins.editor.mini.appearance.tabline"))
-    end
-    if opts.trailspace.enabled then
-      require("mini.trailspace").setup(require("plugins.editor.mini.appearance.trailspace"))
-    end
+    local hi = require("mini.hipatterns")
+    require("mini.hipatterns").setup({
+      highlighters = {
+        -- Highlight hex color strings (`#rrggbb`) using that color
+        hex_color = hi.gen_highlighter.hex_color({ priority = 2000 }),
 
-    -- Other
-    if opts.doc.enabled then
-      require("mini.doc").setup(require("plugins.editor.mini.other.doc"))
-    end
-    if opts.fuzzy.enabled then
-      require("mini.fuzzy").setup(require("plugins.editor.mini.other.fuzzy"))
-    end
-    if opts.test.enabled then
-      require("mini.test").setup(require("plugins.editor.mini.other.test"))
-    end
+        shorthand = {
+          pattern = "()#%x%x%x()%f[^%x%w]",
+          group = function(_, _, data)
+            ---@type string
+            local match = data.full_match
+            local r, g, b = match:sub(2, 2), match:sub(3, 3), match:sub(4, 4)
+            local hex_color = "#" .. r .. r .. g .. g .. b .. b
+
+            return hi.compute_hex_color_group(hex_color, "bg")
+          end,
+          extmark_opts = { priority = 2000 },
+        },
+
+        -- Highlight standalone:
+        -- They're just here as a "fallback" if "todo-commends" stops working
+        -- FIX FIXME BUG FIXIT ISSUE TODO HACK FAILED FAIL WARN WARNING XXX PERF OPTIM PERFORMANCE OPTIMIZE
+        -- PASS PASSED NOTE INFO TRACK KEEPTRACK TEST TESTING
+        fix = { pattern = "%f[%w]()FIX()%f[%W]", group = "hl_peach" },
+        fixit = { pattern = "%f[%w]()FIXIT()%f[%W]", group = "hl_peach" },
+        fixme = { pattern = "%f[%w]()FIXME()%f[%W]", group = "hl_peach" },
+        bug = { pattern = "%f[%w]()BUG()%f[%W]", group = "hl_peach" },
+        issue = { pattern = "%f[%w]()ISSUE()%f[%W]", group = "hl_peach" },
+        todo = { pattern = "%f[%w]()TODO()%f[%W]", group = "hl_sky" },
+        hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "hl_yellow" },
+        warn = { pattern = "%f[%w]()WARN()%f[%W]", group = "hl_red" },
+        warning = { pattern = "%f[%w]()WARNING()%f[%W]", group = "hl_red" },
+        warnxxx = { pattern = "%f[%w]()XXX()%f[%W]", group = "hl_red" },
+        perf = { pattern = "%f[%w]()PERF()%f[%W]", group = "hl_green" },
+        performance = { pattern = "%f[%w]()PERFORMANCE()%f[%W]", group = "hl_green" },
+        optim = { pattern = "%f[%w]()OPTIM()%f[%W]", group = "hl_green" },
+        optimize = { pattern = "%f[%w]()OPTIMIZE()%f[%W]", group = "hl_green" },
+        note = { pattern = "%f[%w]()NOTE()%f[%W]", group = "hl_blue" },
+        info = { pattern = "%f[%w]()INFO()%f[%W]", group = "hl_blue" },
+        track = { pattern = "%f[%w]()TRACK()%f[%W]", group = "hl_blue" },
+        keeptrack = { pattern = "%f[%w]()KEEPTRACK()%f[%W]", group = "hl_blue" },
+        test = { pattern = "%f[%w]()TEST()%f[%W]", group = "hl_white" },
+        testing = { pattern = "%f[%w]()TESTING()%f[%W]", group = "hl_white" },
+        fail = { pattern = "%f[%w]()FAIL()%f[%W]", group = "hl_white" },
+        failed = { pattern = "%f[%w]()FAILED()%f[%W]", group = "hl_white" },
+        pass = { pattern = "%f[%w]()PASS()%f[%W]", group = "hl_white" },
+        passed = { pattern = "%f[%w]()PASSED()%f[%W]", group = "hl_white" },
+
+        -- Highlight word color strings (`red`, `green`, `blue`, etc) using that color (Themed)
+        word_color = { pattern = "%S+", group = word_color_group },
+      },
+    })
+
+    local map = require("mini.map")
+    require("mini.map").setup({
+      integrations = {
+        map.gen_integration.builtin_search(),
+        map.gen_integration.diff(),
+        map.gen_integration.diagnostic(),
+        map.gen_integration.gitsigns(),
+      },
+      window = {
+        width = 6,
+        show_integration_count = true,
+      },
+    })
+    require("mini.map").toggle()
+    require("mini.trailspace").setup({})
 
     -- Load keymaps
     require("config.keymaps.mini")

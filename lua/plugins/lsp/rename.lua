@@ -2,7 +2,7 @@ return {
   "smjonas/inc-rename.nvim",
   enabled = true,
   version = false,
-  lazy = false,
+  event = "VeryLazy",
   cmd = "IncRename",
   opts = function()
     return {}

@@ -1,16 +1,182 @@
+---@class LineRange
+---@field line integer
+---@field character integer
+
+---@class EditRange
+---@field start LineRange
+---@field end LineRange
+
+---@class TextEdit
+---@field newText string
+---@field range EditRange
+
+---@param edit TextEdit
+local apply_vs_text_edit = function(edit)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local start_line = edit.range.start.line
+  local start_char = edit.range.start.character
+  local end_line = edit.range["end"].line
+  local end_char = edit.range["end"].character
+
+  local newText = string.gsub(edit.newText, "\r", "")
+  local lines = vim.split(newText, "\n")
+
+  local placeholder_row = -1
+  local placeholder_col = -1
+
+  -- placeholder handling
+  for i, line in ipairs(lines) do
+    local pos = string.find(line, "%$0")
+    if pos then
+      lines[i] = string.gsub(line, "%$0", "", 1)
+      placeholder_row = start_line + i - 1
+      placeholder_col = pos - 1
+      break
+    end
+  end
+
+  vim.api.nvim_buf_set_text(bufnr, start_line, start_char, end_line, end_char, lines)
+
+  if placeholder_row ~= -1 and placeholder_col ~= -1 then
+    local win = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_cursor(win, { placeholder_row + 1, placeholder_col })
+  end
+end
+
 return { -- C#
-  -- stylua: ignore start
-  -- { "OmniSharp/omnisharp-vim", { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb" } },
-  { "Issafalcon/neotest-dotnet", enabled = false, version = false, ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb" } },
-      -- { "ctrlpvim/ctrlp.vim", ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb" } },
-  { "Hoffs/omnisharp-extended-lsp.nvim", enabled = true, version = false, ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb" } },
-  -- stylua: ignore end
+  {
+    "Issafalcon/neotest-dotnet",
+    enabled = false,
+    version = false,
+    lazy = true,
+    ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb", "razor" },
+  },
+  { "tris203/rzls.nvim", version = false, lazy = true },
+  {
+    "seblyng/roslyn.nvim",
+    dependencies = {
+      {
+        "tris203/rzls.nvim",
+        config = function()
+          ---@diagnostic disable-next-line: missing-fields
+          require("rzls").setup({})
+        end,
+      },
+    },
+    version = false,
+    ft = { "cs", "razor" },
+    ---@module 'roslyn.config'
+    ---@type RoslynNvimConfig
+    opts = function()
+      local documentstore = require("rzls.documentstore")
+      local razor = require("rzls.razor")
+      local Log = require("rzls.log")
+
+      return {
+        args = {
+          "--stdio",
+          "--logLevel=Information",
+          "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
+          "--razorSourceGenerator=" .. vim.fs.joinpath(
+            vim.fn.stdpath("data") --[[@as string]],
+            "mason",
+            "packages",
+            "roslyn",
+            "libexec",
+            "Microsoft.CodeAnalysis.Razor.Compiler.dll"
+          ),
+          "--razorDesignTimePath=" .. vim.fs.joinpath(
+            vim.fn.stdpath("data") --[[@as string]],
+            "mason",
+            "packages",
+            "rzls",
+            "libexec",
+            "Targets",
+            "Microsoft.NET.Sdk.Razor.DesignTime.targets"
+          ),
+        },
+        ---@diagnostic disable-next-line: missing-fields
+        config = {
+          capabilities = {
+            textDocument = {
+              _vs_onAutoInsert = { dynamicRegistration = false },
+            },
+          },
+          handlers = {
+            ["textDocument/_vs_onAutoInsert"] = function(err, result, _)
+              if err or not result then
+                return
+              end
+              apply_vs_text_edit(result._vs_textEdit)
+            end,
+
+            -- VS Windows and VS Code
+            ---@param _err lsp.ResponseError
+            ---@param result VBufUpdate
+            ["razor/updateCSharpBuffer"] = function(_err, result)
+              documentstore.update_vbuf(result, razor.language_kinds.csharp)
+              documentstore.refresh_parent_views(result)
+            end,
+            ---@param _err lsp.ResponseError
+            ---@param result VBufUpdate
+            ["razor/updateHtmlBuffer"] = function(_err, result)
+              documentstore.update_vbuf(result, razor.language_kinds.html)
+            end,
+            ["razor/provideHtmlDocumentColor"] = require("rzls.handlers.providehtmldocumentcolor"),
+            ["razor/provideSemanticTokensRange"] = require("rzls.handlers.providesemantictokensrange"),
+            ["razor/foldingRange"] = require("rzls.handlers.foldingrange"),
+
+            ["razor/htmlFormatting"] = require("rzls.handlers.htmlformatting"),
+            ["razor/inlayHint"] = require("rzls.handlers.inlayhint"),
+            ["razor/inlayHintResolve"] = require("rzls.handlers.inlayhintresolve"),
+
+            -- Called to get C# diagnostics from Roslyn when publishing diagnostics for VS Code
+            ["razor/csharpPullDiagnostics"] = require("rzls.handlers.csharppulldiagnostics"),
+            ["razor/completion"] = require("rzls.handlers.completion"),
+            ["razor/completionItem/resolve"] = require("rzls.handlers.completionitemresolve"),
+            [vim.lsp.protocol.Methods.textDocument_colorPresentation] = not_supported,
+            [vim.lsp.protocol.Methods.window_logMessage] = function(_, result)
+              Log.rzls = result.message
+              return vim.lsp.handlers[vim.lsp.protocol.Methods.window_logMessage]
+            end,
+          },
+          filewatching = "roslyn",
+          settings = {
+            ["csharp|inlay_hints"] = {
+              csharp_enable_inlay_hints_for_implicit_object_creation = true,
+              csharp_enable_inlay_hints_for_implicit_variable_types = true,
+              csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+              csharp_enable_inlay_hints_for_types = true,
+              dotnet_enable_inlay_hints_for_indexer_parameters = true,
+              dotnet_enable_inlay_hints_for_literal_parameters = true,
+              dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+              dotnet_enable_inlay_hints_for_other_parameters = true,
+              dotnet_enable_inlay_hints_for_parameters = true,
+              dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
+              dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+              dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+            },
+            ["csharp|code_lens"] = {
+              dotnet_enable_references_code_lens = true,
+            },
+            ["csharp|formatting"] = {
+              dotnet_organize_imports_on_format = true,
+            },
+          },
+        },
+      }
+    end,
+    config = function(_, opts)
+      require("roslyn").setup(opts)
+    end,
+  },
   {
     "GustavEikaas/easy-dotnet.nvim",
     enabled = true,
-    ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb" },
+    ft = { "cs", "csproj", "sln", "slnx", "props", "csx", "targets", "fsharp", "vb", "razor" },
     cmd = "Dotnet",
     dependencies = { "nvim-lua/plenary.nvim", "folke/snacks.nvim" },
+    event = "VeryLazy",
     opts = function()
       local function get_secret_path(secret_guid)
         local path = ""
@@ -75,7 +241,6 @@ return { -- C#
             prefix = "sln", -- "sln" | "none"
           },
         },
-        ---@param action "test" | "restore" | "build" | "run"
         terminal = function(path, action, args)
           local commands = {
             run = function()
@@ -121,7 +286,7 @@ return { -- C#
       require("easy-dotnet").setup(opts)
     end,
   },
-  {
-    -- "MoaidHathot/dotnet.nvim",
-  },
+  -- {
+  --   -- "MoaidHathot/dotnet.nvim",
+  -- },
 }

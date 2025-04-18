@@ -35,10 +35,13 @@ return {
           "clang-format", -- formatter
           -- CSHARP
           "csharp-language-server", -- LSP
-          "omnisharp", -- LSP
-          "omnisharp-mono", -- LSP
+          -- "omnisharp", -- LSP
+          -- "omnisharp-mono", -- LSP
           "csharpier", -- Formatter
-          "netcoredbg",
+          "netcoredbg", -- DAP
+          -- "roslyn", -- LSP
+          "roslynv4", -- LSP
+          -- "rzls", -- LSP -- Use ':MasonInstall rzls@9.0.0-preview.25156.2' instead
           -- CMAKE
           "cmakelang", -- LSP
           "cmakelint", -- formatter and linter
@@ -48,6 +51,8 @@ return {
           -- "gdscript", -- LSP
           -- "gdformat", -- formatter
           "gdtoolkit", -- formatter and linter
+          -- HTML
+          "html-lsp",
           -- JavaScript/TypeScript
           "typescript-language-server", -- LSP
           "vtsls", -- LSP
@@ -89,8 +94,8 @@ return {
     "williamboman/mason.nvim",
     enabled = true,
     version = false,
-    priority = 1000,
-    lazy = false,
+    -- priority = 1000,
+    -- lazy = false,
     cmd = {
       "Mason",
       "MasonInstall",
@@ -102,6 +107,10 @@ return {
     build = ":MasonUpdate",
     opts = function()
       return {
+        registries = {
+          "github:mason-org/mason-registry",
+          "github:Crashdummyy/mason-registry",
+        },
         ui = {
           icons = {
             package_installed = "✓",

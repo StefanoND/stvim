@@ -1,8 +1,17 @@
 return {
+  {
+    "LiadOz/nvim-dap-repl-highlights",
+    lazy = true,
+    config = function()
+      require("nvim-dap-repl-highlights").setup()
+    end,
+  },
   { -- HTML and JSX
     "windwp/nvim-ts-autotag",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     enabled = true,
     version = false,
+    event = "VeryLazy",
     opts = function()
       return {}
     end,
@@ -12,8 +21,10 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     enabled = true,
     version = false,
+    event = "VeryLazy",
     opts = function()
       return {
         enable = true,
@@ -130,7 +141,7 @@ return {
     "JoosepAlviste/nvim-ts-context-commentstring",
     enabled = true,
     dependencies = { "nvim-treesitter/nvim-treesitter" },
-    lazy = true,
+    event = "VeryLazy",
     version = false,
     opts = function()
       local get_option = vim.filetype.get_option
@@ -168,9 +179,10 @@ return {
     "nvim-treesitter/nvim-treesitter",
     enabled = true,
     version = false,
-    lazy = false,
+    lazy = true,
     event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
+    dependencies = { "LiadOz/nvim-dap-repl-highlights" },
     opts = function()
       local vars = require("config.vars")
       local maxSize = vars.maxFileSize
@@ -199,6 +211,7 @@ return {
           "comment",
           "cpp",
           "css",
+          "dap_repl",
           "diff",
           "fish",
           "gdscript",
@@ -233,6 +246,7 @@ return {
           "printf",
           "query",
           "rasi",
+          "razor",
           "regex",
           "ron",
           "rust",

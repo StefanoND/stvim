@@ -5,6 +5,8 @@ vim.filetype.add({
   extension = {
     -- nss = "nwscript",
     -- local = "sh",
+    razor = "razor",
+    cshtml = "razor",
     rasi = "rasi",
     rofi = "rasi",
     wofi = "rasi",
@@ -12,6 +14,8 @@ vim.filetype.add({
   pattern = {
     -- [".*%.nss$"] = "nwscript",
     ["*.fish"] = "fish",
+    ["*.razor"] = "razor",
+    ["*.cshtml"] = "razor",
     [".bash.*.local"] = "sh",
     [".blerc"] = "sh",
     [".*/waybar/config"] = "jsonc",

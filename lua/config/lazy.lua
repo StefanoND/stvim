@@ -25,26 +25,23 @@ require("lazy").setup({
     hererocks = true,
   },
   spec = {
-    -- import your plugins
-    -- { import = "plugins" },
     { import = "plugins.colorscheme" },
+    { import = "plugins.deps" },
     { import = "plugins.ui" },
     { import = "plugins.treesitter" },
     { import = "plugins.editor" },
+    { import = "plugins.lang" },
     { import = "plugins.coding" },
 
-    { import = "plugins.lsp" },
     { import = "plugins.dap.servers" },
     { import = "plugins.dap" },
-
-    { import = "plugins.lang" },
-    { import = "plugins.util" },
-
-    { import = "plugins.test" },
+    { import = "plugins.lsp" },
+    { import = "plugins.lsp.servers" },
     { import = "plugins.formatting" },
     { import = "plugins.linting" },
 
-    { import = "plugins.lsp.servers" },
+    { import = "plugins.util" },
+    { import = "plugins.test" },
     { import = "plugins.misc" },
   },
   ui = {

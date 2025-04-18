@@ -6,7 +6,7 @@ return {
     "xzbdmw/colorful-menu.nvim",
     enabled = true,
     version = false,
-    lazy = false,
+    event = "VeryLazy",
     opts = function()
       return {
         ls = {
@@ -28,7 +28,7 @@ return {
     "Saghen/blink.cmp",
     enabled = true,
     version = "*",
-    lazy = false,
+    -- lazy = false,
     -- event = { "BufReadPre", "InsertEnter", "CursorMoved", "TextChanged" },
     event = { "InsertEnter" },
     dependencies = {

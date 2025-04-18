@@ -8,10 +8,10 @@ return {
     root_dir = funcs.getRoot(vars.rootPatterns.biome, false),
   }),
   lspconfig.setupServer("jsonls", {
-    on_new_config = function(new_config)
-      new_config.settings.json.schemas = require("schemastore").json.schemas or {}
-      vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
-    end,
+    -- on_new_config = function(new_config)
+    --   new_config.settings.json.schemas = require("schemastore").json.schemas or {}
+    --   vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+    -- end,
     settings = {
       json = {
         format = { enable = true },

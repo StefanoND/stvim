@@ -1,43 +1,50 @@
-local keys = require("config.keymaps.dap")
-
 local servers = function()
   local dap = require("dap")
 
   -- C/C++
   if not dap.adapters["codelldb"] then
     require("dap").adapters["codelldb"] = {
-      type = "server",
-      host = "localhost",
-      port = "${port}",
-      executable = {
-        command = "codelldb",
-        args = {
-          "--port",
-          "${port}",
-        },
-      },
+      -- Executable
+      type = "executable",
+      command = vim.fn.exepath("codelldb"),
+
+      -- -- Server
+      -- type = "server",
+      -- port = "${port}",
+      -- executable = {
+      --   command = vim.fn.exepath("codelldb"),
+      --   args = { "--port", "${port}" },
+      -- },
+
+      -- -- Server from separate terminal
+      -- type = "server",
+      -- host = "127.0.0.1",
+      -- port = 13000,
+      -- executable = {
+      --   command = vim.fn.exepath("codelldb"),
+      --   args = { "--port", 13000 },
+      -- },
     }
   end
-  for _, lang in ipairs({ "c", "cpp" }) do
-    dap.configurations[lang] = {
-      {
-        type = "codelldb",
-        request = "launch",
-        name = "Launch file",
-        program = function()
-          return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-        end,
-        cwd = "${workspaceFolder}",
-      },
-      {
-        type = "codelldb",
-        request = "attach",
-        name = "Attach to process",
-        pid = require("dap.utils").pick_process,
-        cwd = "${workspaceFolder}",
-      },
-    }
-  end
+  dap.configurations.cpp = {
+    {
+      name = "Launch file",
+      type = "codelldb",
+      request = "launch",
+      program = function()
+        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+      end,
+      cwd = "${workspaceFolder}",
+    },
+    -- {
+    --   name = "Attach to process",
+    --   type = "codelldb",
+    --   request = "attach",
+    --   pid = require("dap.utils").pick_process,
+    --   cwd = "${workspaceFolder}",
+    -- },
+  }
+  dap.configurations.c = dap.configurations.cpp
 
   -- C#
   if not dap.adapters["netcoredbg"] then
@@ -247,8 +254,10 @@ end
 return {
   {
     "theHamsta/nvim-dap-virtual-text",
+    dependencies = { "mfussenegger/nvim-dap", "nvim-treesitter/nvim-treesitter" },
     enabled = true,
     version = false,
+    event = "VeryLazy",
     opts = function()
       return { -- Below are the defaults
         enabled = true, -- enable this plugin (the default)
@@ -293,12 +302,8 @@ return {
     "rcarriga/nvim-dap-ui",
     enabled = true,
     version = false,
-    lazy = true,
-    dependencies = {
-      "nvim-neotest/nvim-nio",
-      "theHamsta/nvim-dap-virtual-text",
-    },
-    keys = keys.dapUIKeymap,
+    event = "VeryLazy",
+    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
     opts = function()
       return {}
     end,
@@ -310,16 +315,13 @@ return {
     "mfussenegger/nvim-dap",
     enabled = true,
     version = false,
-    dependencies = {
-      "rcarriga/nvim-dap-ui",
-      "theHamsta/nvim-dap-virtual-text",
-      "jbyuki/one-small-step-for-vimkind",
-    },
-    keys = keys.dapKeymap,
+    -- lazy = true,
+    dependencies = { "jbyuki/one-small-step-for-vimkind" },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
 
+      require("config.keymaps.dap")
       catppuccin()
       servers()
       require("overseer").enable_dap()

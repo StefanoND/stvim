@@ -19,7 +19,7 @@ M.get_dap_repl_winbar = function(active)
   return function()
     local get_mode = require("lualine.highlight").get_mode_suffix
     local filetype = vim.bo.filetype
-    local disabled_filetypes = { "dap-repl" }
+    local disabled_filetypes = { "dap-view", "dap-repl", "dap-view-term" }
 
     if not vim.tbl_contains(disabled_filetypes, filetype) then
       return ""
@@ -100,12 +100,7 @@ M.conditions = {
     local clients = vim.lsp.get_clients()
     local client_names = {}
     for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
-      -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 and client.name ~= "null-ls" then
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        -- return client.name
-        table.insert(client_names, client.name)
-      end
+      table.insert(client_names, client.name)
     end
     if #client_names > 0 then
       return table.concat(client_names, ", ")
@@ -155,7 +150,9 @@ M.line = function()
           return ""
         end,
         -- cond = M.conditions.check_git_workspace,
-        cond = M.conditions.check_diagnostic or M.conditions.check_diff,
+        cond = M.conditions.check_git_workspace
+          or M.conditions.check_diagnostic
+          or M.conditions.check_diff,
       },
       {
         "diff",
@@ -169,7 +166,9 @@ M.line = function()
           return ""
         end,
         -- cond = M.conditions.check_diagnostic
-        cond = M.conditions.check_diagnostic or M.conditions.check_diff,
+        cond = M.conditions.check_git_workspace
+          or M.conditions.check_diagnostic
+          or M.conditions.check_diff,
       },
       {
         "diagnostics",
@@ -315,6 +314,13 @@ M.lualine = {
   opts = function()
     return {
       options = {
+        disabled_filetypes = {
+          winbar = {
+            "dap-view",
+            "dap-repl",
+            "dap-view-term",
+          },
+        },
         component_separators = "",
         theme = "catppuccin",
       },

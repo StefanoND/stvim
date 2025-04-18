@@ -3,6 +3,7 @@ return { -- fast file access
   enabled = true,
   version = false,
   branch = "harpoon2",
+  event = "VeryLazy",
   requires = {
     { "nvim-lua/plenary.nvim" },
   },

@@ -5,12 +5,11 @@ vim.g.do_filetype_lua = 1 -- Enable
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.netrw_keepdir = 1
+vim.g.netrw_liststlye = 3
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
-
-vim.cmd([[autocmd VimEnter * cd $PWD]])
 
 vim.g.nvim_tree_respect_buf_cwd = 1
 vim.g.nvim_tree_update_cwd = 1
@@ -54,24 +53,6 @@ vim.g.python3_host_prog = "/usr/bin/python3"
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- 1 to use the stdio version of OmniSharp-roslyn (Recommended), 0 for HTTP version (Not recommended)
-vim.g.OmniSharp_server_stdio = 1
-
--- Omnifunc
--- api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
-vim.cmd([[autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni]])
-
--- Turn on/off tmux statusline on vim enter/leave
-vim.cmd([[silent !tmux set status off]])
-vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
-
--- It's free real estate
--- vim.opt.cmdheight = 0
--- vim.cmd([[
---   autocmd VimEnter * silent !tmux set status off
---   autocmd VimLeave * silent !tmux set status on
--- ]])
-
 vim.g.editorconfig = true
 
 -- Tab and indentation
@@ -87,30 +68,19 @@ vim.opt.wrap = false
 vim.opt.breakindent = true
 vim.opt.linebreak = true
 
--- Undo
+-- Undo start
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undolevels = 10000
 
-local funcs = require("config.functions")
+if vim.fn.isdirectory(vim.fn.expand("~") .. "/.vim/undodir") == 0 then
+  vim.cmd([[silent !mkdir -p ~/.vim/undodir]])
+end
 
--- if funcs.getOSLowerCase():match("windows") then
---   if vim.fn.filereadable(os.getenv("UserProfile") .. "/.vim/undodir") == 0 then
---   end
---   vim.opt.undodir = os.getenv("UserProfile") .. "/.vim/undodir" -- Must create this folder
--- else -- I don't own/use a Mac, will update when/if I do
---   if vim.fn.filereadable(os.getenv("HOME") .. "/.vim/undodir") == 0 then
---     vim.cmd(":!mkdir -p" .. os.getenv("HOME") .. "/.vim/undodir")
---   end
---   vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Must create this folder
--- end
-
--- if vim.fn.filereadable(os.getenv("HOME") .. "/.vim/undodir") == 0 then
---   vim.cmd(":!mkdir -p" .. os.getenv("HOME") .. "/.vim/undodir")
--- end
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undodir = vim.fn.expand("~") .. "/.vim/undodir"
 
 vim.opt.undofile = true
+-- Undo end
 
 -- Search
 vim.opt.hlsearch = true
@@ -231,138 +201,11 @@ vim.api.nvim_set_hl(0, "hl_fg_base", { fg = "#1e1e2e", bg = "#1e1e2e" })
 vim.api.nvim_set_hl(0, "hl_fg_mantle", { fg = "#181825", bg = "#1e1e2e" })
 vim.api.nvim_set_hl(0, "hl_fg_crust", { fg = "#11111b", bg = "#1e1e2e" })
 
-local function augroup(name)
-  return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
-end
-
 vim.g.conceallevel = 0
 vim.o.conceallevel = 0
--- Set conceallevel for certain file types
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  group = augroup("ft_conceal"),
-  pattern = { "*.md", "*.json", "*.org", "*.norg", "markdown", "markdown.mdx", "rmd", "org", "norg" },
-  callback = function()
-    vim.opt_local.conceallevel = 2
-  end,
-})
-
--- Check if we need to reload the file when it changed
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
-  group = augroup("checktime"),
-  callback = function()
-    if vim.o.buftype ~= "nofile" then
-      vim.cmd("checktime")
-    end
-  end,
-})
-
--- resize splits if window got resized
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = augroup("resize_splits"),
-  callback = function()
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
-  end,
-})
-
--- make it easier to close man-files when opened inline
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("man_unlisted"),
-  pattern = { "man" },
-  callback = function(event)
-    vim.bo[event.buf].buflisted = false
-  end,
-})
-
--- wrap and check for spell in text filetypes
-vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("wrap_spell"),
-  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = true
-  end,
-})
-
--- -- Fix conceallevel for json files
--- vim.api.nvim_create_autocmd({ "FileType" }, {
---   group = augroup("json_conceal"),
---   pattern = { "json", "jsonc", "json5" },
---   callback = function()
---     vim.opt_local.conceallevel = 0
---   end,
--- })
-
--- Auto create dir when saving a file, in case some intermediate directory does not exist
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-  group = augroup("auto_create_dir"),
-  callback = function(event)
-    if event.match:match("^%w%w+:[\\/][\\/]") then
-      return
-    end
-    local file = vim.uv.fs_realpath(event.match) or event.match
-    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
-  end,
-})
 
 -- Godot
 local pipepath = vim.fn.stdpath("cache") .. "/server.pipe"
 if not (vim.uv or vim.loop).fs_stat(pipepath) then
   vim.fn.serverstart(pipepath)
 end
-
-vim.cmd("let g:netrw_liststlye = 3")
-
--- Reenable DoMatchParen if it was disabled by a BigFile
-vim.api.nvim_create_autocmd("BufDelete", {
-  callback = function()
-    local vars = require("config.vars")
-    local maxSize = vars.maxFileSize
-    local size = vim.fn.getfsize(vim.fn.expand("%"))
-    if size >= maxSize then
-      -- vim.cmd([[autocmd BufDelete * silent :DoMatchParen]])
-      vim.cmd([[:DoMatchParen]])
-    end
-  end,
-})
-
--- ftplugin start
-local ftmodule = "ftplugin.%s"
-local function loadftmodule(ft, action)
-  local modname = ftmodule:format(ft)
-  local _, res = pcall(require, modname)
-  if type(res) == "table" then
-    if type(res[action]) == "function" then
-      res[action]()
-    end
-  elseif
-    type(res) == "string"
-    and not res:match("Module '" .. modname .. "' not found")
-    and not res:match("	no file")
-  then
-    print(res)
-  end
-end
-
-vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "Colorscheme" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "ftplugin")
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "newfile")
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "VimEnter", "BufWinEnter", "Colorscheme" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "syntax")
-  end,
-})
--- ftplugin end

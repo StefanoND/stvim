@@ -3,6 +3,7 @@ return {
   enabled = true,
   version = false,
   dependencies = { "Saghen/blink.cmp" },
+  event = "VeryLazy",
   opts = function()
     return {
       attach_mode = "global",

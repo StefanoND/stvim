@@ -3,7 +3,7 @@ return {
   enabled = true,
   version = false,
   desc = "Better Yank/Paste",
-  lazy = false,
+  event = "VeryLazy",
   opts = {
     highlight = { timer = 150 },
     textobj = { enabled = true },

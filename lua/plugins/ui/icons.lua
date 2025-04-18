@@ -6,17 +6,34 @@ return {
     lazy = true,
     opts = function()
       local devicons = require("nvim-web-devicons")
+      local vars = require("config.vars")
       devicons.set_icon_by_filetype({
         nwscript = "nwscript",
+        razor = "razor",
+        cshtml = "cshtml",
       })
 
       devicons.set_icon({
         nwscript = {
           default = true,
-          icon = " ",
+          icon = vars.nwscriptIcon,
           color = "#b4befe",
           cterm_color = "153",
           name = "nwscript",
+        },
+        razor = {
+          default = true,
+          icon = vars.dotnetIcon,
+          color = "#b4befe",
+          cterm_color = "153",
+          name = "razor",
+        },
+        cshtml = {
+          default = true,
+          icon = vars.dotnetIcon,
+          color = "#b4befe",
+          cterm_color = "153",
+          name = "cshtml",
         },
       })
 
@@ -40,6 +57,7 @@ return {
       end
     end,
     opts = function()
+      local vars = require("config.vars")
       return {
         file = {
           [".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
@@ -56,7 +74,9 @@ return {
         },
         filetype = {
           dotenv = { glyph = "", hl = "MiniIconsYellow" },
-          nwscript = { glyph = "", hl = "MiniIconsBlue" },
+          nwscript = { glyph = vars.nwscriptIcon, hl = "MiniIconsBlue" },
+          razor = { glyph = vars.dotnetIcon, hl = "MiniIconsBlue" },
+          cshtml = { glyph = vars.dotnetIcon, hl = "MiniIconsBlue" },
         },
       }
     end,

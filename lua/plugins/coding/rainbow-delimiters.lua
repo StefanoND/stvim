@@ -2,6 +2,7 @@ return {
   "HiPhish/rainbow-delimiters.nvim",
   enabled = true,
   lazy = false,
+  event = "VeryLazy",
   opts = function()
     return {
       strategy = {

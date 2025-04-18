@@ -2,6 +2,7 @@ return {
   "kevinhwang91/nvim-hlslens",
   enabled = true,
   version = false,
+  event = "VeryLazy",
   opts = function()
     return {}
   end,

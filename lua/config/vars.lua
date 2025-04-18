@@ -2,6 +2,9 @@ local M = {}
 
 M.maxFileSize = 2 * 1024 * 1024
 
+M.nwscriptIcon = ""
+M.dotnetIcon = ""
+
 M.highlights = {
   "RainbowDelimiterRed",
   "RainbowDelimiterYellow",
@@ -13,63 +16,61 @@ M.highlights = {
 }
 
 M.rootPatterns = {
-  general = {
+  general = { ".git", "Makefile", "makefile" },
+  biome = { ".git", "Makefile", "makefile", "biome.json", "biome.jsonc" },
+  cmake = {
     ".git",
     "Makefile",
     "makefile",
-  },
-  biome = { vim.tbl_deep_extend("force", { general }, { "biome.json", "biome.jsonc" }) },
-  cmake = {
-    vim.tbl_deep_extend(
-      "force",
-      { general },
-      { "CMakePresets.json", "CTestConfig.cmake", "CMakefile", "build", "cmake" }
-    ),
+    "CMakePresets.json",
+    "CTestConfig.cmake",
+    "CMakefile",
+    "build",
+    "cmake",
   },
   cpp = {
-    vim.tbl_deep_extend("force", { general }, {
-      ".clangd",
-      ".clang-tidy",
-      ".clang-format",
-      "compile_commands.json",
-      "compile_flags.txt",
-      "configure.ac", -- AutoTools
-      "*.uproject", -- Unreal Engine
-    }),
+    ".git",
+    "Makefile",
+    "makefile",
+    ".clangd",
+    ".clang-tidy",
+    ".clang-format",
+    "compile_commands.json",
+    "compile_flags.txt",
+    "configure.ac", -- AutoTools
+    "*.uproject", -- Unreal Engine
   },
-  c_sharp = { vim.tbl_deep_extend("force", { general }, { "*.sln", "*.fsproj", "*.csproj" }) },
-  gdscript = { vim.tbl_deep_extend("force", { general }, { "project.godot" }) },
-  json = { general },
-  -- json = {
-  --   vim.tbl_deep_extend("force", { general }, {}),
-  -- },
+  c_sharp = { ".git", "Makefile", "makefile", "*.sln", "*.fsproj", "*.csproj" },
+  gdscript = { ".git", "Makefile", "makefile", "project.godot" },
+  json = { ".git", "Makefile", "makefile" },
   lua = {
-    vim.tbl_deep_extend("force", { general }, {
-      ".luarc.json",
-      ".luarc.jsonc",
-      ".luacheckrc",
-      ".stylua.toml",
-      "stylua.toml",
-      "selene.toml",
-      "selene.yml",
-    }),
+    ".git",
+    "Makefile",
+    "makefile",
+    ".luarc.json",
+    ".luarc.jsonc",
+    ".luacheckrc",
+    ".stylua.toml",
+    "stylua.toml",
+    "selene.toml",
+    "selene.yml",
   },
-  markdown = { vim.tbl_deep_extend("force", { general }, { ".marksman.toml" }) },
-  nwscript = { vim.tbl_deep_extend("force", { general }, { "nasher.cfg" }) },
+  markdown = { ".git", "Makefile", "makefile", ".marksman.toml" },
+  nwscript = { ".git", "Makefile", "makefile", "nasher.cfg" },
   tailwind = {
-    vim.tbl_deep_extend("force", { general }, {
-      "tailwind.config.js",
-      "tailwind.config.cjs",
-      "tailwind.config.mjs",
-      "tailwind.config.ts",
-      "postcss.config.js",
-      "postcss.config.cjs",
-      "postcss.config.mjs",
-      "postcss.config.ts",
-    }),
+    ".git",
+    "Makefile",
+    "makefile",
+    "tailwind.config.js",
+    "tailwind.config.cjs",
+    "tailwind.config.mjs",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "postcss.config.cjs",
+    "postcss.config.mjs",
+    "postcss.config.ts",
   },
--- stylua: ignore
- typescript = { vim.tbl_deep_extend("force", { general }, { "tsconfig.json", "jsconfig.json", "package.json" }) },
+  typescript = { ".git", "Makefile", "makefile", "tsconfig.json", "jsconfig.json", "package.json" },
   -- ".bzr",
   -- ".hg",
   -- ".null-ls-root",

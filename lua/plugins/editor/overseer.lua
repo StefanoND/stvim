@@ -2,6 +2,7 @@ return {
   "stevearc/overseer.nvim",
   enabled = true,
   version = false,
+  event = "VeryLazy",
   cmd = {
     "OverseerOpen",
     "OverseerClose",

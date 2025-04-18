@@ -2,7 +2,7 @@ return { -- Global/local settings
   "folke/neoconf.nvim",
   enabled = false,
   version = false,
-  priority = 1000,
+  -- priority = 1000,
   lazy = false,
   cmd = "Neoconf",
   opts = function()
