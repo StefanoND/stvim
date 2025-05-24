@@ -138,7 +138,7 @@ vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "VimEnter", "BufWinEnter",
 })
 -- ftplugin end
 
--- Diagnostic refresh
+-- Roslyn Diagnostic refresh
 vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   pattern = "*",
   callback = function()

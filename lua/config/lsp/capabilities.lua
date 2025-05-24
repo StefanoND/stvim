@@ -21,6 +21,7 @@ M.workspace = {
 }
 
 M.textDocument = {
+  diagnostic = { dynamicRegistration = true },
   didChangeConfiguration = { dynamicRegistration = true },
   completion = {
     completionItem = {

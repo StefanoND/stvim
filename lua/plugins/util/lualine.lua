@@ -67,7 +67,7 @@ M.conditions = {
     local added = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.added or 0
     local modified = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.changed or 0
     local removed = vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.removed or 0
-    if added ~= 0 or modified ~= 0 or removed ~= 0 then
+    if added > 0 or modified > 0 or removed > 0 then
       return true
     end
     return false
@@ -145,14 +145,10 @@ M.line = function()
         "branch",
         cond = M.conditions.check_git_workspace,
       },
+      -- stylua: ignore
       {
-        function()
-          return ""
-        end,
-        -- cond = M.conditions.check_git_workspace,
-        cond = M.conditions.check_git_workspace
-          or M.conditions.check_diagnostic
-          or M.conditions.check_diff,
+        function() return "" end,
+        cond = M.conditions.check_git_workspace and (M.conditions.check_diff or M.conditions.check_diagnostic),
       },
       {
         "diff",
@@ -161,14 +157,10 @@ M.line = function()
         source = M.diff_source,
         cond = M.conditions.hide_in_width,
       },
+      -- stylua: ignore
       {
-        function()
-          return ""
-        end,
-        -- cond = M.conditions.check_diagnostic
-        cond = M.conditions.check_git_workspace
-          or M.conditions.check_diagnostic
-          or M.conditions.check_diff,
+        function() return "" end,
+        cond = M.conditions.check_diagnostic and (M.conditions.check_git_workspace or M.conditions.check_diff),
       },
       {
         "diagnostics",
