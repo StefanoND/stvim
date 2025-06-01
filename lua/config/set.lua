@@ -109,14 +109,6 @@ vim.opt.textwidth = 105 -- Max width/columns
 vim.opt.colorcolumn = "+1" -- Show gutter after textwidth
 vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
 
--- Spelling
--- medical spellfile from https://github.com/melvio/medical-spell-files
--- vim.opt.spelllang = { "en_us", "pt_pt", "pt_br", "medical" }
--- vim.opt.spelllang = { "en_us", "pt_pt", "medical" }
-vim.opt.spelllang = { "en_us" }
-vim.opt.spellfile = { os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add" } -- extra words
-vim.opt.spelloptions = "camel" -- Split camelCase words when spellchecking
-
 -- vim.g.commentstring = "" -- Mini.nvim comment
 
 vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
