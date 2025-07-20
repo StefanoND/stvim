@@ -33,7 +33,7 @@ return {
     event = "BufEnter",
     opts = function()
       return {
-        width = 90, -- Width of the floating window
+        width = 80, -- Width of the floating window
         height = 20, -- Height of the floating window
         border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, -- Border characters of the floating window
         default_mappings = true,
@@ -115,17 +115,16 @@ return {
 
           -- Codelens
           -- if client and client:supports_method(vim.lsp.protocol.Methods.codeLens) then
-          if opts.codelens.enabled and vim.lsp.codelens then
-            if client and client:supports_method(vim.lsp.protocol.Methods.codelens, buffer) then
-              vim.lsp.codelens.refresh()
-              vim.api.nvim_create_autocmd(
-                { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
-                {
-                  buffer = buffer,
-                  callback = vim.lsp.codelens.refresh,
-                }
-              )
-            end
+          if client and client:supports_method(vim.lsp.protocol.Methods.codelens, buffer) then
+            vim.lsp.codelens.refresh()
+            vim.api.nvim_create_autocmd(
+              -- { "BufWritePost", "BufEnter", "CursorHold", "InsertLeave", "TextChanged" },
+              { "BufWritePost", "BufEnter", "InsertLeave", "TextChanged" },
+              {
+                buffer = buffer,
+                callback = vim.lsp.codelens.refresh,
+              }
+            )
           end
 
           -- if client and client:supports_method(vim.lsp.protocol.Methods.inlayHint) then
@@ -137,14 +136,6 @@ return {
           --     vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
           --   end
           -- end
-
-          if client then
-            if client.name ~= "omnisharp" and client.name ~= "omnisharp_mono" then
-              require("config.keymaps.languages.global")
-            else
-              require("config.keymaps.languages.c_sharp")
-            end
-          end
         end,
       })
 

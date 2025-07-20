@@ -9,7 +9,10 @@ return { -- Breadcrumbs-like navigation
     "MunifTanjim/nui.nvim",
   },
   opts = function()
-    return { lsp = { auto_attach = true } }
+    return {
+      window = { border = "rounded" },
+      lsp = { auto_attach = true },
+    }
   end,
   config = function(_, opts)
     require("nvim-navbuddy").setup(opts)

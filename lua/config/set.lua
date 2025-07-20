@@ -1,6 +1,55 @@
 -- Opt-in to use filetype.lua for setting custom filetypes
 vim.g.do_filetype_lua = 1 -- Enable
 
+vim.cmd([[
+  highlight Normal guibg=none
+  highlight NonText guibg=none
+  highlight Normal ctermbg=none
+  highlight NonText ctermbg=none
+]])
+
+vim.scriptencoding = "utf-8" -- Set encoding to utf-8
+vim.opt.encoding = "utf-8" -- Set encoding to utf-8
+vim.opt.fileencoding = "utf-8" -- Set encoding to utf-8
+vim.opt.path:append({ "**" }) -- Finding files - Search down into subfolders
+vim.opt.wildignore:append({ "*/node_modules/*" })
+vim.opt.wildoptions = "pum"
+vim.opt.pumblend = 5
+vim.opt.formatoptions:append({ "r" }) -- Add asterisk in blocked appends
+vim.opt.title = true
+
+vim.o.autochdir = false
+
+vim.opt.showcmd = true
+vim.opt.cmdheight = 1
+vim.opt.laststatus = 2
+
+vim.opt.inccommand = "split" -- Preview commands
+
+-- 0 for dap-ui 1 for dap-view
+vim.g.whichDap = 0
+
+local funcs = require("config.functions")
+if funcs.getOSLowerCase():match("windows") ~= 0 then
+  vim.g.nofsync = true
+
+  vim.opt.shell = "powershell"
+  vim.o.shellcmdflag =
+    "-NoLogo -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
+
+  -- Setting shell redirection
+  vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+
+  -- Setting shell pipe
+  vim.o.shellpipe = '2>&1 | %%{ "$_" } | Tee-Object %s; exit $LastExitCode'
+
+  -- Setting shell quote options
+  vim.o.shellquote = ""
+  vim.o.shellxquote = ""
+
+  vim.g.undotree_DiffCommand = vim.fn.stdpath("config") .. "/bin/diff.exe"
+end
+
 -- recommended settings
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -27,9 +76,9 @@ vim.g.deprecation_warnings = false
 vim.o.nu = true
 vim.o.rnu = true
 
--- OSC 52 (Operating System Command) support
--- Control sequence that causes the terminal emulator to write to or read from the system clipboard.
-vim.g.clipboard = "osc52"
+-- -- OSC 52 (Operating System Command) support
+-- -- Control sequence that causes the terminal emulator to write to or read from the system clipboard.
+-- vim.g.clipboard = "osc52"
 -- vim.g.clipboard = {
 --   name = "OSC 52",
 --   copy = {
@@ -43,8 +92,9 @@ vim.g.clipboard = "osc52"
 -- }
 
 -- Clipboard accross everything
--- vim.opt.clipboard:append("unnamedplus") -- Use system clipboard as default register
-vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
+vim.opt.clipboard:prepend({ "unnamed", "unnamedplus" }) -- Append system clipboard to the register
+vim.opt.clipboard:append("unnamedplus") -- Append system clipboard to the register
+-- vim.opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 
 -- Set python3 host prog
 vim.g.python3_host_prog = "/usr/bin/python3"
@@ -91,36 +141,53 @@ vim.opt.cursorline = true -- Highlight current/cursor line
 
 vim.opt.hidden = true -- Keep buffers in memory
 vim.opt.termguicolors = true -- Use truecolor in the terminal
+vim.opt.winblend = 0
 vim.opt.background = "dark" -- Colorschemes that can be light or dark will be made dark
-vim.opt.backspace = "indent,eol,start" -- Allow backspace on indent, end of line or insert mode start position
+vim.opt.backspace = { "start", "eol", "indent" } -- Allow backspace on indent, end of line or insert mode start position
 vim.opt.splitright = true -- Split vertical window to the right
 vim.opt.splitbelow = true -- Split horizontal window to the bottom
+vim.opt.splitkeep = "cursor" --
 vim.opt.showmode = false -- Dont show mode since we have a statusline
-vim.opt.mouse = "a" -- Enable mouse mode
--- vim.opt.mousemoveevent = true
-vim.opt.sidescrolloff = 8 -- Columns of context
-vim.opt.scrolloff = 8 -- Lines of context
+-- vim.opt.mouse = "a" -- Enable mouse mode
+vim.opt.mouse = "" -- Disable mouse mode
+vim.opt.mousemoveevent = false
+vim.opt.sidescrolloff = 1 -- Columns of context
+vim.opt.scrolloff = 10 -- Lines of context
 vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 250 -- Decrease update time
 vim.opt.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 vim.opt.completeopt = "menu,menuone,preview,noselect" -- Better completion experience
-vim.opt.textwidth = 105 -- Max width/columns
+vim.opt.textwidth = 96 -- Max width/columns
 vim.opt.colorcolumn = "+1" -- Show gutter after textwidth
 vim.opt.signcolumn = "yes" -- Show sign column so that text doesn't shift
+
+-- Spelling
+-- medical spellfile from https://github.com/melvio/medical-spell-files
+-- vim.opt.spelllang = { "en_us", "pt_pt", "pt_br", "medical" }
+-- vim.opt.spelllang = { "en_us", "pt_pt", "medical" }
+vim.opt.spelllang = { "en_us" }
+vim.opt.spellfile = { os.getenv("HOME") .. "/.config/nvim/spell/en.utf-8.add" } -- extra words
+vim.opt.spelloptions = "camel" -- Split camelCase words when spellchecking
 
 -- vim.g.commentstring = "" -- Mini.nvim comment
 
 vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
+vim.opt.listchars:append({ tab = " »", trail = "" })
 vim.opt.list = true -- Show some invisible characters (tab...
-vim.opt.listchars:append("lead:᛫")
 
 -- Folds
-vim.o.foldcolumn = "1" -- '0' is not bad
+vim.opt.foldcolumn = "0" -- Show gutter
+vim.opt.foldmethod = "manual"
+-- vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldtext = ""
+
+vim.opt.foldnestmax = 6
 vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevelstart = 99
 vim.o.foldenable = false
-vim.o.foldmethod = "manual"
+
 vim.opt.fillchars = {
   foldopen = "",
   foldclose = "",

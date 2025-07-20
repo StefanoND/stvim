@@ -39,6 +39,7 @@ return {
     }
   end,
   config = function(_, opts)
+    require("config.keymaps.refactoring")
     require("refactoring").setup(opts)
   end,
 }

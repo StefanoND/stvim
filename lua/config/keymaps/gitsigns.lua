@@ -16,7 +16,7 @@ M.keymaps = wk.add({
           gitsigns.nav_hunk("next")
         end
       end,
-      desc = ""
+      desc = "",
     },
 
     {
@@ -28,7 +28,7 @@ M.keymaps = wk.add({
           gitsigns.nav_hunk("prev")
         end
       end,
-      desc = ""
+      desc = "",
     },
 
     -- Actions
@@ -46,7 +46,7 @@ M.keymaps = wk.add({
       function()
         gitsigns.blame_line({ full = true })
       end,
-      desc = ""
+      desc = "",
     },
 
     { "<leader>gsd", gitsigns.diffthis, desc = "" },
@@ -56,7 +56,7 @@ M.keymaps = wk.add({
       function()
         gitsigns.diffthis("~")
       end,
-      desc = ""
+      desc = "",
     },
 
     { "<leader>gsb", gitsigns.toggle_current_line_blame, desc = "" },
@@ -69,8 +69,8 @@ M.keymaps = wk.add({
         gitsigns.toggle_linehl()
         gitsigns.toggle_deleted()
       end,
-      desc = ""
-    }
+      desc = "",
+    },
   },
   {
     mode = { "v" },
@@ -79,21 +79,20 @@ M.keymaps = wk.add({
       function()
         gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
       end,
-      desc = ""
+      desc = "",
     },
     {
       "<leader>gsr",
       function()
         gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
       end,
-      desc = ""
-    }
+      desc = "",
+    },
   },
   {
     mode = { "o", "x" },
-    { "ih", gitsigns.select_hunk, desc = "" }
-  }
+    { "ih", gitsigns.select_hunk, desc = "" },
+  },
 })
 
 return M.keymaps
-

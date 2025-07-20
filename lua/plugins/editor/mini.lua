@@ -103,20 +103,20 @@ return {
       },
     })
 
-    local map = require("mini.map")
-    require("mini.map").setup({
-      integrations = {
-        map.gen_integration.builtin_search(),
-        map.gen_integration.diff(),
-        map.gen_integration.diagnostic(),
-        map.gen_integration.gitsigns(),
-      },
-      window = {
-        width = 6,
-        show_integration_count = true,
-      },
-    })
-    require("mini.map").toggle()
+    -- local map = require("mini.map")
+    -- require("mini.map").setup({
+    --   integrations = {
+    --     map.gen_integration.builtin_search(),
+    --     map.gen_integration.diff(),
+    --     map.gen_integration.diagnostic(),
+    --     map.gen_integration.gitsigns(),
+    --   },
+    --   window = {
+    --     width = 6,
+    --     show_integration_count = true,
+    --   },
+    -- })
+    -- require("mini.map").toggle()
     require("mini.trailspace").setup({})
 
     -- Load keymaps

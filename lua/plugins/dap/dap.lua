@@ -89,7 +89,7 @@ return {
       require("nvim-dap-virtual-text").setup(opts)
     end,
   },
-  {
+  { -- DAP UI
     "rcarriga/nvim-dap-ui",
     enabled = true,
     version = false,
@@ -102,15 +102,65 @@ return {
       require("dapui").setup(opts)
     end,
   },
+  { -- Minimalistic DAP UI
+    "igorlfs/nvim-dap-view",
+    enabled = true,
+    version = false,
+    lazy = true,
+    ---@module 'dap-view'
+    ---@type dapview.config
+    opts = {
+      winbar = {
+        sections = {
+          "watches",
+          "scopes",
+          "exceptions",
+          "breakpoints",
+          "threads",
+          "repl",
+          "console",
+        },
+        -- sections = { "watches", "scopes", "exceptions", "breakpoints", "threads", "repl" },
+        headers = {
+          -- breakpoints = "[B]reakpoints",
+          -- scopes = "[S]copes",
+          -- exceptions = "[E]xceptions",
+          -- watches = "[W]atches",
+          -- threads = "[T]hreads",
+          -- repl = "[R]EPL",
+          -- console = "[C]onsole",
+          breakpoints = "Breakpoints",
+          scopes = "Scopes",
+          exceptions = "Exceptions",
+          watches = "Watches",
+          threads = "Threads",
+          repl = "REPL",
+          console = "Console",
+        },
+        default_section = "repl",
+        controls = { enabled = true, position = "left" },
+      },
+      windows = {
+        terminal = {
+          -- hide = { "coreclr" },
+          start_hidden = false,
+          -- position = "below",
+          -- start_hidden = true,
+        },
+      },
+    },
+  },
   {
     "mfussenegger/nvim-dap",
     enabled = true,
     version = false,
     -- lazy = true,
-    dependencies = { "jbyuki/one-small-step-for-vimkind" },
+    dependencies = { "jbyuki/one-small-step-for-vimkind", "igorlfs/nvim-dap-view" },
     config = function()
       local dap = require("dap")
       local dapui = require("dapui")
+
+      dap.set_log_level("TRACE")
 
       require("config.keymaps.dap")
       catppuccin()
@@ -119,22 +169,44 @@ return {
       require("plugins.dap.adapters.godot")
       require("plugins.dap.adapters.js_ts")
       require("plugins.dap.adapters.lua")
-      require("overseer").enable_dap()
+      -- require("overseer").enable_dap()
 
-      dap.listeners.after.event_initialized.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        dapui.close()
+      if vim.g.whichDap == 0 then
+        dapui = require("dapui")
+        -- DAP UI
+        dap.listeners.after.event_initialized.dapui_config = function()
+          dapui.open()
+        end
+        dap.listeners.before.attach.dapui_config = function()
+          dapui.open()
+        end
+        dap.listeners.before.launch.dapui_config = function()
+          dapui.open()
+        end
+        -- dap.listeners.before.event_terminated.dapui_config = function()
+        --   dapui.close()
+        -- end
+        -- dap.listeners.before.event_exited.dapui_config = function()
+        --   dapui.close()
+        -- end
+      else
+        dapui = require("dap-view")
+        -- DAP View
+        dap.listeners.after.event_initialized["dap-view-config"] = function()
+          dapui.open()
+        end
+        dap.listeners.before.attach["dap-view-config"] = function()
+          dapui.open()
+        end
+        dap.listeners.before.launch["dap-view-config"] = function()
+          dapui.open()
+        end
+        -- dap.listeners.before.event_terminated["dap-view-config"] = function()
+        --   dapui.close()
+        -- end
+        -- dap.listeners.before.event_exited["dap-view-config"] = function()
+        --   dapui.close()
+        -- end
       end
 
       -- vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })

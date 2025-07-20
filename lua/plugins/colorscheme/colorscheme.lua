@@ -13,7 +13,7 @@ return { -- colorscheme
         light = "latte",
         dark = "mocha",
       },
-      transparent_background = false, -- disables setting the background color.
+      transparent_background = true, -- disables setting the background color.
       show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
       term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
       dim_inactive = {
@@ -25,18 +25,18 @@ return { -- colorscheme
       no_bold = false, -- Force no bold
       no_underline = false, -- Force no underline
       styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-        -- comments = { "italic" }, -- Change the style of comments
-        -- conditionals = { "italic" },
-        loops = {},
-        functions = {},
-        keywords = {},
+        comments = { "italic" }, -- Change the style of comments
+        conditionals = { "bold" },
+        loops = { "bold" },
+        functions = { "bold" },
+        keywords = { "italic" },
         strings = {},
         variables = {},
         numbers = {},
-        booleans = {},
+        booleans = { "bold", "italic" },
         properties = {},
         types = {},
-        operators = {},
+        operators = { "bold" },
         miscs = {}, -- Uncomment to turn off hard-coded styles
       },
       optional = true,
@@ -47,7 +47,7 @@ return { -- colorscheme
         dap = true,
         dap_ui = true,
         fidget = true,
-        gitgutter = false,
+        gitgutter = true,
         gitsigns = true,
         harpoon = true,
         lsp_trouble = true,
@@ -97,6 +97,15 @@ return { -- colorscheme
           },
         },
       },
+      custom_highlights = function(colors)
+        return {
+          ["@comment"] = { fg = colors.green },
+          ["@comment.documentation"] = { fg = colors.green },
+          String = { fg = colors.peach },
+          ["@type.builtin"] = { fg = colors.blue },
+          ["@variable.member"] = { fg = colors.sky }, -- For fields.
+        }
+      end,
     }
   end,
   config = function(_, opts)

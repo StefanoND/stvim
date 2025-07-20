@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+gnome-terminal -- nvr --servername unity "$@"
+# wezterm -- nvr --servername unity $@

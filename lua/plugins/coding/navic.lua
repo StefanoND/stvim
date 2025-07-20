@@ -16,11 +16,13 @@ return {
   opts = function()
     return {
       highlight = true,
-      lazy_update_context = true,
+      lazy_update_context = false,
       lsp = { auto_attach = true },
-      depth_limit = 5,
+      depth_limit = 3,
+      depth_limit_indicator = "..",
+      safe_output = true,
       icons = require("blink.cmp").kind_icons,
-      click = true,
+      click = false,
     }
   end,
   config = function(_, opts)

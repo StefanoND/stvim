@@ -25,7 +25,8 @@ M.get_dap_repl_winbar = function(active)
       return ""
     end
 
-    local background_color = string.format("lualine_b" .. "%s", active and get_mode() or "_inactive")
+    local background_color =
+      string.format("lualine_b" .. "%s", active and get_mode() or "_inactive")
 
     local controls_string = "%#" .. background_color .. "#"
     for element in require("dapui.controls").controls():gmatch("%S+") do
@@ -115,13 +116,13 @@ M.line = function()
   local snacks = require("snacks")
   return {
     line_a = {
-      "mode",
-      {
-        function()
-          return ""
-        end,
-        cond = M.conditions.checkFileSize,
-      },
+      -- "mode",
+      -- {
+      --   function()
+      --     return ""
+      --   end,
+      --   cond = M.conditions.checkFileSize,
+      -- },
       {
         -- filesize component
         "filesize",
@@ -176,38 +177,8 @@ M.line = function()
         update_in_insert = true,
       },
     },
-    line_c = {
-      {
-        function()
-          return "%="
-        end,
-        cond = M.conditions.checkLsp,
-      },
-      {
-        function()
-          return ""
-        end,
-        cond = M.conditions.checkLsp,
-      },
-      {
-        M.conditions.lspInfo,
-        icon = " LSP:",
-        color = { fg = colors.white, gui = "bold" },
-        cond = M.conditions.checkLsp,
-      },
-      {
-        function()
-          return ""
-        end,
-        cond = M.conditions.checkLsp,
-      },
-    },
+    line_c = {},
     line_x = {
-      {
-        function()
-          return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
-        end,
-      },
       {
         function()
           return ""
@@ -238,36 +209,32 @@ M.line = function()
       function()
         return ""
       end,
-      { "fileformat" },
-      {
-        function()
-          return ""
-        end,
-        cond = M.conditions.buffer_not_empty,
-      },
+      -- { "fileformat" },
+      -- {
+      --   function()
+      --     return ""
+      --   end,
+      --   cond = M.conditions.buffer_not_empty,
+      -- },
       {
         "filetype",
       },
     },
     line_y = {
       "progress",
-      function()
-        return ""
-      end,
-      "location",
+      -- function()
+      --   return ""
+      -- end,
+      -- "location",
     },
     line_z = {
-      "os.date('%d/%m/%Y %H:%M:%S')",
+      -- "os.date('%d/%m/%Y %H:%M:%S')",
     },
   }
 end
 
 M.win = {
-  win_a = {},
-  win_b = {
-    M.get_dap_repl_winbar(true),
-  },
-  win_c = {
+  win_a = {
     {
       "navic",
       cond = function()
@@ -276,22 +243,44 @@ M.win = {
       color_correction = "dynamic",
     },
   },
-  win_x = {
-
+  win_b = {
+    M.get_dap_repl_winbar(true),
+  },
+  win_c = {
     {
       function()
-        return require("pomodoro").get_pomodoro_status("🍅❌", "🍅", "☕")
+        return "%="
       end,
+      cond = M.conditions.checkLsp,
+    },
+    {
+      function()
+        return ""
+      end,
+      cond = M.conditions.checkLsp,
+    },
+    {
+      M.conditions.lspInfo,
+      icon = " LSP:",
+      color = { fg = colors.white, gui = "bold" },
+      cond = M.conditions.checkLsp,
+    },
+    {
+      function()
+        return ""
+      end,
+      cond = M.conditions.checkLsp,
     },
   },
+  win_x = {},
   win_y = {
-    "os.date('%d/%m/%Y %H:%M:%S')",
+    -- "os.date('%d/%m/%Y %H:%M:%S')",
   },
   win_z = {
-
-    function()
-      return "   "
-    end,
+    "os.date('%d/%m/%Y %H:%M:%S')",
+    -- function()
+    --   return "   "
+    -- end,
   },
 }
 
@@ -300,9 +289,6 @@ M.lualine = {
   enabled = true,
   version = false,
   event = "VeryLazy",
-  dependencies = {
-    "quentingruber/pomodoro.nvim",
-  },
   opts = function()
     return {
       options = {

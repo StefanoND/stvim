@@ -7,10 +7,6 @@ return {
   opts = function()
     return {
       formatters = {
-        biome = {
-          -- args = { "--fix" },
-          require_cwd = true,
-        },
         ["markdown-toc"] = {
           condition = function(_, ctx)
             for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
@@ -29,8 +25,18 @@ return {
           end,
         },
         csharpier = {
-          command = "dotnet-csharpier",
-          args = { "--write-stdout" },
+          command = "csharpier",
+          args = { "format", "$FILENAME" },
+          stdin = false,
+          require_cwd = true,
+        },
+        xmlformatter = {
+          command = "xmlformat --blanks indent-char ' ' compress",
+        },
+        prettier = {
+          --   command = "prettierd",
+          --   args = { vim.api.nvim_buf_get_name(0) },
+          stdin = true,
         },
         sqlfluff = {
           args = { "format", "--dialect=ansi", "-" },
@@ -50,24 +56,31 @@ return {
         objc = { "clang-format" },
         objcpp = { "clang-format" },
         opencl = { "clang-format" },
-        json = { "biome" },
-        jsonc = { "biome" },
+        json = { "prettier" },
+        jsonc = { "prettier" },
+        json5 = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        cshtml = { "prettier" },
+        scss = { "prettier" },
+        less = { "prettier" },
+        javascript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescript = { "prettier" },
+        typescriptreact = { "prettier" },
+        ["javascript.jsx"] = { "prettier" },
+        ["typescript.tsx"] = { "prettier" },
         sql = { "sqlfluff" },
         mysql = { "sqlfluff" },
         plsql = { "sqlfluff" },
+        xml = { "xmlformatter" },
         ["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" }, -- Don't stop after first
         ["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" }, -- Don't stop after first
-        javascript = { "biome" },
-        javascriptreact = { "biome" },
-        ["javascript.jsx"] = { "biome" },
-        typescript = { "biome" },
-        typescriptreact = { "biome" },
-        ["typescript.tsx"] = { "biome" },
         -- Stop searching after finding first formatter
         -- name = { "formatter1", "formatter2", stop_after_first = true },
       },
       format_on_save = {
-        timeout_ms = 500,
+        timeout_ms = 2500,
         lsp_format = "fallback",
       },
     }

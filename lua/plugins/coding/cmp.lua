@@ -79,10 +79,14 @@ return {
         -- trigger = {
         --   show_in_snippet = false,
         -- },
+        list = {
+          max_items = 50,
+        },
         documentation = {
           window = { border = "rounded", max_height = max_height },
           auto_show = true,
-          auto_show_delay_ms = 0,
+          auto_show_delay_ms = 200,
+          -- treesitter_highlighting = false,
         },
         menu = {
           max_height = max_height,
@@ -152,7 +156,9 @@ return {
         preset = "none",
         ["<Tab>"] = {
           function(cmp)
-            if cmp.is_ghost_text_visible() and not cmp.is_menu_visible() or cmp.snippet_active() then
+            if
+              cmp.is_ghost_text_visible() and not cmp.is_menu_visible() or cmp.snippet_active()
+            then
               return cmp.accept()
             else
               return cmp.select_and_accept()
@@ -218,43 +224,47 @@ return {
           "codeium",
           "cmdline",
           "lsp",
-          "easy-dotnet",
           "snippets",
           "path",
           "buffer",
           "omni",
-          -- "emoji",
-          -- "ripgrep",
+          "ripgrep",
         },
         per_filetype = {
-          -- org = { "orgmode" },
-          sql = {
-            "codeium",
-            "snippets",
-            "dadbod",
-            "buffer",
-            "omni",
-            -- "emoji",
-            -- "ripgrep",}
-          },
           lua = {
             "codeium",
             "lazydev",
+            "cmdline",
             "lsp",
             "snippets",
             "path",
             "buffer",
             "omni",
-            -- "emoji",
-            -- "ripgrep",}
+            "ripgrep",
+          },
+          cs = {
+            "codeium",
+            "easy-dotnet",
+            "cmdline",
+            "lsp",
+            "snippets",
+            "path",
+            "buffer",
+            "omni",
+            "ripgrep",
+          },
+          sql = {
+            "codeium",
+            "cmdline",
+            "lsp",
+            "dadbod",
+            "snippets",
+            "buffer",
+            "omni",
+            "ripgrep",
           },
         },
         providers = {
-          -- orgmode = {
-          --   name = "Orgmode",
-          --   module = "orgmode.org.autocompletion.blink",
-          --   fallbacks = { "bugger" },
-          -- },
           codeium = {
             name = "codeium",
             module = "blink.compat.source",
@@ -271,60 +281,60 @@ return {
           cmdline = {
             module = "blink.cmp.sources.cmdline",
             name = "[cmd]",
-            score_offset = 100,
-            async = true,
+            score_offset = 5,
             -- Disable shell commands on windows, since they cause neovim to hang
             enabled = function()
               return vim.fn.has("win32") == 0
                 or vim.fn.getcmdtype() ~= ":"
                 or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
             end,
+            async = true,
           },
           lazydev = {
             name = "[LazyDev]",
             module = "lazydev.integrations.blink",
-            score_offset = 95,
+            score_offset = 3,
             async = true,
           },
           dadbod = {
             name = "[DB]",
             module = "vim_dadbod_completion.blink",
-            score_offset = 95,
+            score_offset = 3,
             async = true,
           },
           lsp = {
             name = "[LSP]",
-            score_offset = 95,
+            score_offset = 3,
             async = true,
           },
           ["easy-dotnet"] = {
-            name = "[.NET]",
+            name = "easy-dotnet",
             enabled = true,
             module = "easy-dotnet.completion.blink",
-            score_offset = 95,
+            score_offset = 10000,
             async = true,
           },
           snippets = {
             name = "[snip]",
-            score_offset = 90,
-            async = true,
+            score_offset = 2,
             opts = {
               use_show_condition = true,
               show_autosnippets = true,
             },
+            async = true,
           },
           path = {
             name = "[path]",
-            score_offset = 85,
+            score_offset = 1,
             async = true,
           },
           buffer = {
             name = "[buf]",
-            score_offset = 75,
+            score_offset = 1,
             async = true,
           },
           omni = {
-            score_offset = 70,
+            score_offset = 1,
             async = true,
             ---@type blink.cmp.CompleteFuncOpts
             opts = {
@@ -336,13 +346,13 @@ return {
           ripgrep = {
             name = "[ripgrep]",
             module = "blink-ripgrep",
-            score_offset = 65,
+            score_offset = 1,
             async = true,
           },
           emoji = {
             name = "[emoji]",
             module = "blink-emoji",
-            score_offset = 60,
+            score_offset = 1,
             async = true,
           },
         },
@@ -353,9 +363,17 @@ return {
           -- show_on_trigger_character = false,
           show_on_insert = true,
         },
-        window = { border = "rounded", max_height = max_height },
+        window = {
+          border = "rounded",
+          max_height = max_height,
+          -- treesitter_highlighting = false,
+        },
       },
-      fuzzy = { implementation = "prefer_rust_with_warning" },
+      fuzzy = {
+        -- use_frecency = false,
+        -- use_typo_resistance = false,
+        implementation = "prefer_rust_with_warning",
+      },
     },
     opts_extend = { "sources.default" },
   },

@@ -35,24 +35,6 @@ local filetypes = {
 }
 
 return {
-  -- lspconfig.setupServer("tailwindcss", {
-  --   filetypes_exclude = { "markdown" },
-  --   settings = {
-  --     tailwindCSS = {
-  --       includeLanguages = {
-  --         elixir = "html-eex",
-  --         heex = "html-eex",
-  --       },
-  --     },
-  --   },
-  --   on_attach = function(client, bufnr)
-  --     print("Hello Tailwind")
-  --   end,
-  -- }),
-  lspconfig.setupServer("biome", {
-    cmd = { "biome", "lsp-proxy" },
-    root_dir = funcs.getRoot(vars.rootPatterns.biome, false),
-  }),
   lspconfig.setupServer("vtsls", {
     filetypes = filetypes,
     settings = {

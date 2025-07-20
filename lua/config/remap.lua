@@ -27,7 +27,26 @@ wk.add({
   },
   { -- Normal mode only
     mode = { "n" },
-
+    {
+      "<C-a>",
+      "gg<S-v>G",
+      desc = "Select all",
+    },
+    {
+      "+",
+      "<C-a>",
+      desc = "Increment",
+    },
+    {
+      "-",
+      "<C-x>",
+      desc = "Decrement",
+    },
+    {
+      "x",
+      '"_x',
+      desc = "Do not yank with x",
+    },
     {
       "<leader><leader>",
       function()
@@ -41,7 +60,11 @@ wk.add({
     { "<leader>do", ":windo diffoff<CR>", desc = "Stop Diff" },
 
     -- splits a one liner {} block separated by ';' into separate lines
-    { "]j", "f{i<CR><ESC>lli<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>", desc = "" },
+    {
+      "]j",
+      "f{i<CR><ESC>lli<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>f;a<CR><ESC>",
+      desc = "",
+    },
 
     -- Rectangular selection
     { "<leader>su", vim.cmd.UndotreeToggle, desc = "Open undotree" },
@@ -65,6 +88,8 @@ wk.add({
 
     { "j", "gj", desc = "Move down wrapped line" },
     { "k", "gk", desc = "Move up wrapped line" },
+    -- { "j", "<cmd>norm! gj<cr>", desc = "Move down wrapped line" },
+    -- { "k", "<cmd>norm! gk<cr>", desc = "Move up wrapped line" },
 
     -- vim's quickfix navigation
     { "<C-k>", "<cmd>cnext<CR>zz", desc = "Next Quickfix" },
@@ -82,6 +107,10 @@ wk.add({
     { "<leader>sh", "<C-w>s", desc = "Split window horizontally" },
     { "<leader>se", "<C-w>=", desc = "Make splits equal size" },
     { "<leader>sx", "<cmd>close<CR>", desc = "Close current split" },
+    { "<M-Left>", "<C-w>h", desc = "Move to left window" },
+    { "<M-Down>", "<C-w>j", desc = "Move to Down window" },
+    { "<M-Up>", "<C-w>k", desc = "Move to Up window" },
+    { "<M-Right>", "<C-w>l", desc = "Move to right window" },
 
     -- -- Tab management
     -- { "<leader>to", "<cmd>tabnew<CR>", desc = "Open new tab" },
@@ -140,5 +169,12 @@ wk.add({
   { -- Visual mode only
     mode = { "x" },
     { "<leader>p", [["_dP]], desc = "Paste preserving yank" },
+  },
+  { -- Insert mode only
+    mode = { "i" },
+    -- { "j", "<cmd>norm! gj<cr>", desc = "Move down wrapped line" },
+    -- { "k", "<cmd>norm! gk<cr>", desc = "Move up wrapped line" },
+    { "<down>", "<cmd>norm! gj<cr>", desc = "Move down wrapped line" },
+    { "<up>", "<cmd>norm! gk<cr>", desc = "Move up wrapped line" },
   },
 })

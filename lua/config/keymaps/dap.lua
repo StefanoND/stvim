@@ -1,7 +1,12 @@
 local M = {}
 
 local dap = ":lua require('dap')."
-local dapui = ":lua require('dapui')."
+local dapui
+if vim.g.whichDap == 0 then
+  dapui = ":lua require('dapui')."
+else
+  dapui = ":lua require('dap-view')."
+end
 local widgets = ":lua require('dap.ui.widgets')."
 local neotest = ":lua require('neotest')."
 local vimkind = ":lua require('osv')."
@@ -11,12 +16,9 @@ local wk = require("which-key")
 M.keymaps = wk.add({
   {
     mode = { "n" },
-    { "<leader>du", dapui .. "toggle()<CR>", desc = "DAP UI Toggle" },
-    {
-      "<leader>dB",
-      dap .. "set_breakpoint(vim.fn.input('Condition: '))",
-      desc = "Breakpoint Condition",
-    },
+    { "<leader>du", dapui .. "toggle()<CR>", desc = "DAP Toggle" },
+    -- stylua: ignore
+    { "<leader>dB", dap .. "set_breakpoint(vim.fn.input('Condition: '))", desc = "Breakpoint Condition" },
     {
       "<leader>d<space>",
       function()
@@ -33,8 +35,6 @@ M.keymaps = wk.add({
       end,
       desc = "Run default configuration",
     },
-    -- stylua: ignore
-    { "<leader>dB", dap .. "set_breakpoint(vim.fn.input('Condition: '))", desc = "Breakpoint Condition" },
     { "<leader>db", dap .. "toggle_breakpoint()<CR>", desc = "DAP Toggle Breakpoint" },
     { "<leader>dc", dap .. "continue()<CR>", desc = "DAP Run/Continue" },
     { "<leader>da", dap .. "continue({ before = get_args })<CR>", desc = "DAP Run with Args" },
@@ -48,7 +48,8 @@ M.keymaps = wk.add({
     { "<leader>do", dap .. "step_out()<CR>", desc = "DAP Step Out" },
     { "<leader>dO", dap .. "step_over()<CR>", desc = "DAP Step Over" },
     { "<leader>dP", dap .. "pause()<CR>", desc = "DAP Pause" },
-    { "<leader>dr", dap .. "repl.toggle()<CR>", desc = "DAP Toggle REPL" },
+    { "<leader>dr", dap .. "restart()<CR>", desc = "DAP Restart" },
+    -- { "<leader>dr", dap .. "repl.toggle()<CR>", desc = "DAP Toggle REPL" },
     { "<leader>ds", dap .. "session()<CR>", desc = "DAP Session" },
     { "<leader>dT", dap .. "terminate()<CR>", desc = "DAP Terminate" },
     { "<leader>dw", widgets .. "hover()<CR>", desc = "DAP Widgets" },

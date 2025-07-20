@@ -25,6 +25,8 @@ return {
     opts = function()
       return {
         ensure_installed = {
+          -- ANGULAR
+          "angular-language-server",
           -- BASH
           "bash-language-server", -- LSP
           "bash-debug-adapter", -- DAP
@@ -34,14 +36,10 @@ return {
           "codelldb", -- DAP (lldb)
           "clang-format", -- formatter
           -- CSHARP
-          -- "csharp-language-server", -- LSP
-          -- "omnisharp", -- LSP
-          -- "omnisharp-mono", -- LSP
           "csharpier", -- Formatter
           "netcoredbg", -- DAP
           "roslyn", -- LSP
-          -- "roslynv4", -- LSP
-          -- "rzls", -- LSP -- Use ':MasonInstall rzls@9.0.0-preview.25156.2' instead
+          "rzls", -- LSP -- Use ':MasonInstall rzls@9.0.0-preview.25156.2' instead
           -- CMAKE
           "cmakelang", -- LSP
           "cmakelint", -- formatter and linter
@@ -53,10 +51,12 @@ return {
           "gdtoolkit", -- formatter and linter
           -- HTML
           "html-lsp",
+          -- CSS
+          "css-lsp",
           -- JavaScript/TypeScript
           "typescript-language-server", -- LSP
+          "tailwindcss-language-server", -- LSP
           "vtsls", -- LSP
-          -- "tailwindcss-language-server", -- Autocomplete
           "js-debug-adapter", -- DAP
           -- JSON
           "jsonls", -- LSP
@@ -73,12 +73,16 @@ return {
           "sqlls", -- LSP
           "sql-formatter", -- formatter
           "sqlfluff", -- linter
+          -- XML
+          "lemminx", -- LSP
+          "sonarlint-language-server", -- Linter
+          "xmlformatter", -- formatter
           -- YAML
           "yaml-language-server", -- LSP
           "yamllint", -- linter
           -- GLOBAL
-          "biome", -- formatter and linter - JS/TS, Json
-          "prettier", -- formatter - Markdown
+          -- "biome", -- formatter and linter - JS/TS, Json
+          "prettierd", -- formatter - Markdown
         },
         automatic_installation = true,
         auto_update = true,

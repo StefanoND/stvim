@@ -16,6 +16,14 @@ M.keymaps = wk.add({
   {
     mode = { "v" },
     -- { "<leader>rs", Snacks.picker.pick("refactoring"), desc = "Refactor" },
+        {
+      "<leader>re",
+      function()
+        require("refactoring").select_refactor({
+          show_success_message = true,
+        })
+      end,
+    },
     { "<leader>rf", refactor .. "refactor('Extract Function')<CR>", desc = "Extract Function" },
     { "<leader>rF", refactor .. "refactor('Extract Function To File')<CR>", desc = "Extract Function To File", },
     { "<leader>rv", refactor .. "refactor('Extract Variable')<CR>", desc = "Extract Variable" },

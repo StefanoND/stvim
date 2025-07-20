@@ -1,14 +1,14 @@
-local vars = require("config.vars")
-
 return {
   "L3MON4D3/LuaSnip",
   enabled = true,
   version = false,
   lazy = true,
   -- build = vars.getOSLowerCase():match("windows") ~= 0 and "make install_jsregexp" or nil,
+  -- build = "make install_jsregexp CC=zig",
   build = "make install_jsregexp",
   dependencies = {
     "rafamadriz/friendly-snippets",
+    "kmarius/jsregexp",
   },
   keys = function()
     return {}
@@ -47,7 +47,6 @@ return {
 
     luasnip.filetype_extend("cpp", { "c" })
     luasnip.filetype_extend("unrealengine", { "c", "cpp" })
-    luasnip.filetype_extend("typescript", { "javascript" })
 
     -- require("config.keymaps.snippets")
   end,

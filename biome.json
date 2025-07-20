@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+ 	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"files": {
 		"maxSize": 15728640,
 		"ignoreUnknown": true
@@ -18,9 +18,9 @@
 		"indentStyle": "tab",
 		"indentWidth": 2,
 		"lineEnding": "lf",
-		"lineWidth": 80,
+		"lineWidth": 96,
 		"attributePosition": "auto",
-		"useEditorconfig": false
+		"useEditorconfig": true
 	},
 	"organizeImports": {
 		"enabled": true
@@ -35,7 +35,7 @@
 			"indentStyle": "tab",
 			"indentWidth": 2,
 			"lineEnding": "lf",
-			"lineWidth": 80,
+			"lineWidth": 96,
 			"trailingCommas": "none"
 		},
 		"linter": {
@@ -51,7 +51,7 @@
 			"indentStyle": "tab",
 			"indentWidth": 2,
 			"lineEnding": "lf",
-			"lineWidth": 80,
+			"lineWidth": 96,
 			"quoteStyle": "double"
 		},
 		"linter": {

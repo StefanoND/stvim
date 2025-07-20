@@ -10,6 +10,12 @@ return {
     spec = {
       {
         mode = { "n", "v" },
+        { "[", group = "prev" },
+        { "]", group = "next" },
+        { "g", group = "goto" },
+        { "gs", group = "surround" },
+        { "gx", desc = "Open with system app" }, -- better descriptions
+        { "z", group = "fold" },
         { "<leader>ts", group = "TS CPP Tools" },
         { "<leader>o", group = "overseer" },
         { "<leader>q", group = "persistence" },
@@ -20,11 +26,7 @@ return {
         { "<leader>f", group = "file/find" },
         { "<leader>c", group = "code" },
         { "<leader>x", group = "trouble" },
-        { "[", group = "prev" },
-        { "]", group = "next" },
-        { "g", group = "goto" },
-        { "gs", group = "surround" },
-        { "z", group = "fold" },
+        { "<leader>z", group = "zen" },
         {
           "<leader>b",
           group = "buffer",

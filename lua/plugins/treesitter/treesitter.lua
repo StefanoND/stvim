@@ -11,9 +11,18 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     enabled = true,
     version = false,
-    event = "VeryLazy",
     opts = function()
-      return {}
+      return {
+        opts = {
+          enable_close = true,
+          enable_rename = true,
+          enable_close_on_slash = true,
+        },
+        aliases = {
+          ["cshtml"] = "html",
+          ["razor"] = "html",
+        },
+      }
     end,
     config = function(_, opts)
       require("nvim-ts-autotag").setup(opts)
@@ -29,7 +38,9 @@ return {
       return {
         enable = true,
         mode = "cursor",
-        max_lines = 3,
+        trim_scope = "inner",
+        max_lines = 6,
+        separator = "-",
       }
     end,
     config = function(_, opts)
@@ -204,7 +215,7 @@ return {
         -- A list of parser names, or "all" (the five listed parsers should always be installed)
         ensure_installed = {
           -- "maintained",
-          -- "bash",
+          "bash",
           "c",
           "c_sharp",
           "cmake",

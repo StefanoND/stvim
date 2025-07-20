@@ -65,8 +65,8 @@ return {
     debug = { enabled = false },
     dim = { enabled = false },
     explorer = { enabled = true, replace_netrw = true },
-    git = { enabled = false },
-    gitbrowse = { enabled = false },
+    git = { enabled = true },
+    gitbrowse = { enabled = true },
     image = { enabled = true },
     indent = {
       enabled = true,
@@ -141,16 +141,11 @@ return {
                   { win = "input", height = 1, border = "rounded" },
                   { win = "list", border = "rounded" },
                 },
-                { win = "preview", title = "{preview}", width = 0.8, border = "rounded" },
+                { win = "preview", title = "{preview}", width = 0.65, border = "rounded" },
               },
             },
           },
-          exclude = funcs.mergeTablesNoDup(
-            funcs.ignore(".allignore"),
-            funcs.ignore(".explorerignore"),
-            excludeAll,
-            excludeExplorer
-          ),
+          exclude = funcs.mergeTablesNoDup(excludeAll, excludeExplorer),
         },
         files = {
           hidden = true,
@@ -166,12 +161,7 @@ return {
             },
           },
           cmd = "rg",
-          exclude = funcs.mergeTablesNoDup(
-            funcs.ignore(".allignore"),
-            funcs.ignore(".filesignore"),
-            excludeAll,
-            excludeFiles
-          ),
+          exclude = funcs.mergeTablesNoDup(excludeAll, excludeFiles),
         },
         grep = {
           hidden = true,
@@ -186,12 +176,7 @@ return {
               },
             },
           },
-          exclude = funcs.mergeTablesNoDup(
-            funcs.ignore(".allignore"),
-            funcs.ignore(".grepignore"),
-            excludeAll,
-            excludeGrep
-          ),
+          exclude = funcs.mergeTablesNoDup(excludeAll, excludeGrep),
         },
         register = {
           finder = "vim_registers",
@@ -236,7 +221,8 @@ return {
         vim.g.snacks_animate = false
 
         -- Create some toggle mappings
-        local toggleConceal = { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }
+        local toggleConceal =
+          { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }
         -- local toggleBackground = { off = "light", on = "dark", name = "Dark Background" }
 
         Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")

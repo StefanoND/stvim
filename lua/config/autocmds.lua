@@ -2,30 +2,117 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
 end
 
--- Set cwd when entering
-vim.cmd([[autocmd VimEnter * cd $PWD]])
+-- -- Set cwd when entering
+-- vim.cmd([[
+-- autocmd!
+-- autocmd VimEnter * cd $PWD
+-- ]])
 
 -- Omnifunc
 -- api.nvim_command("setlocal omnifunc=v:lua.vim.lsp.omnifunc")
 vim.cmd([[autocmd FileType sql setlocal omnifunc=vim_dadbod_completion#omni]])
 
--- It's free real estate
--- vim.opt.cmdheight = 0
+-- -- "Don't" allow horizontal scroll
+-- vim.cmd([[autocmd CursorMoved * norm!96zH]])
+
+-- Treat M$' xaml as xml
+vim.cmd([[autocmd BufNewFile,BufRead *.xaml setf xml]])
+
+-- Treat Avalonia's axaml as xml
+vim.cmd([[autocmd BufNewFile,BufRead *.axaml setf xml]])
 
 -- Turn on/off tmux statusline on vim enter/leave
 vim.cmd([[silent !tmux set status off]]) -- VimEnter conflicts with Snacks Explorer's preview
 vim.cmd([[autocmd VimLeave * silent !tmux set status on]])
 
+-- Disable semantic tokens
+-- Besides rzls (and aftershave and html)
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if
+      client
+      and client.name ~= "rzls"
+      and client.name ~= "aftershave"
+      and client.name ~= "html"
+    then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
+  end,
+})
+
+-- ftplugin start
+local ftmodule = "ftplugin.%s"
+local function loadftmodule(ft, action)
+  local modname = ftmodule:format(ft)
+  local _, res = pcall(require, modname)
+  if type(res) == "table" then
+    if type(res[action]) == "function" then
+      res[action]()
+    end
+  elseif
+    type(res) == "string"
+    and not res:match("Module '" .. modname .. "' not found")
+    and not res:match("	no file")
+  then
+    print(res)
+  end
+end
+
+vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "Colorscheme" }, {
+  pattern = { "*" },
+  callback = function()
+    loadftmodule(vim.bo.filetype, "ftplugin")
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = { "*" },
+  callback = function()
+    loadftmodule(vim.bo.filetype, "newfile")
+  end,
+})
+
+vim.api.nvim_create_autocmd(
+  { "FileType", "BufEnter", "VimEnter", "BufWinEnter", "Colorscheme" },
+  {
+    pattern = { "*" },
+    callback = function()
+      loadftmodule(vim.bo.filetype, "syntax")
+    end,
+  }
+)
+-- ftplugin end
+
+-- It's free real estate
+-- vim.opt.cmdheight = 0
+
+-- Remove trailing ^M
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  pattern = { "*" },
+  command = [[%s/\r\+$//e]],
+})
+
 -- Set conceallevel for certain file types
 vim.api.nvim_create_autocmd({ "FileType" }, {
   group = augroup("ft_conceal"),
-  pattern = { "*.md", "*.json", "*.org", "*.norg", "markdown", "markdown.mdx", "rmd", "org", "norg" },
+  pattern = {
+    "*.md",
+    "*.json",
+    "*.org",
+    "*.norg",
+    "markdown",
+    "markdown.mdx",
+    "rmd",
+    "org",
+    "norg",
+  },
   callback = function()
     vim.opt_local.conceallevel = 2
   end,
 })
 
--- Check if we need to reload the file when it changed
+-- Check if we need to reload the file when it changes
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   group = augroup("checktime"),
   callback = function()
@@ -98,46 +185,6 @@ vim.api.nvim_create_autocmd("BufDelete", {
   end,
 })
 
--- ftplugin start
-local ftmodule = "ftplugin.%s"
-local function loadftmodule(ft, action)
-  local modname = ftmodule:format(ft)
-  local _, res = pcall(require, modname)
-  if type(res) == "table" then
-    if type(res[action]) == "function" then
-      res[action]()
-    end
-  elseif
-    type(res) == "string"
-    and not res:match("Module '" .. modname .. "' not found")
-    and not res:match("	no file")
-  then
-    print(res)
-  end
-end
-
-vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufWinEnter", "Colorscheme" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "ftplugin")
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "newfile")
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "VimEnter", "BufWinEnter", "Colorscheme" }, {
-  pattern = { "*" },
-  callback = function()
-    loadftmodule(vim.bo.filetype, "syntax")
-  end,
-})
--- ftplugin end
-
 -- Roslyn Diagnostic refresh
 vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   pattern = "*",
@@ -154,32 +201,79 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
   end,
 })
 
--- textDocument/_vs_onAutoInsert
-vim.api.nvim_create_autocmd("InsertCharPre", {
+-- Roslyn: textDocument/_vs_onAutoInsert
+vim.api.nvim_create_autocmd("LspAttach", {
   pattern = "*.cs",
-  callback = function()
-    local char = vim.v.char
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    local bufnr = args.buf
 
-    if char ~= "/" then
-      return
+    if client and (client.name == "roslyn" or client.name == "roslyn_ls") then
+      vim.api.nvim_create_autocmd("InsertCharPre", {
+        desc = "Roslyn: Trigger an auto insert on '/'.",
+        buffer = bufnr,
+        callback = function()
+          local char = vim.v.char
+
+          if char ~= "/" then
+            return
+          end
+
+          local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+          row, col = row - 1, col + 1
+          local uri = vim.uri_from_bufnr(bufnr)
+
+          local params = {
+            _vs_textDocument = { uri = uri },
+            _vs_position = { line = row, character = col },
+            _vs_ch = char,
+            _vs_options = {
+              tabSize = vim.bo[bufnr].tabstop,
+              insertSpaces = vim.bo[bufnr].expandtab,
+            },
+          }
+
+          -- NOTE: We should send textDocument/_vs_onAutoInsert request only after
+          -- buffer has changed.
+          vim.defer_fn(function()
+            client:request(
+              ---@diagnostic disable-next-line: param-type-mismatch
+              "textDocument/_vs_onAutoInsert",
+              params,
+              function(err, result, _)
+                if err or not result then
+                  return
+                end
+
+                vim.snippet.expand(result._vs_textEdit.newText)
+              end,
+              bufnr
+            )
+          end, 1)
+        end,
+      })
     end
+  end,
+})
 
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    row, col = row - 1, col + 1
-    local bufnr = vim.api.nvim_get_current_buf()
-    local uri = vim.uri_from_bufnr(bufnr)
-
-    local params = {
-      _vs_textDocument = { uri = uri },
-      _vs_position = { line = row, character = col },
-      _vs_ch = char,
-      _vs_options = { tabSize = 4, insertSpaces = true },
-    }
-
-    -- NOTE: we should send textDocument/_vs_onAutoInsert request only after buffer has changed.
-    vim.defer_fn(function()
-      vim.lsp.buf_request(bufnr, "textDocument/_vs_onAutoInsert", params)
-    end, 1)
+-- Example of a file watcher using Neovim's built-in autocommands
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.csproj" },
+  callback = function()
+    -- Send a /filesChanged request to the LSP server
+    vim.lsp.buf.execute_command({
+      command = "workspace/didChangeWatchedFiles",
+      arguments = {
+        {
+          changes = {
+            {
+              uri = vim.uri_from_fname(vim.fn.expand("<afile>")),
+              type = 2, -- Changed
+            },
+          },
+        },
+      },
+    })
   end,
 })
 
